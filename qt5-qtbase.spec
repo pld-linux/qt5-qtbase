@@ -138,6 +138,9 @@ Qt5 - development files.
 Summary:	The Qt5 application framework base - docs
 Group:		Documentation
 Requires:	%{name} = %{version}-%{release}
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description doc
 Qt5 base - documentation.
@@ -145,6 +148,9 @@ Qt5 base - documentation.
 %package examples
 Summary:	Qt5 examples
 Group:		X11/Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description examples
 Qt5 base - examples.
