@@ -139,12 +139,20 @@ Requires:	%{name} = %{version}-%{release}
 %description devel
 Qt5 - development files.
 
+%package doc
+Summary:	The Qt5 application framework base - docs
+Group:		Documentation
+Requires:	%{name} = %{version}-%{release}
+
+%description doc
+Qt5 base - documentation.
+
 %package examples
 Summary:	Qt5 examples
 Group:		X11/Development/Libraries
 
 %description examples
-Qt5 - examples.
+Qt5 base - examples.
 
 %prep
 %setup -q -n %{orgname}-opensource-src-%{version}
@@ -177,6 +185,11 @@ Qt5 - examples.
 %{__sed} -i -e '
 	s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|;
 	' mkspecs/common/linux.conf
+
+# rpmldflags
+%{__sed} -i -e '
+	s|^QMAKE_LFLAGS .*=.*|QMAKE_LFLAGS\t\t+= %{rpmldflags}|;
+	' mkspecs/common/gcc-base.conf
 
 %build
 # pass OPTFLAGS to build qmake itself with optimization
@@ -292,6 +305,8 @@ OPT=" \
 ./configure $COMMONOPT $OPT
 
 %{__make}
+# make docs requires qt5-qttools
+%{__make} docs || :
 #%{__make} \
 #	sub-tools-all-ordered \
 #	sub-demos-all-ordered \
@@ -307,8 +322,9 @@ install -d $RPM_BUILD_ROOT{/etc/{env.d,qt5},%{_bindir},%{_desktopdir},%{_pixmaps
 %{__make} install \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 
-# for qt-creator sth is messed up in the Makefile, nothing for make install
-#install bin/qdoc3 $RPM_BUILD_ROOT%{_qtdir}/bin/qdoc3
+# not sure whether || : is needed
+%{__make} install_docs \
+	INSTALL_ROOT=$RPM_BUILD_ROOT || :
 
 # kill -L/inside/builddir from *.la and *.pc (bug #77152)
 %{__sed} -i -e "s,-L$PWD/lib,,g" $RPM_BUILD_ROOT%{_libdir}/*.{la,prl}
@@ -477,8 +493,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/Qt5Widgets
 %{_libdir}/cmake/Qt5Xml
 %{_pkgconfigdir}/*.pc
-#%{_examplesdir}/qt5
-%{_docdir}/qt5-doc
 %{_qtdir}/mkspecs
+
+%files doc
+%defattr(644,root,root,755)
+%{_docdir}/qt5-doc
 
 %files examples -f examples.files
