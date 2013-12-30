@@ -1,6 +1,7 @@
 # TODO:
 # - use PLD ldflags
 # - cleanup
+# - subpackages to sql classes
 
 # Conditional build:
 %bcond_with	static_libs	# build static libraries
@@ -50,14 +51,15 @@
 %define		next_icu_abi	%(echo $((%{icu_abi} + 1)))
 
 %define		orgname		qtbase
-Summary:	The Qt5 application framework
+Summary:	Qt5 - QtBase components
 Summary(es.UTF-8):	Biblioteca para ejecutar aplicaciones Qt5
 Summary(pl.UTF-8):	Biblioteka Qt5
 Summary(pt_BR.UTF-8):	Estrutura para rodar aplicações Qt5
 Name:		qt5-%{orgname}
 Version:	5.2.0
 Release:	0.1
-License:	LGPL v2.1 or GPL v3.0
+# See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
+License:	LGPLv2 with exceptions or GPLv3 with exceptions
 Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.2/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
 # Source0-md5:	c94bbaf1bb7f0f4a32d2caa7501416e1
@@ -77,8 +79,8 @@ BuildRequires:	glib2-devel >= 2.0.0
 BuildRequires:	gstreamer0.10-plugins-base-devel
 %{?with_gtk:BuildRequires:	gtk+2-devel >= 2:2.10}
 # see dependency on libicu version below
-BuildRequires:	libicu-devel >= %{icu_abi}
 BuildRequires:	libicu-devel < %{next_icu_abi}
+BuildRequires:	libicu-devel >= %{icu_abi}
 BuildRequires:	libjpeg-devel
 BuildRequires:	libmng-devel >= 1.0.0
 BuildRequires:	libpng-devel >= 2:1.0.8
@@ -94,6 +96,7 @@ BuildRequires:	rsync
 BuildRequires:	sed >= 4.0
 %{?with_sqlite:BuildRequires:	sqlite-devel}
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
+BuildRequires:	tar >= 1:1.22
 %{?with_odbc:BuildRequires:	unixODBC-devel >= 2.3.0}
 BuildRequires:	xorg-lib-libSM-devel
 BuildRequires:	xorg-lib-libXcursor-devel
@@ -105,6 +108,7 @@ BuildRequires:	xorg-lib-libXrandr-devel
 BuildRequires:	xorg-lib-libXrender-devel
 BuildRequires:	xorg-lib-libXtst-devel
 BuildRequires:	xorg-lib-libXv-devel
+BuildRequires:	xz
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -116,7 +120,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_qtdir		%{_libdir}/qt5
 
 %description
-Qt5 base libraries.
+Qt is a software toolkit for developing applications.
+
+This package contains base tools, like string, xml, and network
+handling.
 
 %package devel
 Summary:	The Qt5 application framework - development files
