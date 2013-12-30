@@ -75,6 +75,7 @@ BuildRequires:	fontconfig-devel
 BuildRequires:	freetds-devel
 BuildRequires:	freetype-devel >= 1:2.0.0
 %{?with_pch:BuildRequires:	gcc >= 5:4.0}
+BuildRequires:	gdb
 BuildRequires:	glib2-devel >= 2.0.0
 BuildRequires:	gstreamer0.10-plugins-base-devel
 %{?with_gtk:BuildRequires:	gtk+2-devel >= 2:2.10}
@@ -97,7 +98,12 @@ BuildRequires:	sed >= 4.0
 %{?with_sqlite:BuildRequires:	sqlite-devel}
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
 BuildRequires:	tar >= 1:1.22
+BuildRequires:	udev-devel
 %{?with_odbc:BuildRequires:	unixODBC-devel >= 2.3.0}
+BuildRequires:	xcb-util-image-devel
+BuildRequires:	xcb-util-keysyms-devel
+BuildRequires:	xcb-util-renderutil-devel
+BuildRequires:	xcb-util-wm-devel
 BuildRequires:	xorg-lib-libSM-devel
 BuildRequires:	xorg-lib-libXcursor-devel
 BuildRequires:	xorg-lib-libXext-devel
