@@ -76,7 +76,6 @@ BuildRequires:	freetype-devel >= 1:2.0.0
 %{?with_pch:BuildRequires:	gcc >= 5:4.0}
 BuildRequires:	gdb
 BuildRequires:	glib2-devel >= 2.0.0
-BuildRequires:	gstreamer0.10-plugins-base-devel
 %{?with_gtk:BuildRequires:	gtk+2-devel >= 2:2.10}
 # see dependency on libicu version below
 BuildRequires:	libicu-devel < %{next_icu_abi}
