@@ -1,24 +1,25 @@
 # TODO:
-# - use PLD ldflags
-# - cleanup
-# - subpackages to sql classes
+# - libraries split (per-library or at least base/gui parts)
+# - separate some plugins (SQL, DirectFB...)
 
 # Conditional build:
-%bcond_with	static_libs	# build static libraries
+%bcond_with	static_libs	# static libraries [incomplete support in .spec]
 # -- features
 %bcond_without	cups		# CUPS printing support
-%bcond_with	nas		# NAS audio support
+%bcond_without	directfb	# DirectFB platform support
 %bcond_without	gtk		# GTK+ theme integration
 %bcond_without	pch		# pch (pre-compiled headers) in qmake
-%bcond_without	system_phonon	# phonon libraries from phonon.spec intead of qt4.spec
-%bcond_with	wkhtml		# WKHTMLTOPDF patch (affects QtGui ABI)
+%bcond_without	tslib		# tslib support
 # -- databases
+%bcond_without	freetds		# TDS (Sybase/MS SQL) plugin
 %bcond_without	mysql		# MySQL plugin
 %bcond_without	odbc		# unixODBC plugin
 %bcond_without	pgsql		# PostgreSQL plugin
+%bcond_without	sqlite2		# SQLite2 plugin
 %bcond_without	sqlite3		# SQLite3 plugin
-%bcond_without	sqlite		# SQLite2 plugin
 %bcond_without	ibase		# ibase (InterBase/Firebird) plugin
+%bcond_with	db2		# DB2 support
+%bcond_with	oracle		# OCI (Oracle) support
 # -- SIMD CPU instructions
 %bcond_with	sse		# use SSE instructions in gui/painting module
 %bcond_with	sse2		# use SSE2 instructions
@@ -26,7 +27,8 @@
 %bcond_with	ssse3		# use SSSE3 instructions (Intel since Core2, Via Nano)
 %bcond_with	sse41		# use SSE4.1 instructions (Intel since middle Core2)
 %bcond_with	sse42		# use SSE4.2 instructions (the same)
-%bcond_with	avx		# use AVX instructions (future Intel x86 CPUs only)
+%bcond_with	avx		# use AVX instructions (Intel since Sandy Bridge, AMD since Bulldozer)
+%bcond_with	avx2		# use AVX2 instructions (Intel since Haswell)
 
 %ifnarch %{ix86} %{x8664} sparc sparcv9 alpha ppc
 %undefine	with_ibase
@@ -43,18 +45,13 @@
 %ifarch pentium4 %{x8664}
 %define		with_sse2	1
 %endif
-# any SQL
-%define		_withsql	1
-%{!?with_sqlite3:%{!?with_sqlite:%{!?with_ibase:%{!?with_mysql:%{!?with_pgsql:%{!?with_odbc:%undefine _withsql}}}}}}
 
 %define		icu_abi		52
 %define		next_icu_abi	%(echo $((%{icu_abi} + 1)))
 
 %define		orgname		qtbase
-Summary:	Qt5 - QtBase components
-Summary(es.UTF-8):	Biblioteca para ejecutar aplicaciones Qt5
-Summary(pl.UTF-8):	Biblioteka Qt5
-Summary(pt_BR.UTF-8):	Estrutura para rodar aplicações Qt5
+Summary:	Qt5 - base components
+Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.2.0
 Release:	0.1
@@ -64,36 +61,40 @@ Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.2/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
 # Source0-md5:	c94bbaf1bb7f0f4a32d2caa7501416e1
 URL:		http://qt-project.org/
+%{?with_directfb:BuildRequires:	DirectFB-devel}
 %{?with_ibase:BuildRequires:	Firebird-devel}
 BuildRequires:	Mesa-libOpenVG-devel
 BuildRequires:	OpenGL-devel
 BuildRequires:	alsa-lib-devel
+%{?with_gtk:BuildRequires:	atk-devel}
 %{?with_cups:BuildRequires:	cups-devel}
-BuildRequires:	dbus-devel >= 0.93
+BuildRequires:	dbus-devel >= 1.2
 BuildRequires:	fontconfig-devel
-BuildRequires:	freetds-devel
+%{?with_freetds:BuildRequires:	freetds-devel}
 BuildRequires:	freetype-devel >= 1:2.0.0
 %{?with_pch:BuildRequires:	gcc >= 5:4.0}
 BuildRequires:	gdb
 BuildRequires:	glib2-devel >= 2.0.0
-%{?with_gtk:BuildRequires:	gtk+2-devel >= 2:2.10}
+%{?with_gtk:BuildRequires:	gtk+2-devel >= 2:2.18}
 # see dependency on libicu version below
 BuildRequires:	libicu-devel < %{next_icu_abi}
 BuildRequires:	libicu-devel >= %{icu_abi}
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel >= 2:1.0.8
 BuildRequires:	libstdc++-devel
+BuildRequires:	libxcb-devel >= 1.5
 %{?with_mysql:BuildRequires:	mysql-devel}
-%{?with_nas:BuildRequires:	nas-devel}
+BuildRequires:	pcre16-devel >= 8.30
 BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-backend-devel}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	pulseaudio-devel >= 0.9.10
 BuildRequires:	rpmbuild(macros) >= 1.654
 BuildRequires:	sed >= 4.0
-%{?with_sqlite:BuildRequires:	sqlite-devel}
+%{?with_sqlite2:BuildRequires:	sqlite-devel}
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
 BuildRequires:	tar >= 1:1.22
+%{?with_tslib:BuildRequires:	tslib-devel}
 BuildRequires:	udev-devel
 %{?with_odbc:BuildRequires:	unixODBC-devel >= 2.3.0}
 BuildRequires:	xcb-util-image-devel
@@ -101,6 +102,7 @@ BuildRequires:	xcb-util-keysyms-devel
 BuildRequires:	xcb-util-renderutil-devel
 BuildRequires:	xcb-util-wm-devel
 BuildRequires:	xorg-lib-libSM-devel
+BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXcursor-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXfixes-devel
@@ -108,33 +110,41 @@ BuildRequires:	xorg-lib-libXi-devel
 BuildRequires:	xorg-lib-libXinerama-devel
 BuildRequires:	xorg-lib-libXrandr-devel
 BuildRequires:	xorg-lib-libXrender-devel
+BuildRequires:	xorg-lib-libxkbcommon-devel >= 0.2.0
 BuildRequires:	xz
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_noautoreqdep	libGL.so.1 libGLU.so.1
-%define		_noautostrip	'.*_debug\\.so*'
-
 %define		specflags	-fno-strict-aliasing
 
-%define		_qtdir		%{_libdir}/qt5
+%define		qt5dir		%{_libdir}/qt5
 
 %description
 Qt is a software toolkit for developing applications.
 
-This package contains base tools, like string, xml, and network
-handling.
+This package contains base components, like Core, Network or Xml.
+
+%description -l pl.UTF-8
+Qt to programowy toolkit do tworzenia aplikacji.
+
+Ten pakiet zawiera podstawowe komponenty, takie jak Core, Network czy
+Xml.
 
 %package devel
 Summary:	The Qt5 application framework - development files
+Summary(pl.UTF-8):	Szkielet aplikacji Qt5 - pliki programistyczne
 Group:		X11/Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
-Qt5 - development files.
+The Qt5 application framework - development files.
+
+%description devel -l pl.UTF-8
+Szkielet aplikacji Qt5 - pliki programistyczne.
 
 %package doc
-Summary:	The Qt5 application framework base - docs
+Summary:	Documentation for Qt5 application framework base components
+Summary(pl.UTF-8):	Dokumentacja do podstawowych komponentów szkieletu aplikacji Qt5
 Group:		Documentation
 Requires:	%{name} = %{version}-%{release}
 %if "%{_rpmversion}" >= "5"
@@ -142,83 +152,117 @@ BuildArch:	noarch
 %endif
 
 %description doc
-Qt5 base - documentation.
+Documentation for Qt5 application framework base components.
+
+%description doc -l pl.UTF-8
+Dokumentacja do podstawowych komponentów szkieletu aplikacji Qt5.
 
 %package examples
-Summary:	Qt5 examples
+Summary:	Examples for Qt5 application framework base components
+Summary(pl.UTF-8):	Przykłady do podstawowych komponentów szkieletu aplikacji Qt5
 Group:		X11/Development/Libraries
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
 %endif
 
 %description examples
-Qt5 base - examples.
+Examples for Qt5 application framework base components.
+
+%description examples -l pl.UTF-8
+Przykłady do podstawowych komponentów szkieletu aplikacji Qt5.
+
+%package -n qt5-build
+Summary:	Qt5 build tools
+Summary(pl.UTF-8):	Narzędzia do budowania dla Qt4
+Group:		Development/Tools
+Requires:	%{name} = %{version}-%{release}
+
+%description -n qt5-build
+This package includes the Qt resource compiler (rcc), meta objects
+compiler (moc), user interface compiler (uic) etc.
+
+%description -n qt5-build -l pl.UTF-8
+Ten pakiet zawiera kompilator zasobów Qt (rcc), kompilator
+metaobiektów (moc), kompilator interfejsów użytkownika (uic) i podobne
+narzędzia.
+
+%package -n qt5-qmake
+Summary:	Qt5 makefile generator
+Summary(pl.UTF-8):	Generator plików makefile dla aplikacji Qt5
+Group:		Development/Tools
+
+%description -n qt5-qmake
+Qt5 makefile generator.
+
+%description -n qt5-qmake -l pl.UTF-8
+Generator plików makefile dla aplikacji Qt5.
 
 %prep
 %setup -q -n %{orgname}-opensource-src-%{version}
 
-%{__sed} -i -e 's,usr/X11R6/,usr/g,' mkspecs/linux-g++-64/qmake.conf \
-	mkspecs/common/linux.conf
+%{__sed} -i -e 's,usr/X11R6/,usr/g,' mkspecs/linux-g++-64/qmake.conf
 
 # change QMAKE FLAGS to build
 %{__sed} -i -e '
-	s|QMAKE_CC.*=.*gcc|QMAKE_CC\t\t= %{__cc}|;
-	s|QMAKE_CXX.*=.*g++|QMAKE_CXX\t\t= %{__cxx}|;
-	s|QMAKE_LINK.*=.*g++|QMAKE_LINK\t\t= %{__cxx}|;
-	s|QMAKE_LINK_SHLIB.*=.*g++|QMAKE_LINK_SHLIB\t= %{__cxx}|;
-	s|QMAKE_CFLAGS_RELEASE.*|QMAKE_CFLAGS_RELEASE\t+= %{rpmcppflags} %{rpmcflags}|;
-	s|QMAKE_CXXFLAGS_RELEASE.*|QMAKE_CXXFLAGS_RELEASE\t+= %{rpmcppflags} %{rpmcxxflags}|;
-	s|QMAKE_CFLAGS_DEBUG.*|QMAKE_CFLAGS_DEBUG\t+= %{debugcflags}|;
-	s|QMAKE_CXXFLAGS_DEBUG.*|QMAKE_CXXFLAGS_DEBUG\t+= %{debugcflags}|;
+	s|^\(QMAKE_COMPILER *\)=.*gcc|\1= %{__cc}|;
+	s|^\(QMAKE_CC *\)=.*gcc|\1= %{__cc}|;
+	s|^\(QMAKE_CXX *\)=.*g++|\1= %{__cxx}|;
+	s|^QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO .*|QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO += -g %{rpmcppflags} %{rpmcflags}|;
+	s|^QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO .*|QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO += -g %{rpmcppflags} %{rpmcxxflags}|;
 	' mkspecs/common/g++-base.conf
-
-#%{__sed} -i -e '
-#	s|QMAKE_INCDIR_QT.*|QMAKE_INCDIR_QT       = %{_includedir}/qt4|;
-#	' mkspecs/common/linux.conf
-
-# No -L/usr/lib.
 %{__sed} -i -e '
-	s|^QMAKE_LIBDIR_QT.*=.*|QMAKE_LIBDIR_QT       =|;
-	' mkspecs/common/linux.conf
-
-# undefine QMAKE_STRIP, so we get useful -debuginfo pkgs
-%{__sed} -i -e '
-	s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|;
-	' mkspecs/common/linux.conf
-
-# rpmldflags
-%{__sed} -i -e '
-	s|^QMAKE_LFLAGS .*=.*|QMAKE_LFLAGS\t\t+= %{rpmldflags}|;
+	s|^\(QMAKE_CFLAGS_RELEASE *\)+=.*|\1+= %{rpmcppflags} %{rpmcflags}|;
+	s|^\(QMAKE_CXXFLAGS_RELEASE *\)+=.*|\1+= %{rpmcppflags} %{rpmcxxflags}|;
+	s|^\(QMAKE_CFLAGS_DEBUG *\)+=.*|\1+= %{debugcflags}|;
+	s|^\(QMAKE_CXXFLAGS_DEBUG *\)+=.*|\1+= %{debugcflags}|;
+	s|^\(QMAKE_LFLAGS *\)+=.*|\1+= %{rpmldflags}|;
 	' mkspecs/common/gcc-base.conf
+
+# define QMAKE_STRIP to true, so we get useful -debuginfo pkgs
+%{__sed} -i -e '
+	s|^\(QMAKE_STRIP *\)=.*|\1= :|;
+	' mkspecs/common/linux.conf
 
 %build
 # pass OPTFLAGS to build qmake itself with optimization
 export OPTFLAGS="%{rpmcflags}"
 export PATH=$PWD/bin:$PATH
 
-##################################
-# DEFAULT OPTIONS FOR ALL BUILDS #
-##################################
-
+# DEFAULT OPTIONS FOR ALL BUILDS
 COMMONOPT=" \
 	-confirm-license \
 	-opensource \
 	-verbose \
-	-prefix %{_qtdir} \
-	-bindir %{_qtdir}/bin \
+	%{?debug:-debug} \
+	%{!?debug:-release} \
+	-prefix %{qt5dir} \
+	-bindir %{qt5dir}/bin \
 	-docdir %{_docdir}/qt5-doc \
 	-headerdir %{_includedir}/qt5 \
 	-libdir %{_libdir} \
-	-plugindir %{_qtdir}/plugins \
+	-plugindir %{qt5dir}/plugins \
 	-datadir %{_datadir}/qt5 \
-	-translationdir %{_localedir}/ \
+	-translationdir %{_localedir} \
 	-sysconfdir %{_sysconfdir}/qt5 \
 	-examplesdir %{_examplesdir}/qt5 \
-	-optimized-qmake \
+%if %{with mysql}
+	-I/usr/include/mysql \
+%endif
+%if %{with pgsql}
+	-I/usr/include/postgresql/server \
+%endif
+	-%{!?with_cups:no-}cups \
+	-%{!?with_directfb:no-}directfb \
+	-dbus-linked \
+	-fontconfig \
 	-glib \
-	%{!?with_gtk:-no-gtkstyle} \
-	-%{!?with_pch:no-}pch \
+	-%{!?with_gtk:no-}gtkstyle \
+	-iconv \
+	-icu \
+	-largefile \
+	-nis \
 	-no-rpath \
+	-no-separate-debug-info \
 	%{!?with_sse:-no-sse} \
 	%{!?with_sse2:-no-sse2} \
 	%{!?with_sse3:-no-sse3} \
@@ -226,145 +270,109 @@ COMMONOPT=" \
 	%{!?with_sse41:-no-sse4.1} \
 	%{!?with_sse42:-no-sse4.2} \
 	%{!?with_avx:-no-avx} \
-	-dbus \
-	-dbus-linked \
+	%{!?with_avx2:-no-avx2} \
+	-openssl-linked \
+	-optimized-qmake \
+	-%{!?with_pch:no-}pch \
 	-reduce-relocations \
+	-sm \
 	-system-freetype \
 	-system-libjpeg \
 	-system-libpng \
 	-system-pcre \
+	-system-sqlite \
 	-system-xcb \
 	-system-xkbcommon \
 	-system-zlib \
-	-openssl-linked \
-	-largefile \
-	-I/usr/include/postgresql/server \
-	-I/usr/include/mysql \
-	%{?with_cups:-cups} \
-	%{?with_nas:-system-nas-sound} \
-	%{?debug:-debug} \
-	%{!?debug:-release} \
-	-fontconfig \
-	-largefile \
-	-iconv \
-	-icu \
-	-no-separate-debug-info \
-	-xfixes \
-	-nis \
-	-sm \
+	%{?with_tslib:-tslib} \
 	-xcursor \
-	-xinput2 \
+	-xfixes \
 	-xinerama \
-	-xrandr \
+	-xinput2 \
 	-xkb \
+	-xrandr \
 	-xrender \
-	-xshape \
-	-continue"
+	-xshape"
 
-%if 0
-##################################
-#       STATIC MULTI-THREAD      #
-##################################
-
+# STATIC
 %if %{with static_libs}
 OPT=" \
-	-%{!?with_mysql:no}%{?with_mysql:qt}-sql-mysql \
-	-%{!?with_odbc:no}%{?with_odbc:qt}-sql-odbc \
-	-%{!?with_pgsql:no}%{?with_pgsql:qt}-sql-psql \
-	-%{!?with_sqlite3:no}%{?with_sqlite3:qt}-sql-sqlite \
-	-%{!?with_sqlite:no}%{?with_sqlite:qt}-sql-sqlite2 \
-	-%{!?with_ibase:no}%{?with_ibase:qt}-sql-ibase \
+	--sql-db2=%{?with_db2:qt}%{!?with_db2:no} \
+	--sql-ibase=%{?with_ibase:qt}%{!?with_ibase:no} \
+	--sql-mysql=%{?with_mysql:qt}%{!?with_mysql:no} \
+	--sql-oci=%{?with_oracle:qt}%{!?with_oracle:no} \
+	--sql-odbc=%{?with_odbc:qt}%{!?with_odbc:no} \
+	--sql-psql=%{?with_pgsql:qt}%{!?with_pgsql:no} \
+	--sql-sqlite2=%{?with_sqlite2:qt}%{!?with_sqlite2:no} \
+	--sql-sqlite=%{?with_sqlite3:qt}%{!?with_sqlite3:no} \
+	--sql-tds=%{?with_freetds:qt}%{!?with_freetds:no} \
 	-static"
 
 ./configure $COMMONOPT $OPT
 
 %{__make} -C src
-%{__make} -C tools/assistant/lib
-%{__make} -C tools/designer
 if [ ! -d staticlib ]; then
 	mkdir staticlib
 	cp -a lib/*.a staticlib
 fi
 %{__make} distclean
 %endif
-%endif
 
-##################################
-#       SHARED MULTI-THREAD      #
-##################################
-
+# SHARED
 OPT=" \
-	-%{!?with_mysql:no}%{?with_mysql:plugin}-sql-mysql \
-	-%{!?with_odbc:no}%{?with_odbc:plugin}-sql-odbc \
-	-%{!?with_pgsql:no}%{?with_pgsql:plugin}-sql-psql \
-	-%{!?with_sqlite3:no}%{?with_sqlite3:plugin}-sql-sqlite \
-	-%{!?with_sqlite:no}%{?with_sqlite:plugin}-sql-sqlite2 \
-	-%{!?with_ibase:no}%{?with_ibase:plugin}-sql-ibase \
+	--sql-db2=%{?with_db2:plugin}%{!?with_db2:no} \
+	--sql-ibase=%{?with_ibase:plugin}%{!?with_ibase:no} \
+	--sql-mysql=%{?with_mysql:plugin}%{!?with_mysql:no} \
+	--sql-oci=%{?with_oracle:plugin}%{!?with_oracle:no} \
+	--sql-odbc=%{?with_odbc:plugin}%{!?with_odbc:no} \
+	--sql-psql=%{?with_pgsql:plugin}%{!?with_pgsql:no} \
+	--sql-sqlite2=%{?with_sqlite2:plugin}%{!?with_sqlite2:no} \
+	--sql-sqlite=%{?with_sqlite3:plugin}%{!?with_sqlite3:no} \
+	--sql-tds=%{?with_freetds:plugin}%{!?with_freetds:no} \
 	-shared"
 
 ./configure $COMMONOPT $OPT
 
 %{__make}
-# make docs requires qt5-qttools
-%{__make} docs || :
-#%{__make} \
-#	sub-tools-all-ordered \
-#	sub-demos-all-ordered \
-#	sub-examples-all-ordered
+
+# use just built qdoc instead of requiring already installed qt5-build
+wd="$(pwd)"
+%{__sed} -i -e 's|%{qt5dir}/bin/qdoc|LD_LIBRARY_PATH='${wd}'/lib$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} '${wd}'/bin/qdoc|' src/*/Makefile
+# build only HTML docs (qch docs require qhelpgenerator)
+%{__make} html_docs
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/etc/{env.d,qt5},%{_bindir},%{_desktopdir},%{_pixmapsdir},%{_pkgconfigdir}}
-#install -d $RPM_BUILD_ROOT%{_qtdir}/plugins/{crypto,network}
-
-#echo '#QT_GRAPHICSSYSTEM=raster' > $RPM_BUILD_ROOT/etc/env.d/QT_GRAPHICSSYSTEM
+install -d $RPM_BUILD_ROOT{/etc/qt5,%{_bindir},%{_pkgconfigdir}}
 
 %{__make} install \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 
-# not sure whether || : is needed
-%{__make} install_docs \
-	INSTALL_ROOT=$RPM_BUILD_ROOT || :
+%{__make} install_html_docs \
+	INSTALL_ROOT=$RPM_BUILD_ROOT
 
-# kill -L/inside/builddir from *.la and *.pc (bug #77152)
-%{__sed} -i -e "s,-L$PWD/lib,,g" $RPM_BUILD_ROOT%{_libdir}/*.{la,prl}
-%{__sed} -i -e "s,-L$PWD/lib,,g" $RPM_BUILD_ROOT%{_pkgconfigdir}/*.pc
-%{__sed} -i -e '
-	s|moc_location=.*|moc_location=%{_bindir}/moc-qt5|;
-	s|uic_location=.*|uic_location=%{_bindir}/uic-qt5|;
-	' $RPM_BUILD_ROOT%{_pkgconfigdir}/*.pc
+# kill unnecessary -L%{_libdir} from *.la, *.prl, *.pc
+%{__sed} -i -e "s,-L%{_libdir} \?,,g" \
+	$RPM_BUILD_ROOT%{_libdir}/*.{la,prl} \
+	$RPM_BUILD_ROOT%{_pkgconfigdir}/*.pc
 
-# libQtWebKit.la contains '-ljscore' and '-lwebcore', they come
-# from src/3rdparty/webkit/{JavaScriptCore,WebCore}} but those libs aren't installed
-#%{__sed} -i -e "s,-lwebcore,,g;s,-ljscore,,g;" $RPM_BUILD_ROOT%{_libdir}/libQtWebKit.la
+# useless symlinks
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libQt5*.so.5.?
+# actually drop *.la, follow policy of not packaging them when *.pc exist
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libQt5*.la
 
 # install tools
-install bin/findtr	$RPM_BUILD_ROOT%{_qtdir}/bin
-
+install bin/findtr	$RPM_BUILD_ROOT%{qt5dir}/bin
+# symlinks in system bin dir
 cd $RPM_BUILD_ROOT%{_bindir}
-#ln -sf ../%{_lib}/qt5/bin/assistant assistant-qt5
-#ln -sf ../%{_lib}/qt5/bin/designer designer-qt5
 ln -sf ../%{_lib}/qt5/bin/findtr findtr-qt5
-#ln -sf ../%{_lib}/qt5/bin/linguist linguist-qt5
-#ln -sf ../%{_lib}/qt5/bin/lrelease lrelease-qt5
-#ln -sf ../%{_lib}/qt5/bin/lupdate lupdate-qt5
 ln -sf ../%{_lib}/qt5/bin/moc moc-qt5
 ln -sf ../%{_lib}/qt5/bin/qmake qmake-qt5
-#ln -sf ../%{_lib}/qt5/bin/qtconfig qtconfig-qt5
 ln -sf ../%{_lib}/qt5/bin/uic uic-qt5
 ln -sf ../%{_lib}/qt5/bin/rcc rcc-qt5
-#ln -sf ../%{_lib}/qt5/bin/pixeltool .
-#ln -sf ../%{_lib}/qt5/bin/qcollectiongenerator .
 ln -sf ../%{_lib}/qt5/bin/qdbuscpp2xml qdbuscpp2xml-qt5
 ln -sf ../%{_lib}/qt5/bin/qdbusxml2cpp qdbusxml2cpp-qt5
 ln -sf ../%{_lib}/qt5/bin/qdoc qdoc-qt5
-#ln -sf ../%{_lib}/qt5/bin/qhelpconverter .
-#ln -sf ../%{_lib}/qt5/bin/qhelpgenerator .
-#ln -sf ../%{_lib}/qt5/bin/qmlviewer .
-#ln -sf ../%{_lib}/qt5/bin/qmlplugindump .
-#ln -sf ../%{_lib}/qt5/bin/qttracereplay .
-#ln -sf ../%{_lib}/qt5/bin/qvfb .
-#ln -sf ../%{_lib}/qt5/bin/xmlpatternsvalidator .
 cd -
 
 # Prepare some files list
@@ -395,43 +403,108 @@ done
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post		-p /sbin/ldconfig
-%postun		-p /sbin/ldconfig
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Concurrent.so.?
-%attr(755,root,root) %{_libdir}/libQt5Concurrent.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Core.so.?
-%attr(755,root,root) %{_libdir}/libQt5Core.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5DBus.so.?
-%attr(755,root,root) %{_libdir}/libQt5DBus.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Gui.so.?
-%attr(755,root,root) %{_libdir}/libQt5Gui.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Network.so.?
-%attr(755,root,root) %{_libdir}/libQt5Network.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5OpenGL.so.?
-%attr(755,root,root) %{_libdir}/libQt5OpenGL.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5PrintSupport.so.?
-%attr(755,root,root) %{_libdir}/libQt5PrintSupport.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Sql.so.?
-%attr(755,root,root) %{_libdir}/libQt5Sql.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Test.so.?
-%attr(755,root,root) %{_libdir}/libQt5Test.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Widgets.so.?
-%attr(755,root,root) %{_libdir}/libQt5Widgets.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Xml.so.?
-%attr(755,root,root) %{_libdir}/libQt5Xml.so.*.*
-%{_libdir}/libQt5Bootstrap.a
-%{_libdir}/libQt5OpenGLExtensions.a
-%{_libdir}/libQt5PlatformSupport.a
+%attr(755,root,root) %{_libdir}/libQt5Concurrent.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Concurrent.so.5
+%attr(755,root,root) %{_libdir}/libQt5Core.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Core.so.5
+%attr(755,root,root) %{_libdir}/libQt5DBus.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5DBus.so.5
+%attr(755,root,root) %{_libdir}/libQt5Gui.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Gui.so.5
+%attr(755,root,root) %{_libdir}/libQt5Network.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Network.so.5
+%attr(755,root,root) %{_libdir}/libQt5OpenGL.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5OpenGL.so.5
+%attr(755,root,root) %{_libdir}/libQt5PrintSupport.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5PrintSupport.so.5
+%attr(755,root,root) %{_libdir}/libQt5Sql.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Sql.so.5
+%attr(755,root,root) %{_libdir}/libQt5Test.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Test.so.5
+%attr(755,root,root) %{_libdir}/libQt5Widgets.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Widgets.so.5
+%attr(755,root,root) %{_libdir}/libQt5Xml.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Xml.so.5
 
 %dir /etc/qt5
-%dir %{_qtdir}
-%dir %{_qtdir}/bin
-%attr(755,root,root) %{_qtdir}/bin/*
-%attr(755,root,root) %{_qtdir}/plugins
+%dir %{qt5dir}
+%dir %{qt5dir}/bin
+%dir %{qt5dir}/plugins
+%dir %{qt5dir}/plugins/accessible
+%attr(755,root,root) %{qt5dir}/plugins/accessible/libqtaccessiblewidgets.so
+%dir %{qt5dir}/plugins/bearer
+%attr(755,root,root) %{qt5dir}/plugins/bearer/libqconnmanbearer.so
+%attr(755,root,root) %{qt5dir}/plugins/bearer/libqgenericbearer.so
+%attr(755,root,root) %{qt5dir}/plugins/bearer/libqnmbearer.so
+%dir %{qt5dir}/plugins/generic
+%attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevkeyboardplugin.so
+%attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevmouseplugin.so
+%attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevtabletplugin.so
+%attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevtouchplugin.so
+%if %{with tslib}
+%attr(755,root,root) %{qt5dir}/plugins/generic/libqtslibplugin.so
+%endif
+%dir %{qt5dir}/plugins/imageformats
+%attr(755,root,root) %{qt5dir}/plugins/imageformats/libqgif.so
+%attr(755,root,root) %{qt5dir}/plugins/imageformats/libqico.so
+%attr(755,root,root) %{qt5dir}/plugins/imageformats/libqjpeg.so
+%dir %{qt5dir}/plugins/platforminputcontexts
+%attr(755,root,root) %{qt5dir}/plugins/platforminputcontexts/libcomposeplatforminputcontextplugin.so
+%attr(755,root,root) %{qt5dir}/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so
+%dir %{qt5dir}/plugins/platforms
+%if %{with directfb}
+%attr(755,root,root) %{qt5dir}/plugins/platforms/libqdirectfb.so
+%endif
+# -kms, requires GLESv2 instead of GL
+#%attr(755,root,root) %{qt5dir}/plugins/platforms/libqkms.so
+# -eglfs, requires GLESv2 instead of GL
+#%attr(755,root,root) %{qt5dir}/plugins/platforms/libqeglfs.so
+#%attr(755,root,root) %{qt5dir}/plugins/platforms/libqminimalegl.so
+%attr(755,root,root) %{qt5dir}/plugins/platforms/libqlinuxfb.so
+%attr(755,root,root) %{qt5dir}/plugins/platforms/libqminimal.so
+%attr(755,root,root) %{qt5dir}/plugins/platforms/libqoffscreen.so
+%attr(755,root,root) %{qt5dir}/plugins/platforms/libqxcb.so
+%dir %{qt5dir}/plugins/platformthemes
+%if %{with gtk}
+%attr(755,root,root) %{qt5dir}/plugins/platformthemes/libqgtk2.so
+%endif
+%dir %{qt5dir}/plugins/printsupport
+%if %{with cups}
+%attr(755,root,root) %{qt5dir}/plugins/printsupport/libcupsprintersupport.so
+%endif
+%dir %{qt5dir}/plugins/sqldrivers
+%if %{with db2}
+%attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqldb2.so
+%endif
+%if %{with ibase}
+%attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlibase.so
+%endif
+%if %{with sqlite3}
+%attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlite.so
+%endif
+%if %{with sqlite2}
+%attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlite2.so
+%endif
+%if %{with mysql}
+%attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlmysql.so
+%endif
+%if %{with oracle}
+%attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqloci.so
+%endif
+%if %{with odbc}
+%attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlodbc.so
+%endif
+%if %{with pgsql}
+%attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlpsql.so
+%endif
+%if %{with freetds}
+%attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqltds.so
+%endif
 
 %files devel
 %defattr(644,root,root,755)
@@ -446,39 +519,56 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libQt5Test.so
 %attr(755,root,root) %{_libdir}/libQt5Widgets.so
 %attr(755,root,root) %{_libdir}/libQt5Xml.so
+# static-inly
+%{_libdir}/libQt5Bootstrap.a
+%{_libdir}/libQt5OpenGLExtensions.a
+%{_libdir}/libQt5PlatformSupport.a
 
-%{_libdir}/libQt5Concurrent.la
-%{_libdir}/libQt5Core.la
-%{_libdir}/libQt5DBus.la
-%{_libdir}/libQt5Gui.la
-%{_libdir}/libQt5Network.la
-%{_libdir}/libQt5OpenGL.la
-%{_libdir}/libQt5PrintSupport.la
-%{_libdir}/libQt5Sql.la
-%{_libdir}/libQt5Test.la
-%{_libdir}/libQt5Widgets.la
-%{_libdir}/libQt5Xml.la
-
+%{_libdir}/libQt5Bootstrap.prl
 %{_libdir}/libQt5Concurrent.prl
 %{_libdir}/libQt5Core.prl
 %{_libdir}/libQt5DBus.prl
 %{_libdir}/libQt5Gui.prl
 %{_libdir}/libQt5Network.prl
 %{_libdir}/libQt5OpenGL.prl
+%{_libdir}/libQt5OpenGLExtensions.prl
+%{_libdir}/libQt5PlatformSupport.prl
 %{_libdir}/libQt5PrintSupport.prl
 %{_libdir}/libQt5Sql.prl
 %{_libdir}/libQt5Test.prl
 %{_libdir}/libQt5Widgets.prl
 %{_libdir}/libQt5Xml.prl
 
-%{_libdir}/libQt5Bootstrap.la
-%{_libdir}/libQt5Bootstrap.prl
-%{_libdir}/libQt5OpenGLExtensions.la
-%{_libdir}/libQt5OpenGLExtensions.prl
-%{_libdir}/libQt5PlatformSupport.la
-%{_libdir}/libQt5PlatformSupport.prl
+%dir %{_includedir}/qt5
+%{_includedir}/qt5/QtConcurrent
+%{_includedir}/qt5/QtCore
+%{_includedir}/qt5/QtDBus
+%{_includedir}/qt5/QtGui
+%{_includedir}/qt5/QtNetwork
+%{_includedir}/qt5/QtOpenGL
+%{_includedir}/qt5/QtOpenGLExtensions
+%{_includedir}/qt5/QtPlatformSupport
+%{_includedir}/qt5/QtPrintSupport
+%{_includedir}/qt5/QtSql
+%{_includedir}/qt5/QtTest
+%{_includedir}/qt5/QtWidgets
+%{_includedir}/qt5/QtXml
 
-%{_includedir}/qt5
+%{_pkgconfigdir}/Qt5Bootstrap.pc
+%{_pkgconfigdir}/Qt5Concurrent.pc
+%{_pkgconfigdir}/Qt5Core.pc
+%{_pkgconfigdir}/Qt5DBus.pc
+%{_pkgconfigdir}/Qt5Gui.pc
+%{_pkgconfigdir}/Qt5Network.pc
+%{_pkgconfigdir}/Qt5OpenGL.pc
+%{_pkgconfigdir}/Qt5OpenGLExtensions.pc
+%{_pkgconfigdir}/Qt5PlatformSupport.pc
+%{_pkgconfigdir}/Qt5PrintSupport.pc
+%{_pkgconfigdir}/Qt5Sql.pc
+%{_pkgconfigdir}/Qt5Test.pc
+%{_pkgconfigdir}/Qt5Widgets.pc
+%{_pkgconfigdir}/Qt5Xml.pc
+
 %{_libdir}/cmake/Qt5
 %{_libdir}/cmake/Qt5Concurrent
 %{_libdir}/cmake/Qt5Core
@@ -492,11 +582,33 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/Qt5Test
 %{_libdir}/cmake/Qt5Widgets
 %{_libdir}/cmake/Qt5Xml
-%{_pkgconfigdir}/*.pc
-%{_qtdir}/mkspecs
 
 %files doc
 %defattr(644,root,root,755)
 %{_docdir}/qt5-doc
 
 %files examples -f examples.files
+
+%files -n qt5-build
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/findtr-qt5
+%attr(755,root,root) %{_bindir}/moc-qt5
+%attr(755,root,root) %{_bindir}/qdbuscpp2xml-qt5
+%attr(755,root,root) %{_bindir}/qdbusxml2cpp-qt5
+%attr(755,root,root) %{_bindir}/qdoc-qt5
+%attr(755,root,root) %{_bindir}/rcc-qt5
+%attr(755,root,root) %{_bindir}/uic-qt5
+%attr(755,root,root) %{qt5dir}/bin/findtr
+%attr(755,root,root) %{qt5dir}/bin/moc
+%attr(755,root,root) %{qt5dir}/bin/qdbuscpp2xml
+%attr(755,root,root) %{qt5dir}/bin/qdbusxml2cpp
+%attr(755,root,root) %{qt5dir}/bin/qdoc
+%attr(755,root,root) %{qt5dir}/bin/rcc
+%attr(755,root,root) %{qt5dir}/bin/syncqt.pl
+%attr(755,root,root) %{qt5dir}/bin/uic
+
+%files -n qt5-qmake
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/qmake-qt5
+%attr(755,root,root) %{qt5dir}/bin/qmake
+%{qt5dir}/mkspecs
