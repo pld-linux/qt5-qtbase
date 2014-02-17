@@ -435,12 +435,15 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{qt5dir}
 %dir %{qt5dir}/bin
 %dir %{qt5dir}/plugins
+# loaded from src/gui/accessible/qaccessible.cpp
 %dir %{qt5dir}/plugins/accessible
 %attr(755,root,root) %{qt5dir}/plugins/accessible/libqtaccessiblewidgets.so
+# loaded from src/network/bearer/qnetworkconfigmanager_p.cpp
 %dir %{qt5dir}/plugins/bearer
 %attr(755,root,root) %{qt5dir}/plugins/bearer/libqconnmanbearer.so
 %attr(755,root,root) %{qt5dir}/plugins/bearer/libqgenericbearer.so
 %attr(755,root,root) %{qt5dir}/plugins/bearer/libqnmbearer.so
+# loaded from src/gui/kernel/qgenericpluginfactory.cpp
 %dir %{qt5dir}/plugins/generic
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevkeyboardplugin.so
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevmouseplugin.so
@@ -449,13 +452,16 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with tslib}
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqtslibplugin.so
 %endif
+# loaded from src/gui/image/qimage{reader,writer}.cpp
 %dir %{qt5dir}/plugins/imageformats
 %attr(755,root,root) %{qt5dir}/plugins/imageformats/libqgif.so
 %attr(755,root,root) %{qt5dir}/plugins/imageformats/libqico.so
 %attr(755,root,root) %{qt5dir}/plugins/imageformats/libqjpeg.so
+# loaded from src/gui/kernel/qplatforminputcontextfactory.cpp
 %dir %{qt5dir}/plugins/platforminputcontexts
 %attr(755,root,root) %{qt5dir}/plugins/platforminputcontexts/libcomposeplatforminputcontextplugin.so
 %attr(755,root,root) %{qt5dir}/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so
+# loaded from src/gui/kernel/qplatformintegrationfactory.cpp
 %dir %{qt5dir}/plugins/platforms
 %if %{with directfb}
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqdirectfb.so
@@ -469,14 +475,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqminimal.so
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqoffscreen.so
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqxcb.so
+# loaded from src/gui/kernel/qplatformthemefactory.cpp
 %dir %{qt5dir}/plugins/platformthemes
 %if %{with gtk}
 %attr(755,root,root) %{qt5dir}/plugins/platformthemes/libqgtk2.so
 %endif
+# loaded from src/printsupport/kernel/qplatformprintplugin.cpp
 %dir %{qt5dir}/plugins/printsupport
 %if %{with cups}
 %attr(755,root,root) %{qt5dir}/plugins/printsupport/libcupsprintersupport.so
 %endif
+# loaded from src/sql/kernel/qsqldatabase.cpp
 %dir %{qt5dir}/plugins/sqldrivers
 %if %{with db2}
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqldb2.so
