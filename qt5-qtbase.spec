@@ -1,5 +1,4 @@
 # TODO:
-# - libraries split (per-library or at least base/gui parts)
 # - separate some plugins (SQL, DirectFB...)
 
 # Conditional build:
@@ -84,6 +83,7 @@ BuildRequires:	libpng-devel >= 2:1.0.8
 BuildRequires:	libstdc++-devel
 BuildRequires:	libxcb-devel >= 1.5
 %{?with_mysql:BuildRequires:	mysql-devel}
+BuildRequires:	openssl-devel
 BuildRequires:	pcre16-devel >= 8.30
 BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-backend-devel}
@@ -130,17 +130,380 @@ Qt to programowy toolkit do tworzenia aplikacji.
 Ten pakiet zawiera podstawowe komponenty, takie jak Core, Network czy
 Xml.
 
-%package devel
-Summary:	The Qt5 application framework - development files
-Summary(pl.UTF-8):	Szkielet aplikacji Qt5 - pliki programistyczne
+%package -n Qt5Bootstrap-devel
+Summary:	Qt5 Bootstrap library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 Bootstrap - pliki programistyczne
+Group:		Development/Libraries
+# for (subset of) QtCore headers
+Requires:	QtCore-devel = %{version}-%{release}
+Requires:	zlib-devel
+
+%description -n Qt5Bootstrap-devel
+Qt5 Bootstrap library (minimal part of Qt5 Core) - development files.
+
+%description -n Qt5Bootstrap-devel -l pl.UTF-8
+Biblioteka Qt5 Bootstrap (minimalna część Qt5 Core) - pliki
+programistyczne.
+
+%package -n Qt5Concurrent
+Summary:	Qt5 Concurrent library
+Summary(pl.UTF-8):	Biblioteka Qt5 Concurrent
+Group:		Libraries
+Requires:	Qt5Core = %{version}-%{release}
+
+%description -n Qt5Concurrent
+The Qt5 Concurrent library provides high-level APIs that make it
+possible to write multi-threaded programs without using low-level
+threading primitives.
+
+%description -n Qt5Concurrent -l pl.UTF-8
+Biblioteka Qt5 Concurrent udostępnia wysokopoziomowe API umożliwiające
+pisanie wielowątkowych programów bez wykorzystywania niskopoziomowych
+elementów związanych z wątkami.
+
+%package -n Qt5Concurrent-devel
+Summary:	Qt5 Concurrent library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 Concurrent - pliki programistyczne
+Group:		Development/Libraries
+Requires:	Qt5Concurrent = %{version}-%{release}
+Requires:	Qt5Core-devel = %{version}-%{release}
+
+%description -n Qt5Concurrent-devel
+Header files for Qt5 Concurrent library.
+
+%description -n Qt5Concurrent-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki Qt5 Concurrent.
+
+%package -n Qt5Core
+Summary:	Qt5 Core library
+Summary(pl.UTF-8):	Biblioteka Qt5 Core
+Group:		Libraries
+Requires:	pcre16 >= 8.30
+Obsoletes:	qt5-qtbase
+
+%description -n Qt5Core
+Qt5 Core library provides core non-GUI functionality.
+
+%description -n Qt5Core -l pl.UTF-8
+Biblioteka Qt5 Core zawiera podstawową funkcjonalność nie związaną z
+graficznym interfejsem użytkownika (GUI).
+
+%package -n Qt5Core-devel
+Summary:	Qt5 Core library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 Core - pliki programistyczne
+Group:		Development/Libraries
+Requires:	Qt5Core = %{version}-%{release}
+Requires:	glib2-devel >= 2.0
+Requires:	libicu-devel
+Requires:	pcre16-devel >= 8.30
+Requires:	zlib-devel
+Obsoletes:	qt5-qtbase-devel
+
+%description -n Qt5Core-devel
+Header files for Qt5 Core library.
+
+%description -n Qt5Core-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki Qt5 Core.
+
+%package -n Qt5DBus
+Summary:	Qt5 DBus library
+Summary(pl.UTF-8):	Biblioteka Qt5 DBus
+Group:		Libraries
+Requires:	Qt5Core = %{version}-%{release}
+Requires:	dbus-libs >= 1.2
+
+%description -n Qt5DBus
+The Qt5 D-Bus library is a Unix-only library that you can use to
+perform Inter-Process Communication using the D-Bus protocol.
+
+%description -n Qt5DBus -l pl.UTF-8
+Biblioteka Qt5 D-Bus to wyłącznie uniksowa biblioteka pozwalająca na
+komunikację międzyprocesową (IPC) przy użyciu protokołu D-Bus.
+
+%package -n Qt5DBus-devel
+Summary:	Qt5 DBus library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 DBus - pliki programistyczne
+Group:		Development/Libraries
+Requires:	Qt5Core-devel = %{version}-%{release}
+Requires:	Qt5DBus = %{version}-%{release}
+Requires:	dbus-devel >= 1.2
+
+%description -n Qt5DBus-devel
+Header files for Qt5 DBus library.
+
+%description -n Qt5DBus-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki Qt5 DBus.
+
+%package -n Qt5Gui
+Summary:	Qt5 Gui library
+Summary(pl.UTF-8):	Biblioteka Qt5 Gui
+Group:		Libraries
+Requires:	Qt5Core = %{version}-%{release}
+
+%description -n Qt5Gui
+The Qt5 GUI library provides the basic enablers for graphical
+applications written with Qt 5.
+
+%description -n Qt5Gui -l pl
+Biblioteka Qt5 Gui udostępnia podstawową funkcjonalność dla
+graficznych aplikacji napisanych z użyciem Qt 5.
+
+%package -n Qt5Gui-devel
+Summary:	Qt5 Gui library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 Gui - pliki programistyczne
+Group:		Development/Libraries
+Requires:	OpenGL-devel
+Requires:	Qt5Core-devel = %{version}-%{release}
+Requires:	Qt5Gui = %{version}-%{release}
+Requires:	libpng-devel
+
+%description -n Qt5Gui-devel
+Header files for Qt5 Gui library.
+
+%description -n Qt5Gui-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki Qt5 Gui.
+
+%package -n Qt5Network
+Summary:	Qt5 Network library
+Summary(pl.UTF-8):	Biblioteka Qt5 Network
+Group:		Libraries
+Requires:	Qt5Core = %{version}-%{release}
+
+%description -n Qt5Network
+The Qt5 Network library provides classes to make network programming
+easier and portable.
+
+%description -n Qt5Network -l pl.UTF-8
+Biblioteka Qt5 Network udostępnia klasy czyniące programowanie
+sieciowe łatwiejszym i przenośnym.
+
+%package -n Qt5Network-devel
+Summary:	Qt5 Network library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 Network - pliki programistyczne
+Group:		Development/Libraries
+Requires:	Qt5Core-devel = %{version}-%{release}
+Requires:	Qt5Network = %{version}-%{release}
+Requires:	openssl-devel
+
+%description -n Qt5Network-devel
+Header files for Qt5 Network library.
+
+%description -n Qt5Network-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki Qt5 Network.
+
+%package -n Qt5OpenGL
+Summary:	Qt5 OpenGL library
+Summary(pl.UTF-8):	Biblioteka Qt5 OpenGL
+Group:		Libraries
+Requires:	Qt5Core = %{version}-%{release}
+Requires:	Qt5Gui = %{version}-%{release}
+Requires:	Qt5Widgets = %{version}-%{release}
+
+%description -n Qt5OpenGL
+The Qt5 OpenGL library offers classes that make it easy to use OpenGL
+in Qt 5 applications.
+
+%description -n Qt5OpenGL -l pl.UTF-8
+Biblioteka Qt5 OpenGL oferuje klasy ułatwiające wykorzystywanie
+OpenGL-a w aplikacjach Qt 5.
+
+%package -n Qt5OpenGL-devel
+Summary:	Qt5 OpenGL library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 OpenGL - pliki programistyczne
+Group:		Development/Libraries
+Requires:	OpenGL-devel
+Requires:	Qt5Core-devel = %{version}-%{release}
+Requires:	Qt5Gui-devel = %{version}-%{release}
+Requires:	Qt5OpenGL = %{version}-%{release}
+Requires:	Qt5Widgets-devel = %{version}-%{release}
+
+%description -n Qt5OpenGL-devel
+Header files for Qt5 OpenGL library.
+
+%description -n Qt5OpenGL-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki Qt5 OpenGL.
+
+%package -n Qt5OpenGLExtensions-devel
+Summary:	Qt5 OpenGLExtensions library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 OpenGLExtensions - pliki programistyczne
+Group:		Development/Libraries
+Requires:	OpenGL-devel
+Requires:	Qt5Core-devel = %{version}-%{release}
+Requires:	Qt5Gui-devel = %{version}-%{release}
+
+%description -n Qt5OpenGLExtensions-devel
+Qt5 OpenGLExtensions library (development files).
+
+%description -n Qt5OpenGLExtensions-devel -l pl.UTF-8
+Biblioteka Qt5 OpenGL Extensions - obsługa rozszerzeń OpenGL (pliki
+programistyczne).
+
+%package -n Qt5PlatformSupport-devel
+Summary:	Qt5 PlatformSupport library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 PlatformSupport - pliki programistyczne
 Group:		X11/Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	OpenGL-devel
+Requires:	Qt5Core-devel = %{version}-%{release}
+Requires:	Qt5DBus-devel = %{version}-%{release}
+Requires:	Qt5Gui-devel = %{version}-%{release}
+Requires:	fontconfig-devel
+Requires:	freetype-devel
+Requires:	xorg-lib-libX11-devel
+Requires:	xorg-lib-libXrender-devel
+Requires:	xorg-lib-libXext-devel
+Requires:	udev-devel
 
-%description devel
-The Qt5 application framework - development files.
+%description -n Qt5PlatformSupport-devel
+Qt5 PlatformSupport library (development files).
 
-%description devel -l pl.UTF-8
-Szkielet aplikacji Qt5 - pliki programistyczne.
+%description -n Qt5OpenGLExtensions-devel -l pl.UTF-8
+Biblioteka Qt5 PlatformSupport - obsługa platformy (pliki
+programistyczne).
+
+%package -n Qt5PrintSupport
+Summary:	Qt5 PrintSupport library
+Summary(pl.UTF-8):	Biblioteka Qt5 PrintSupport
+Group:		Libraries
+Requires:	Qt5Core = %{version}-%{release}
+Requires:	Qt5Gui = %{version}-%{release}
+Requires:	Qt5Widgets = %{version}-%{release}
+
+%description -n Qt5PrintSupport
+The Qt5 PrintSupport library provides classes to make printing easier
+and portable.
+
+%description -n Qt5PrintSupport -l pl.UTF-8
+Biblioteka Qt5 PrintSupport udostępnia klasy czyniące drukowanie
+łatwiejszym i bardziej przenośnym.
+
+%package -n Qt5PrintSupport-devel
+Summary:	Qt5 PrintSupport library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 PrintSupport - pliki programistyczne
+Group:		Development/Libraries
+Requires:	OpenGL-devel
+Requires:	Qt5Core-devel = %{version}-%{release}
+Requires:	Qt5Gui-devel = %{version}-%{release}
+Requires:	Qt5PrintSupport = %{version}-%{release}
+Requires:	Qt5Widgets-devel = %{version}-%{release}
+
+%description -n Qt5PrintSupport-devel
+Header files for Qt5 PrintSupport library.
+
+%description -n Qt5PrintSupport-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki Qt5 PrintSupport.
+
+%package -n Qt5Sql
+Summary:	Qt5 Sql library
+Summary(pl.UTF-8):	Biblioteka Qt5 Sql
+Group:		Libraries
+Requires:	Qt5Core = %{version}-%{release}
+
+%description -n Qt5Sql
+The Qt5 Sql library provides a driver layer, SQL API layer, and a user
+interface layer for SQL databases.
+
+%description -n Qt5Sql -l pl.UTF-8
+Biblioteka Qt5 Sql udostępnia warstwę sterowników, warstwę API SQL
+oraz warstwę interfejsu użytkownika dla baz danych SQL.
+
+%package -n Qt5Sql-devel
+Summary:	Qt5 Sql library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 Sql - pliki programistyczne
+Group:		Development/Libraries
+Requires:	Qt5Core-devel = %{version}-%{release}
+Requires:	Qt5Sql = %{version}-%{release}
+
+%description -n Qt5Sql-devel
+Header files for Qt5 Sql library.
+
+%description -n Qt5Sql-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki Qt5 Sql.
+
+%package -n Qt5Test
+Summary:	Qt5 Test library
+Summary(pl.UTF-8):	Biblioteka Qt5 Test
+Group:		Libraries
+Requires:	Qt5Core = %{version}-%{release}
+
+%description -n Qt5Test
+The Qt5 Test library provides classes for unit testing Qt 5
+applications and libraries.
+
+%description -n Qt5Test -l pl.UTF-8
+Biblioteka Qt5 Test udostępnia klasy do testów jednostkowych aplikacji
+oraz bibliotek Qt 5.
+
+%package -n Qt5Test-devel
+Summary:	Qt5 Test library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 Test - pliki programistyczne
+Group:		Development/Libraries
+Requires:	Qt5Core-devel = %{version}-%{release}
+Requires:	Qt5Test = %{version}-%{release}
+
+%description -n Qt5Test-devel
+Header files for Qt5 Test library.
+
+%description -n Qt5Test-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki Qt5 Test.
+
+%package -n Qt5Widgets
+Summary:	Qt5 Widgets library
+Summary(pl.UTF-8):	Biblioteka Qt5 Widgets
+Group:		X11/Libraries
+Requires:	Qt5Core = %{version}-%{release}
+Requires:	Qt5Gui = %{version}-%{release}
+
+%description -n Qt5Widgets
+The Qt5 Widgets library extends Qt 5 GUI with C++ widget
+functionality.
+
+%description -n Qt5Widgets -l pl.UTF-8
+Biblioteka Qt5 Widgets rozszerza graficzny interfejs Qt 5 o
+funkcjonalność widgetów C++.
+
+%package -n Qt5Widgets-devel
+Summary:	Qt5 Widgets library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 Widgets - pliki programistyczne
+Group:		X11/Development/Libraries
+Requires:	OpenGL-devel
+Requires:	Qt5Core-devel = %{version}-%{release}
+Requires:	Qt5Gui-devel = %{version}-%{release}
+Requires:	Qt5Widgets = %{version}-%{release}
+Requires:	xorg-lib-libX11-devel
+Requires:	xorg-lib-libXext-devel
+
+%description -n Qt5Widgets-devel
+Header files for Qt5 Widgets library.
+
+%description -n Qt5Widgets-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki Qt5 Widgets.
+
+%package -n Qt5Xml
+Summary:	Qt5 Xml library
+Summary(pl.UTF-8):	Biblioteka Qt5 Xml
+Group:		Libraries
+Requires:	Qt5Core = %{version}-%{release}
+
+%description -n Qt5Xml
+The Qt5 Xml library provides C++ implementations of the SAX and DOM
+standards for XML.
+
+%description -n Qt5Xml -l pl.UTF-8
+Biblioteka Qt5 Xml udostępnia implementację w C++ standardów SAX oraz
+DOM dla formatu XML.
+
+%package -n Qt5Xml-devel
+Summary:	Qt5 Xml library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 Xml - pliki programistyczne
+Group:		Development/Libraries
+Requires:	Qt5Core-devel = %{version}-%{release}
+Requires:	Qt5Xml = %{version}-%{release}
+
+%description -n Qt5Xml-devel
+Header files for Qt5 Xml library.
+
+%description -n Qt5Xml-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki Qt5 Xml.
 
 %package doc
 Summary:	Documentation for Qt5 application framework base components
@@ -200,7 +563,7 @@ Generator plików makefile dla aplikacji Qt5.
 %prep
 %setup -q -n %{orgname}-opensource-src-%{version}
 
-%{__sed} -i -e 's,usr/X11R6/,usr/g,' mkspecs/linux-g++-64/qmake.conf
+%{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
 # change QMAKE FLAGS to build
 %{__sed} -i -e '
@@ -403,46 +766,98 @@ done
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post	-p /sbin/ldconfig
-%postun	-p /sbin/ldconfig
+%post	-n Qt5Concurrent -p /sbin/ldconfig
+%postun	-n Qt5Concurrent -p /sbin/ldconfig
 
-%files
+%post	-n Qt5Core -p /sbin/ldconfig
+%postun	-n Qt5Core -p /sbin/ldconfig
+
+%post	-n Qt5DBus -p /sbin/ldconfig
+%postun	-n Qt5DBus -p /sbin/ldconfig
+
+%post	-n Qt5Gui -p /sbin/ldconfig
+%postun	-n Qt5Gui -p /sbin/ldconfig
+
+%post	-n Qt5Network -p /sbin/ldconfig
+%postun	-n Qt5Network -p /sbin/ldconfig
+
+%post	-n Qt5OpenGL -p /sbin/ldconfig
+%postun	-n Qt5OpenGL -p /sbin/ldconfig
+
+%post	-n Qt5PrintSupport -p /sbin/ldconfig
+%postun	-n Qt5PrintSupport -p /sbin/ldconfig
+
+%post	-n Qt5Sql -p /sbin/ldconfig
+%postun	-n Qt5Sql -p /sbin/ldconfig
+
+%post	-n Qt5Test -p /sbin/ldconfig
+%postun	-n Qt5Test -p /sbin/ldconfig
+
+%post	-n Qt5Widgets -p /sbin/ldconfig
+%postun	-n Qt5Widgets -p /sbin/ldconfig
+
+%post	-n Qt5Xml -p /sbin/ldconfig
+%postun	-n Qt5Xml -p /sbin/ldconfig
+
+%files -n Qt5Bootstrap-devel
+%defattr(644,root,root,755)
+# static-only
+%{_libdir}/libQt5Bootstrap.a
+%{_libdir}/libQt5Bootstrap.prl
+%{_pkgconfigdir}/Qt5Bootstrap.pc
+
+%files -n Qt5Concurrent
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libQt5Concurrent.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libQt5Concurrent.so.5
+
+%files -n Qt5Concurrent-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5Concurrent.so
+%{_libdir}/libQt5Concurrent.prl
+%{_includedir}/qt5/QtConcurrent
+%{_pkgconfigdir}/Qt5Concurrent.pc
+%{_libdir}/cmake/Qt5Concurrent
+
+%files -n Qt5Core
+%defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libQt5Core.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libQt5Core.so.5
-%attr(755,root,root) %{_libdir}/libQt5DBus.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5DBus.so.5
-%attr(755,root,root) %{_libdir}/libQt5Gui.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Gui.so.5
-%attr(755,root,root) %{_libdir}/libQt5Network.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Network.so.5
-%attr(755,root,root) %{_libdir}/libQt5OpenGL.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5OpenGL.so.5
-%attr(755,root,root) %{_libdir}/libQt5PrintSupport.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5PrintSupport.so.5
-%attr(755,root,root) %{_libdir}/libQt5Sql.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Sql.so.5
-%attr(755,root,root) %{_libdir}/libQt5Test.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Test.so.5
-%attr(755,root,root) %{_libdir}/libQt5Widgets.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Widgets.so.5
-%attr(755,root,root) %{_libdir}/libQt5Xml.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5Xml.so.5
-
 %dir /etc/qt5
 %dir %{qt5dir}
 %dir %{qt5dir}/bin
 %dir %{qt5dir}/plugins
+
+%files -n Qt5Core-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5Core.so
+%{_libdir}/libQt5Core.prl
+%dir %{_includedir}/qt5
+%{_includedir}/qt5/QtCore
+%{_pkgconfigdir}/Qt5Core.pc
+%{_libdir}/cmake/Qt5
+%{_libdir}/cmake/Qt5Core
+
+%files -n Qt5DBus
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5DBus.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5DBus.so.5
+
+%files -n Qt5DBus-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5DBus.so
+%{_libdir}/libQt5DBus.prl
+%{_includedir}/qt5/QtDBus
+%{_pkgconfigdir}/Qt5DBus.pc
+%{_libdir}/cmake/Qt5DBus
+
+%files -n Qt5Gui
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5Gui.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Gui.so.5
 # loaded from src/gui/accessible/qaccessible.cpp
 %dir %{qt5dir}/plugins/accessible
 %attr(755,root,root) %{qt5dir}/plugins/accessible/libqtaccessiblewidgets.so
-# loaded from src/network/bearer/qnetworkconfigmanager_p.cpp
-%dir %{qt5dir}/plugins/bearer
-%attr(755,root,root) %{qt5dir}/plugins/bearer/libqconnmanbearer.so
-%attr(755,root,root) %{qt5dir}/plugins/bearer/libqgenericbearer.so
-%attr(755,root,root) %{qt5dir}/plugins/bearer/libqnmbearer.so
 # loaded from src/gui/kernel/qgenericpluginfactory.cpp
 %dir %{qt5dir}/plugins/generic
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevkeyboardplugin.so
@@ -480,11 +895,85 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with gtk}
 %attr(755,root,root) %{qt5dir}/plugins/platformthemes/libqgtk2.so
 %endif
+
+%files -n Qt5Gui-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5Gui.so
+%{_libdir}/libQt5Gui.prl
+%{_includedir}/qt5/QtGui
+%{_pkgconfigdir}/Qt5Gui.pc
+%{_libdir}/cmake/Qt5Gui
+
+%files -n Qt5Network
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5Network.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Network.so.5
+# loaded from src/network/bearer/qnetworkconfigmanager_p.cpp
+%dir %{qt5dir}/plugins/bearer
+%attr(755,root,root) %{qt5dir}/plugins/bearer/libqconnmanbearer.so
+%attr(755,root,root) %{qt5dir}/plugins/bearer/libqgenericbearer.so
+%attr(755,root,root) %{qt5dir}/plugins/bearer/libqnmbearer.so
+
+%files -n Qt5Network-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5Network.so
+%{_libdir}/libQt5Network.prl
+%{_includedir}/qt5/QtNetwork
+%{_pkgconfigdir}/Qt5Network.pc
+%{_libdir}/cmake/Qt5Network
+
+%files -n Qt5OpenGL
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5OpenGL.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5OpenGL.so.5
+
+%files -n Qt5OpenGL-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5OpenGL.so
+%{_libdir}/libQt5OpenGL.prl
+%{_includedir}/qt5/QtOpenGL
+%{_pkgconfigdir}/Qt5OpenGL.pc
+%{_libdir}/cmake/Qt5OpenGL
+
+%files -n Qt5OpenGLExtensions-devel
+%defattr(644,root,root,755)
+# static-only
+%{_libdir}/libQt5OpenGLExtensions.a
+%{_libdir}/libQt5OpenGLExtensions.prl
+%{_includedir}/qt5/QtOpenGLExtensions
+%{_pkgconfigdir}/Qt5OpenGLExtensions.pc
+%{_libdir}/cmake/Qt5OpenGLExtensions
+
+%files -n Qt5PlatformSupport-devel
+%defattr(644,root,root,755)
+# static-only
+%{_libdir}/libQt5PlatformSupport.a
+%{_libdir}/libQt5PlatformSupport.prl
+%{_includedir}/qt5/QtPlatformSupport
+%{_pkgconfigdir}/Qt5PlatformSupport.pc
+
+%files -n Qt5PrintSupport
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5PrintSupport.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5PrintSupport.so.5
 # loaded from src/printsupport/kernel/qplatformprintplugin.cpp
 %dir %{qt5dir}/plugins/printsupport
 %if %{with cups}
 %attr(755,root,root) %{qt5dir}/plugins/printsupport/libcupsprintersupport.so
 %endif
+
+%files -n Qt5PrintSupport-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5PrintSupport.so
+%{_libdir}/libQt5PrintSupport.prl
+%{_includedir}/qt5/QtPrintSupport
+%{_pkgconfigdir}/Qt5PrintSupport.pc
+%{_libdir}/cmake/Qt5PrintSupport
+
+%files -n Qt5Sql
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5Sql.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Sql.so.5
 # loaded from src/sql/kernel/qsqldatabase.cpp
 %dir %{qt5dir}/plugins/sqldrivers
 %if %{with db2}
@@ -515,81 +1004,51 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqltds.so
 %endif
 
-%files devel
+%files -n Qt5Sql-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libQt5Concurrent.so
-%attr(755,root,root) %{_libdir}/libQt5Core.so
-%attr(755,root,root) %{_libdir}/libQt5DBus.so
-%attr(755,root,root) %{_libdir}/libQt5Gui.so
-%attr(755,root,root) %{_libdir}/libQt5Network.so
-%attr(755,root,root) %{_libdir}/libQt5OpenGL.so
-%attr(755,root,root) %{_libdir}/libQt5PrintSupport.so
 %attr(755,root,root) %{_libdir}/libQt5Sql.so
-%attr(755,root,root) %{_libdir}/libQt5Test.so
-%attr(755,root,root) %{_libdir}/libQt5Widgets.so
-%attr(755,root,root) %{_libdir}/libQt5Xml.so
-# static-inly
-%{_libdir}/libQt5Bootstrap.a
-%{_libdir}/libQt5OpenGLExtensions.a
-%{_libdir}/libQt5PlatformSupport.a
-
-%{_libdir}/libQt5Bootstrap.prl
-%{_libdir}/libQt5Concurrent.prl
-%{_libdir}/libQt5Core.prl
-%{_libdir}/libQt5DBus.prl
-%{_libdir}/libQt5Gui.prl
-%{_libdir}/libQt5Network.prl
-%{_libdir}/libQt5OpenGL.prl
-%{_libdir}/libQt5OpenGLExtensions.prl
-%{_libdir}/libQt5PlatformSupport.prl
-%{_libdir}/libQt5PrintSupport.prl
 %{_libdir}/libQt5Sql.prl
-%{_libdir}/libQt5Test.prl
-%{_libdir}/libQt5Widgets.prl
-%{_libdir}/libQt5Xml.prl
-
-%dir %{_includedir}/qt5
-%{_includedir}/qt5/QtConcurrent
-%{_includedir}/qt5/QtCore
-%{_includedir}/qt5/QtDBus
-%{_includedir}/qt5/QtGui
-%{_includedir}/qt5/QtNetwork
-%{_includedir}/qt5/QtOpenGL
-%{_includedir}/qt5/QtOpenGLExtensions
-%{_includedir}/qt5/QtPlatformSupport
-%{_includedir}/qt5/QtPrintSupport
 %{_includedir}/qt5/QtSql
-%{_includedir}/qt5/QtTest
-%{_includedir}/qt5/QtWidgets
-%{_includedir}/qt5/QtXml
-
-%{_pkgconfigdir}/Qt5Bootstrap.pc
-%{_pkgconfigdir}/Qt5Concurrent.pc
-%{_pkgconfigdir}/Qt5Core.pc
-%{_pkgconfigdir}/Qt5DBus.pc
-%{_pkgconfigdir}/Qt5Gui.pc
-%{_pkgconfigdir}/Qt5Network.pc
-%{_pkgconfigdir}/Qt5OpenGL.pc
-%{_pkgconfigdir}/Qt5OpenGLExtensions.pc
-%{_pkgconfigdir}/Qt5PlatformSupport.pc
-%{_pkgconfigdir}/Qt5PrintSupport.pc
 %{_pkgconfigdir}/Qt5Sql.pc
-%{_pkgconfigdir}/Qt5Test.pc
-%{_pkgconfigdir}/Qt5Widgets.pc
-%{_pkgconfigdir}/Qt5Xml.pc
-
-%{_libdir}/cmake/Qt5
-%{_libdir}/cmake/Qt5Concurrent
-%{_libdir}/cmake/Qt5Core
-%{_libdir}/cmake/Qt5DBus
-%{_libdir}/cmake/Qt5Gui
-%{_libdir}/cmake/Qt5Network
-%{_libdir}/cmake/Qt5OpenGL
-%{_libdir}/cmake/Qt5OpenGLExtensions
-%{_libdir}/cmake/Qt5PrintSupport
 %{_libdir}/cmake/Qt5Sql
+
+%files -n Qt5Test
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5Test.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Test.so.5
+
+%files -n Qt5Test-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5Test.so
+%{_libdir}/libQt5Test.prl
+%{_includedir}/qt5/QtTest
+%{_pkgconfigdir}/Qt5Test.pc
 %{_libdir}/cmake/Qt5Test
+
+%files -n Qt5Widgets
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5Widgets.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Widgets.so.5
+
+%files -n Qt5Widgets-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5Widgets.so
+%{_libdir}/libQt5Widgets.prl
+%{_includedir}/qt5/QtWidgets
+%{_pkgconfigdir}/Qt5Widgets.pc
 %{_libdir}/cmake/Qt5Widgets
+
+%files -n Qt5Xml
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5Xml.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5Xml.so.5
+
+%files -n Qt5Xml-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5Xml.so
+%{_libdir}/libQt5Xml.prl
+%{_includedir}/qt5/QtXml
+%{_pkgconfigdir}/Qt5Xml.pc
 %{_libdir}/cmake/Qt5Xml
 
 %files doc
