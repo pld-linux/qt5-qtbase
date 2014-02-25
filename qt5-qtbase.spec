@@ -686,7 +686,6 @@ Pliki nagłówkowe biblioteki Qt5 Xml.
 Summary:	Documentation for Qt5 application framework base components
 Summary(pl.UTF-8):	Dokumentacja do podstawowych komponentów szkieletu aplikacji Qt5
 Group:		Documentation
-Requires:	%{name} = %{version}-%{release}
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
 %endif
@@ -715,7 +714,6 @@ Przykłady do podstawowych komponentów szkieletu aplikacji Qt5.
 Summary:	Qt5 build tools
 Summary(pl.UTF-8):	Narzędzia do budowania dla Qt4
 Group:		Development/Tools
-Requires:	%{name} = %{version}-%{release}
 
 %description -n qt5-build
 This package includes the Qt resource compiler (rcc), meta objects
