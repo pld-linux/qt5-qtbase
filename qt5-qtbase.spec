@@ -1,6 +1,5 @@
-# TODO:
-# - separate some plugins (SQL, DirectFB...)
-
+# TODO: separate more plugins? (think of qxcb when there are more commonly used platforms)
+#
 # Conditional build:
 %bcond_with	static_libs	# static libraries [incomplete support in .spec]
 # -- features
@@ -239,6 +238,10 @@ Summary:	Qt5 Gui library
 Summary(pl.UTF-8):	Biblioteka Qt5 Gui
 Group:		Libraries
 Requires:	Qt5Core = %{version}-%{release}
+# for:
+# - ibus platforminputcontext plugin
+# - qxcb platform plugin
+Requires:	Qt5DBus = %{version}-%{release}
 
 %description -n Qt5Gui
 The Qt5 GUI library provides the basic enablers for graphical
@@ -247,6 +250,66 @@ applications written with Qt 5.
 %description -n Qt5Gui -l pl
 Biblioteka Qt5 Gui udostępnia podstawową funkcjonalność dla
 graficznych aplikacji napisanych z użyciem Qt 5.
+
+%package -n Qt5Gui-generic-tslib
+Summary:	Qt5 Gui generic input plugin for TSlib (touchscreen panel events)
+Summary(pl.UTF-8):	Ogólna wtyczka wejścia Qt5 Gui z TSlib (zdarzeń z paneli dotykowych)
+Group:		Libraries
+Requires:	Qt5Gui = %{version}-%{release}
+
+%description -n Qt5Gui-generic-tslib
+Qt5 Gui generic input plugin for TSlib (touchscreen panel events).
+
+%description -n Qt5Gui-generic-tslib -l pl.UTF-8
+Ogólna wtyczka wejścia Qt5 Gui z TSlib (zdarzeń z paneli dotykowych).
+
+%package -n Qt5Gui-platform-directfb
+Summary:	Qt5 Gui platform plugin for DirectFB
+Summary(pl.UTF-8):	Wtyczka platformy Qt5 Gui dla DirectFB
+Group:		Libraries
+Requires:	Qt5Gui = %{version}-%{release}
+
+%description -n Qt5Gui-platform-directfb
+Qt5 Gui platform plugin for DirectFB.
+
+%description -n Qt5Gui-platform-directfb -l pl.UTF-8
+Wtyczka platformy Qt5 Gui dla DirectFB.
+
+%package -n Qt5Gui-platform-kms
+Summary:	Qt5 Gui platform plugin for KMS
+Summary(pl.UTF-8):	Wtyczka platformy Qt5 Gui dla KMS
+Group:		Libraries
+Requires:	Qt5Gui = %{version}-%{release}
+
+%description -n Qt5Gui-platform-kms
+Qt5 Gui platform plugin for KMS.
+
+%description -n Qt5Gui-platform-kms -l pl.UTF-8
+Wtyczka platformy Qt5 Gui dla KMS.
+
+%package -n Qt5Gui-platform-egl
+Summary:	Qt5 Gui platform plugins for EGL
+Summary(pl.UTF-8):	Wtyczki platform Qt5 Gui dla EGL
+Group:		Libraries
+Requires:	Qt5Gui = %{version}-%{release}
+
+%description -n Qt5Gui-platform-egl
+Qt5 Gui platform plugins for EGL.
+
+%description -n Qt5Gui-platform-egl -l pl.UTF-8
+Wtyczki platform Qt5 Gui dla EGL.
+
+%package -n Qt5Gui-platformtheme-gtk2
+Summary:	Qt5 Gui platform theme plugin for GTK+ 2.x
+Summary(pl.UTF-8):	Wtyczka motywów platform Qt5 Gui dla GTK+ 2.x
+Group:		Libraries
+Requires:	Qt5Gui = %{version}-%{release}
+
+%description -n Qt5Gui-platformtheme-gtk2
+Qt5 Gui platform theme plugin for GTK+ 2.x.
+
+%description -n Qt5Gui-platformtheme-gtk2 -l pl.UTF-8
+Wtyczka motywów platform Qt5 Gui dla GTK+ 2.x.
 
 %package -n Qt5Gui-devel
 Summary:	Qt5 Gui library - development files
@@ -268,6 +331,8 @@ Summary:	Qt5 Network library
 Summary(pl.UTF-8):	Biblioteka Qt5 Network
 Group:		Libraries
 Requires:	Qt5Core = %{version}-%{release}
+# for bearer plugins (qconnman, qnm):
+Requires:	Qt5DBus = %{version}-%{release}
 
 %description -n Qt5Network
 The Qt5 Network library provides classes to make network programming
@@ -419,6 +484,116 @@ Header files for Qt5 Sql library.
 %description -n Qt5Sql-devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki Qt5 Sql.
 
+%package -n Qt5Sql-sqldriver-db2
+Summary:	Qt5 Sql driver for IBM DB2 database
+Summary(pl.UTF-8):	Sterownik Qt5 Sql dla bazy danych IBM DB2
+Group:		Libraries
+Requires:	Qt5Sql = %{version}-%{release}
+
+%description -n Qt5Sql-sqldriver-db2
+Qt5 Sql driver for IBM DB2 database.
+
+%description -n Qt5Sql-sqldriver-db2 -l pl.UTF-8
+Sterownik Qt5 Sql dla bazy danych IBM DB2.
+
+%package -n Qt5Sql-sqldriver-ibase
+Summary:	Qt5 Sql driver for Firebird/InterBase database
+Summary(pl.UTF-8):	Sterownik Qt5 Sql dla bazy danych Firebird/InterBase
+Group:		Libraries
+Requires:	Qt5Sql = %{version}-%{release}
+
+%description -n Qt5Sql-sqldriver-ibase
+Qt5 Sql driver for Firebird/InterBase database.
+
+%description -n Qt5Sql-sqldriver-ibase -l pl.UTF-8
+Sterownik Qt5 Sql dla bazy danych Firebird/InterBase.
+
+%package -n Qt5Sql-sqldriver-sqlite3
+Summary:	Qt5 Sql driver for SQLite 3.x database
+Summary(pl.UTF-8):	Sterownik Qt5 Sql dla bazy danych SQLite 3.x
+Group:		Libraries
+Requires:	Qt5Sql = %{version}-%{release}
+
+%description -n Qt5Sql-sqldriver-sqlite3
+Qt5 Sql driver for SQLite 3.x database.
+
+%description -n Qt5Sql-sqldriver-sqlite3 -l pl.UTF-8
+Sterownik Qt5 Sql dla bazy danych SQLite 3.x.
+
+%package -n Qt5Sql-sqldriver-sqlite2
+Summary:	Qt5 Sql driver for SQLite 2.x database
+Summary(pl.UTF-8):	Sterownik Qt5 Sql dla bazy danych SQLite 2.x
+Group:		Libraries
+Requires:	Qt5Sql = %{version}-%{release}
+
+%description -n Qt5Sql-sqldriver-sqlite2
+Qt5 Sql driver for SQLite 2.x database.
+
+%description -n Qt5Sql-sqldriver-sqlite2 -l pl.UTF-8
+Sterownik Qt5 Sql dla bazy danych SQLite 2.x.
+
+%package -n Qt5Sql-sqldriver-mysql
+Summary:	Qt5 Sql driver for MySQL database
+Summary(pl.UTF-8):	Sterownik Qt5 Sql dla bazy danych MySQL
+Group:		Libraries
+Requires:	Qt5Sql = %{version}-%{release}
+
+%description -n Qt5Sql-sqldriver-mysql
+Qt5 Sql driver for MySQL database.
+
+%description -n Qt5Sql-sqldriver-mysql -l pl.UTF-8
+Sterownik Qt5 Sql dla bazy danych MySQL.
+
+%package -n Qt5Sql-sqldriver-oci
+Summary:	Qt5 Sql driver for Oracle database (using OCI interface)
+Summary(pl.UTF-8):	Sterownik Qt5 Sql dla bazy danych Oracle (wykorzystujący interfejs OCI)
+Group:		Libraries
+Requires:	Qt5Sql = %{version}-%{release}
+
+%description -n Qt5Sql-sqldriver-oci
+Qt5 Sql driver for Oracle database (using OCI interface).
+
+%description -n Qt5Sql-sqldriver-oci -l pl.UTF-8
+Sterownik Qt5 Sql dla bazy danych Oracle (wykorzystujący interfejs
+OCI).
+
+%package -n Qt5Sql-sqldriver-odbc
+Summary:	Qt5 Sql driver for ODBC databases
+Summary(pl.UTF-8):	Sterownik Qt5 Sql dla baz danych ODBC
+Group:		Libraries
+Requires:	Qt5Sql = %{version}-%{release}
+
+%description -n Qt5Sql-sqldriver-odbc
+Qt5 Sql driver for ODBC databases.
+
+%description -n Qt5Sql-sqldriver-odbc -l pl.UTF-8
+Sterownik Qt5 Sql dla baz danych ODBC.
+
+%package -n Qt5Sql-sqldriver-pgsql
+Summary:	Qt5 Sql driver for PostgreSQL database
+Summary(pl.UTF-8):	Sterownik Qt5 Sql dla bazy danych PostgreSQL
+Group:		Libraries
+Requires:	Qt5Sql = %{version}-%{release}
+
+%description -n Qt5Sql-sqldriver-pgsql
+Qt5 Sql driver for PostgreSQL database.
+
+%description -n Qt5Sql-sqldriver-pgsql -l pl.UTF-8
+Sterownik Qt5 Sql dla bazy danych PostgreSQL.
+
+%package -n Qt5Sql-sqldriver-tds
+Summary:	Qt5 Sql driver for Sybase/MS SQL database (using TDS interface)
+Summary(pl.UTF-8):	Sterownik Qt5 Sql dla bazy danych Sybase/MS SQL (wykorzystujący interfejs TDS)
+Group:		Libraries
+Requires:	Qt5Sql = %{version}-%{release}
+
+%description -n Qt5Sql-sqldriver-tds
+Qt5 Sql driver for Sybase/MS SQL database (using TDS interface).
+
+%description -n Qt5Sql-sqldriver-tds -l pl.UTF-8
+Sterownik Qt5 Sql dla bazy danych Sybase/MS SQL (wykorzystujący
+interfejs TDS).
+
 %package -n Qt5Test
 Summary:	Qt5 Test library
 Summary(pl.UTF-8):	Biblioteka Qt5 Test
@@ -455,11 +630,13 @@ Requires:	Qt5Gui = %{version}-%{release}
 
 %description -n Qt5Widgets
 The Qt5 Widgets library extends Qt 5 GUI with C++ widget
-functionality.
+functionality. This package contains also qtaccessiblewidgets plugin
+for Qt5 Gui library.
 
 %description -n Qt5Widgets -l pl.UTF-8
 Biblioteka Qt5 Widgets rozszerza graficzny interfejs Qt 5 o
-funkcjonalność widgetów C++.
+funkcjonalność widgetów C++. Pakiet zawiera także wtyczkę
+qtaccessiblewidgets dla biblioteki Qt5 Gui.
 
 %package -n Qt5Widgets-devel
 Summary:	Qt5 Widgets library - development files
@@ -857,8 +1034,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libQt5Gui.so.5
 # loaded from src/gui/accessible/qaccessible.cpp
 %dir %{qt5dir}/plugins/accessible
-# R: Qt5Widgets
-%attr(755,root,root) %{qt5dir}/plugins/accessible/libqtaccessiblewidgets.so
 # loaded from src/gui/kernel/qgenericpluginfactory.cpp
 %dir %{qt5dir}/plugins/generic
 # R: udev-libs (by all qevdev* plugins)
@@ -866,10 +1041,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevmouseplugin.so
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevtabletplugin.so
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevtouchplugin.so
-%if %{with tslib}
-# R: tslib
-%attr(755,root,root) %{qt5dir}/plugins/generic/libqtslibplugin.so
-%endif
 # loaded from src/gui/image/qimage{reader,writer}.cpp
 %dir %{qt5dir}/plugins/imageformats
 %attr(755,root,root) %{qt5dir}/plugins/imageformats/libqgif.so
@@ -884,17 +1055,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so
 # loaded from src/gui/kernel/qplatformintegrationfactory.cpp
 %dir %{qt5dir}/plugins/platforms
-%if %{with directfb}
-# R: DirectFB fontconfig freetype
-%attr(755,root,root) %{qt5dir}/plugins/platforms/libqdirectfb.so
-%endif
-# -kms, requires GLESv2 instead of GL
-# R: EGL GLESv2 libdrm libgbm udev-libs
-#%attr(755,root,root) %{qt5dir}/plugins/platforms/libqkms.so
-# -egl, requires GLESv2 instead of GL
-# R: egl fontconfig freetype (for two following)
-#%attr(755,root,root) %{qt5dir}/plugins/platforms/libqeglfs.so
-#%attr(755,root,root) %{qt5dir}/plugins/platforms/libqminimalegl.so
 # R: fontconfig freetype udev-libs
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqlinuxfb.so
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqminimal.so
@@ -904,7 +1064,41 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqxcb.so
 # loaded from src/gui/kernel/qplatformthemefactory.cpp
 %dir %{qt5dir}/plugins/platformthemes
+
+%if %{with tslib}
+%files -n Qt5Gui-generic-tslib
+%defattr(644,root,root,755)
+# R: tslib
+%attr(755,root,root) %{qt5dir}/plugins/generic/libqtslibplugin.so
+%endif
+
+%if %{with directfb}
+%files -n Qt5Gui-platform-directfb
+%defattr(644,root,root,755)
+# R: DirectFB fontconfig freetype
+%attr(755,root,root) %{qt5dir}/plugins/platforms/libqdirectfb.so
+%endif
+
+%if %{with kms}
+# TODO; requires GLESv2 instead of GL
+%files -n Qt5Gui-platform-kms
+%defattr(644,root,root,755)
+# R: EGL GLESv2 libdrm libgbm udev-libs
+%attr(755,root,root) %{qt5dir}/plugins/platforms/libqkms.so
+%endif
+
+%if %{with egl}
+# TODO; requires GLESv2 instead of GL
+%files -n Qt5Gui-platform-egl
+%defattr(644,root,root,755)
+# R: egl fontconfig freetype (for two following)
+%attr(755,root,root) %{qt5dir}/plugins/platforms/libqeglfs.so
+%attr(755,root,root) %{qt5dir}/plugins/platforms/libqminimalegl.so
+%endif
+
 %if %{with gtk}
+%files -n Qt5Gui-platformtheme-gtk2
+%defattr(644,root,root,755)
 # R: gtk+2
 %attr(755,root,root) %{qt5dir}/plugins/platformthemes/libqgtk2.so
 %endif
@@ -991,39 +1185,66 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libQt5Sql.so.5
 # loaded from src/sql/kernel/qsqldatabase.cpp
 %dir %{qt5dir}/plugins/sqldrivers
+
 %if %{with db2}
+%files -n Qt5Sql-sqldriver-db2
+%defattr(644,root,root,755)
 # R: (proprietary) DB2 libs
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqldb2.so
 %endif
+
 %if %{with ibase}
+%files -n Qt5Sql-sqldriver-ibase
+%defattr(644,root,root,755)
 # R: Firebird-lib
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlibase.so
 %endif
+
 %if %{with sqlite3}
+%files -n Qt5Sql-sqldriver-sqlite3
+%defattr(644,root,root,755)
 # R: sqlite3
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlite.so
 %endif
+
 %if %{with sqlite2}
+%files -n Qt5Sql-sqldriver-sqlite2
+%defattr(644,root,root,755)
 # R: sqlite >= 2
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlite2.so
 %endif
+
 %if %{with mysql}
+%files -n Qt5Sql-sqldriver-mysql
+%defattr(644,root,root,755)
 # R: mysql-libs
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlmysql.so
 %endif
+
 %if %{with oracle}
+%files -n Qt5Sql-sqldriver-oci
+%defattr(644,root,root,755)
 # R: (proprietary) Oracle libs
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqloci.so
 %endif
+
 %if %{with odbc}
+%files -n Qt5Sql-sqldriver-odbc
+%defattr(644,root,root,755)
 # R: unixODBC
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlodbc.so
 %endif
+
 %if %{with pgsql}
+%files -n Qt5Sql-sqldriver-pgsql
+%defattr(644,root,root,755)
 # R: postgresql-libs
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlpsql.so
 %endif
+
 %if %{with freetds}
+%files -n Qt5Sql-sqldriver-tds
+%defattr(644,root,root,755)
 # R: freetds
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqltds.so
 %endif
@@ -1053,6 +1274,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libQt5Widgets.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libQt5Widgets.so.5
+# Qt5Gui plugin which requires Qt5Widgets
+%attr(755,root,root) %{qt5dir}/plugins/accessible/libqtaccessiblewidgets.so
 
 %files -n Qt5Widgets-devel
 %defattr(644,root,root,755)
