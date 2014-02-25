@@ -857,42 +857,55 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libQt5Gui.so.5
 # loaded from src/gui/accessible/qaccessible.cpp
 %dir %{qt5dir}/plugins/accessible
+# R: Qt5Widgets
 %attr(755,root,root) %{qt5dir}/plugins/accessible/libqtaccessiblewidgets.so
 # loaded from src/gui/kernel/qgenericpluginfactory.cpp
 %dir %{qt5dir}/plugins/generic
+# R: udev-libs (by all qevdev* plugins)
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevkeyboardplugin.so
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevmouseplugin.so
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevtabletplugin.so
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevtouchplugin.so
 %if %{with tslib}
+# R: tslib
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqtslibplugin.so
 %endif
 # loaded from src/gui/image/qimage{reader,writer}.cpp
 %dir %{qt5dir}/plugins/imageformats
 %attr(755,root,root) %{qt5dir}/plugins/imageformats/libqgif.so
 %attr(755,root,root) %{qt5dir}/plugins/imageformats/libqico.so
+# R: libjpeg
 %attr(755,root,root) %{qt5dir}/plugins/imageformats/libqjpeg.so
 # loaded from src/gui/kernel/qplatforminputcontextfactory.cpp
 %dir %{qt5dir}/plugins/platforminputcontexts
+# R: libxkbcommon
 %attr(755,root,root) %{qt5dir}/plugins/platforminputcontexts/libcomposeplatforminputcontextplugin.so
+# R: Qt5DBus
 %attr(755,root,root) %{qt5dir}/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so
 # loaded from src/gui/kernel/qplatformintegrationfactory.cpp
 %dir %{qt5dir}/plugins/platforms
 %if %{with directfb}
+# R: DirectFB fontconfig freetype
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqdirectfb.so
 %endif
 # -kms, requires GLESv2 instead of GL
+# R: EGL GLESv2 libdrm libgbm udev-libs
 #%attr(755,root,root) %{qt5dir}/plugins/platforms/libqkms.so
-# -eglfs, requires GLESv2 instead of GL
+# -egl, requires GLESv2 instead of GL
+# R: egl fontconfig freetype (for two following)
 #%attr(755,root,root) %{qt5dir}/plugins/platforms/libqeglfs.so
 #%attr(755,root,root) %{qt5dir}/plugins/platforms/libqminimalegl.so
+# R: fontconfig freetype udev-libs
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqlinuxfb.so
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqminimal.so
+# R: freetype libX11 libXrender
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqoffscreen.so
+# R: Qt5DBus libxcb xcb-* xorg-* ...
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqxcb.so
 # loaded from src/gui/kernel/qplatformthemefactory.cpp
 %dir %{qt5dir}/plugins/platformthemes
 %if %{with gtk}
+# R: gtk+2
 %attr(755,root,root) %{qt5dir}/plugins/platformthemes/libqgtk2.so
 %endif
 
@@ -910,8 +923,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libQt5Network.so.5
 # loaded from src/network/bearer/qnetworkconfigmanager_p.cpp
 %dir %{qt5dir}/plugins/bearer
+# R: Qt5DBus
 %attr(755,root,root) %{qt5dir}/plugins/bearer/libqconnmanbearer.so
 %attr(755,root,root) %{qt5dir}/plugins/bearer/libqgenericbearer.so
+# R: Qt5DBus
 %attr(755,root,root) %{qt5dir}/plugins/bearer/libqnmbearer.so
 
 %files -n Qt5Network-devel
@@ -977,30 +992,39 @@ rm -rf $RPM_BUILD_ROOT
 # loaded from src/sql/kernel/qsqldatabase.cpp
 %dir %{qt5dir}/plugins/sqldrivers
 %if %{with db2}
+# R: (proprietary) DB2 libs
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqldb2.so
 %endif
 %if %{with ibase}
+# R: Firebird-lib
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlibase.so
 %endif
 %if %{with sqlite3}
+# R: sqlite3
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlite.so
 %endif
 %if %{with sqlite2}
+# R: sqlite >= 2
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlite2.so
 %endif
 %if %{with mysql}
+# R: mysql-libs
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlmysql.so
 %endif
 %if %{with oracle}
+# R: (proprietary) Oracle libs
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqloci.so
 %endif
 %if %{with odbc}
+# R: unixODBC
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlodbc.so
 %endif
 %if %{with pgsql}
+# R: postgresql-libs
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlpsql.so
 %endif
 %if %{with freetds}
+# R: freetds
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqltds.so
 %endif
 
