@@ -875,7 +875,7 @@ OPT=" \
 
 # use just built qdoc instead of requiring already installed qt5-build
 wd="$(pwd)"
-%{__sed} -i -e 's|%{qt5dir}/bin/qdoc|LD_LIBRARY_PATH='${wd}'/lib$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} '${wd}'/bin/qdoc|' src/*/Makefile
+%{__sed} -i -e 's|%{qt5dir}/bin/qdoc|LD_LIBRARY_PATH='${wd}'/lib$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} '${wd}'/bin/qdoc|' src/*/Makefile qmake/Makefile.qmake-docs
 # build only HTML docs (qch docs require qhelpgenerator)
 %{__make} html_docs
 
