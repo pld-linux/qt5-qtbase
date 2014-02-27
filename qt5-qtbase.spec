@@ -52,7 +52,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.2.0
-Release:	1
+Release:	2
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License:	LGPLv2 with exceptions or GPLv3 with exceptions
 Group:		X11/Libraries
@@ -133,8 +133,8 @@ Xml.
 Summary:	Qt5 Bootstrap library - development files
 Summary(pl.UTF-8):	Biblioteka Qt5 Bootstrap - pliki programistyczne
 Group:		Development/Libraries
-# for (subset of) QtCore headers
-Requires:	QtCore-devel = %{version}-%{release}
+# for (subset of) Qt5Core headers
+Requires:	Qt5Core-devel = %{version}-%{release}
 Requires:	zlib-devel
 
 %description -n Qt5Bootstrap-devel
