@@ -682,10 +682,26 @@ Header files for Qt5 Xml library.
 %description -n Qt5Xml-devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki Qt5 Xml.
 
+%package -n qt5-doc-common
+Summary:	Common part of Qt5 documentation
+Summary(pl.UTF-8):	Część wspólna dokumentacji do Qt5
+Group:		Documentation
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description -n qt5-doc-common
+Common part of Qt5 documentation, global for all components.
+
+%description -n qt5-doc-common -l pl.UTF-8
+Część wspólna dokumentacji do Qt5 ("global", dla wszystkich
+elementów).
+
 %package doc
 Summary:	Documentation for Qt5 application framework base components
 Summary(pl.UTF-8):	Dokumentacja do podstawowych komponentów szkieletu aplikacji Qt5
 Group:		Documentation
+Requires:	qt5-doc-common = %{version}-%{release}
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
 %endif
@@ -915,10 +931,7 @@ cd -
 
 # Prepare some files list
 ifecho() {
-	RESULT=`echo $RPM_BUILD_ROOT$2 2>/dev/null`
-	[ "$RESULT" == "" ] && return # XXX this is never true due $RPM_BUILD_ROOT being set
-	r=`echo $RESULT | awk '{ print $1 }'`
-
+	r="$RPM_BUILD_ROOT$2"
 	if [ -d "$r" ]; then
 		echo "%%dir $2" >> $1.files
 	elif [ -x "$r" ] ; then
@@ -931,12 +944,30 @@ ifecho() {
 		return 1
 	fi
 }
+ifecho_tree() {
+	ifecho $1 $2
+	for f in `find $RPM_BUILD_ROOT$2 -printf "%%P "`; do
+		ifecho $1 $2/$f
+	done
+}
 
 echo "%defattr(644,root,root,755)" > examples.files
-ifecho examples %{_examplesdir}/qt5
-for f in `find $RPM_BUILD_ROOT%{_examplesdir}/qt5 -printf "%%P "`; do
-	ifecho examples %{_examplesdir}/qt5/$f
-done
+ifecho_tree examples %{_examplesdir}/qt5/dbus
+ifecho_tree examples %{_examplesdir}/qt5/gestures
+ifecho_tree examples %{_examplesdir}/qt5/gui
+ifecho_tree examples %{_examplesdir}/qt5/ipc
+ifecho_tree examples %{_examplesdir}/qt5/json
+ifecho_tree examples %{_examplesdir}/qt5/network
+ifecho_tree examples %{_examplesdir}/qt5/opengl
+ifecho_tree examples %{_examplesdir}/qt5/qpa
+ifecho_tree examples %{_examplesdir}/qt5/qtconcurrent
+ifecho_tree examples %{_examplesdir}/qt5/qtestlib
+ifecho_tree examples %{_examplesdir}/qt5/sql
+ifecho_tree examples %{_examplesdir}/qt5/threads
+ifecho_tree examples %{_examplesdir}/qt5/tools
+ifecho_tree examples %{_examplesdir}/qt5/touch
+ifecho_tree examples %{_examplesdir}/qt5/widgets
+ifecho_tree examples %{_examplesdir}/qt5/xml
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -980,6 +1011,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libQt5Bootstrap.a
 %{_libdir}/libQt5Bootstrap.prl
 %{_pkgconfigdir}/Qt5Bootstrap.pc
+%{qt5dir}/mkspecs/modules/qt_lib_bootstrap_private.pri
 
 %files -n Qt5Concurrent
 %defattr(644,root,root,755)
@@ -993,6 +1025,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtConcurrent
 %{_pkgconfigdir}/Qt5Concurrent.pc
 %{_libdir}/cmake/Qt5Concurrent
+%{qt5dir}/mkspecs/modules/qt_lib_concurrent.pri
+%{qt5dir}/mkspecs/modules/qt_lib_concurrent_private.pri
 
 %files -n Qt5Core
 %defattr(644,root,root,755)
@@ -1001,6 +1035,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir /etc/qt5
 %dir %{qt5dir}
 %dir %{qt5dir}/bin
+%dir %{qt5dir}/mkspecs
+%dir %{qt5dir}/mkspecs/modules
 %dir %{qt5dir}/plugins
 
 %files -n Qt5Core-devel
@@ -1012,6 +1048,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/Qt5Core.pc
 %{_libdir}/cmake/Qt5
 %{_libdir}/cmake/Qt5Core
+%{qt5dir}/mkspecs/modules/qt_lib_core.pri
+%{qt5dir}/mkspecs/modules/qt_lib_core_private.pri
 
 %files -n Qt5DBus
 %defattr(644,root,root,755)
@@ -1025,6 +1063,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtDBus
 %{_pkgconfigdir}/Qt5DBus.pc
 %{_libdir}/cmake/Qt5DBus
+%{qt5dir}/mkspecs/modules/qt_lib_dbus.pri
+%{qt5dir}/mkspecs/modules/qt_lib_dbus_private.pri
 
 %files -n Qt5Gui
 %defattr(644,root,root,755)
@@ -1108,6 +1148,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtGui
 %{_pkgconfigdir}/Qt5Gui.pc
 %{_libdir}/cmake/Qt5Gui
+%{qt5dir}/mkspecs/modules/qt_lib_gui.pri
+%{qt5dir}/mkspecs/modules/qt_lib_gui_private.pri
 
 %files -n Qt5Network
 %defattr(644,root,root,755)
@@ -1128,6 +1170,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtNetwork
 %{_pkgconfigdir}/Qt5Network.pc
 %{_libdir}/cmake/Qt5Network
+%{qt5dir}/mkspecs/modules/qt_lib_network.pri
+%{qt5dir}/mkspecs/modules/qt_lib_network_private.pri
 
 %files -n Qt5OpenGL
 %defattr(644,root,root,755)
@@ -1141,6 +1185,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtOpenGL
 %{_pkgconfigdir}/Qt5OpenGL.pc
 %{_libdir}/cmake/Qt5OpenGL
+%{qt5dir}/mkspecs/modules/qt_lib_opengl.pri
+%{qt5dir}/mkspecs/modules/qt_lib_opengl_private.pri
 
 %files -n Qt5OpenGLExtensions-devel
 %defattr(644,root,root,755)
@@ -1150,6 +1196,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtOpenGLExtensions
 %{_pkgconfigdir}/Qt5OpenGLExtensions.pc
 %{_libdir}/cmake/Qt5OpenGLExtensions
+%{qt5dir}/mkspecs/modules/qt_lib_openglextensions.pri
+%{qt5dir}/mkspecs/modules/qt_lib_openglextensions_private.pri
 
 %files -n Qt5PlatformSupport-devel
 %defattr(644,root,root,755)
@@ -1158,6 +1206,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libQt5PlatformSupport.prl
 %{_includedir}/qt5/QtPlatformSupport
 %{_pkgconfigdir}/Qt5PlatformSupport.pc
+%{qt5dir}/mkspecs/modules/qt_lib_platformsupport_private.pri
 
 %files -n Qt5PrintSupport
 %defattr(644,root,root,755)
@@ -1176,6 +1225,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtPrintSupport
 %{_pkgconfigdir}/Qt5PrintSupport.pc
 %{_libdir}/cmake/Qt5PrintSupport
+%{qt5dir}/mkspecs/modules/qt_lib_printsupport.pri
+%{qt5dir}/mkspecs/modules/qt_lib_printsupport_private.pri
 
 %files -n Qt5Sql
 %defattr(644,root,root,755)
@@ -1254,6 +1305,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtSql
 %{_pkgconfigdir}/Qt5Sql.pc
 %{_libdir}/cmake/Qt5Sql
+%{qt5dir}/mkspecs/modules/qt_lib_sql.pri
+%{qt5dir}/mkspecs/modules/qt_lib_sql_private.pri
 
 %files -n Qt5Test
 %defattr(644,root,root,755)
@@ -1267,6 +1320,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtTest
 %{_pkgconfigdir}/Qt5Test.pc
 %{_libdir}/cmake/Qt5Test
+%{qt5dir}/mkspecs/modules/qt_lib_testlib.pri
+%{qt5dir}/mkspecs/modules/qt_lib_testlib_private.pri
 
 %files -n Qt5Widgets
 %defattr(644,root,root,755)
@@ -1282,6 +1337,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtWidgets
 %{_pkgconfigdir}/Qt5Widgets.pc
 %{_libdir}/cmake/Qt5Widgets
+%{qt5dir}/mkspecs/modules/qt_lib_widgets.pri
+%{qt5dir}/mkspecs/modules/qt_lib_widgets_private.pri
 
 %files -n Qt5Xml
 %defattr(644,root,root,755)
@@ -1295,12 +1352,34 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtXml
 %{_pkgconfigdir}/Qt5Xml.pc
 %{_libdir}/cmake/Qt5Xml
+%{qt5dir}/mkspecs/modules/qt_lib_xml.pri
+%{qt5dir}/mkspecs/modules/qt_lib_xml_private.pri
+
+%files -n qt5-doc-common
+%defattr(644,root,root,755)
+%dir %{_docdir}/qt5-doc
+%{_docdir}/qt5-doc/global
 
 %files doc
 %defattr(644,root,root,755)
-%{_docdir}/qt5-doc
+%{_docdir}/qt5-doc/qdoc
+%{_docdir}/qt5-doc/qmake
+%{_docdir}/qt5-doc/qtconcurrent
+%{_docdir}/qt5-doc/qtcore
+%{_docdir}/qt5-doc/qtdbus
+%{_docdir}/qt5-doc/qtgui
+%{_docdir}/qt5-doc/qtnetwork
+%{_docdir}/qt5-doc/qtopengl
+%{_docdir}/qt5-doc/qtprintsupport
+%{_docdir}/qt5-doc/qtsql
+%{_docdir}/qt5-doc/qttestlib
+%{_docdir}/qt5-doc/qtwidgets
+%{_docdir}/qt5-doc/qtxml
 
 %files examples -f examples.files
+%dir %{_examplesdir}/qt5
+%doc %{_examplesdir}/qt5/README
+%{_examplesdir}/qt5/examples.pro
 
 %files -n qt5-build
 %defattr(644,root,root,755)
@@ -1324,4 +1403,33 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/qmake-qt5
 %attr(755,root,root) %{qt5dir}/bin/qmake
-%{qt5dir}/mkspecs
+%{qt5dir}/mkspecs/aix-*
+%{qt5dir}/mkspecs/android-*
+%{qt5dir}/mkspecs/blackberry-*
+%{qt5dir}/mkspecs/common
+%{qt5dir}/mkspecs/cygwin-*
+%{qt5dir}/mkspecs/darwin-*
+%{qt5dir}/mkspecs/devices
+%{qt5dir}/mkspecs/features
+%{qt5dir}/mkspecs/freebsd-*
+%{qt5dir}/mkspecs/hpux-*
+%{qt5dir}/mkspecs/hpuxi-*
+%{qt5dir}/mkspecs/hurd-*
+%{qt5dir}/mkspecs/irix-*
+%{qt5dir}/mkspecs/linux-*
+%{qt5dir}/mkspecs/lynxos-*
+%{qt5dir}/mkspecs/macx-*
+%{qt5dir}/mkspecs/netbsd-*
+%{qt5dir}/mkspecs/openbsd-*
+%{qt5dir}/mkspecs/qnx-*
+%{qt5dir}/mkspecs/sco-*
+%{qt5dir}/mkspecs/solaris-*
+%{qt5dir}/mkspecs/tru64-*
+%{qt5dir}/mkspecs/unixware-*
+%{qt5dir}/mkspecs/unsupported
+%{qt5dir}/mkspecs/win32-*
+%{qt5dir}/mkspecs/wince60standard-*
+%{qt5dir}/mkspecs/wince70embedded-*
+%{qt5dir}/mkspecs/winphone-*
+%{qt5dir}/mkspecs/winrt-*
+%{qt5dir}/mkspecs/*.pri
