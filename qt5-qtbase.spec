@@ -5,7 +5,9 @@
 # -- features
 %bcond_without	cups		# CUPS printing support
 %bcond_without	directfb	# DirectFB platform support
+%bcond_without	egl		# EGL (EGLFS, minimal EGL) platform support
 %bcond_without	gtk		# GTK+ theme integration
+%bcond_without	kms		# KMS platform support
 %bcond_without	pch		# pch (pre-compiled headers) in qmake
 %bcond_without	tslib		# tslib support
 # -- databases
@@ -19,7 +21,6 @@
 %bcond_with	db2		# DB2 support
 %bcond_with	oracle		# OCI (Oracle) support
 # -- SIMD CPU instructions
-%bcond_with	sse		# use SSE instructions in gui/painting module
 %bcond_with	sse2		# use SSE2 instructions
 %bcond_with	sse3		# use SSE3 instructions (since: Intel middle Pentium4, AMD Athlon64)
 %bcond_with	ssse3		# use SSSE3 instructions (Intel since Core2, Via Nano)
@@ -37,9 +38,6 @@
 %ifarch athlon pentium3 pentium4 %{x8664}
 %define		with_mmx	1
 %endif
-%ifarch pentium3 pentium4 %{x8664}
-%define		with_sse	1
-%endif
 %ifarch pentium4 %{x8664}
 %define		with_sse2	1
 %endif
@@ -51,18 +49,21 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.2.0
-Release:	3
-# See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
-License:	LGPLv2 with exceptions or GPLv3 with exceptions
+Version:	5.2.1
+Release:	1
+# See LGPL_EXCEPTION.txt for exception details
+License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.2/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
-# Source0-md5:	c94bbaf1bb7f0f4a32d2caa7501416e1
+# Source0-md5:	fa005301a2000b92b61b63edc042567b
 URL:		http://qt-project.org/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
+BuildRequires:	EGL-devel
 %{?with_ibase:BuildRequires:	Firebird-devel}
 BuildRequires:	Mesa-libOpenVG-devel
+%{?with_kms:BuildRequires:	Mesa-libgbm-devel}
 BuildRequires:	OpenGL-devel
+%{?with_kms:BuildRequires:	OpenGLESv2-devel}
 BuildRequires:	alsa-lib-devel
 %{?with_gtk:BuildRequires:	atk-devel}
 %{?with_cups:BuildRequires:	cups-devel}
@@ -74,6 +75,7 @@ BuildRequires:	freetype-devel >= 1:2.0.0
 BuildRequires:	gdb
 BuildRequires:	glib2-devel >= 2.0.0
 %{?with_gtk:BuildRequires:	gtk+2-devel >= 2:2.18}
+%{?with_kms:BuildRequires:	libdrm-devel}
 # see dependency on libicu version below
 BuildRequires:	libicu-devel < %{next_icu_abi}
 BuildRequires:	libicu-devel >= %{icu_abi}
@@ -815,9 +817,10 @@ COMMONOPT=" \
 	-icu \
 	-largefile \
 	-nis \
+	%{!?with_egl:-no-eglfs} \
+	%{!?with_kms:-no-kms} \
 	-no-rpath \
 	-no-separate-debug-info \
-	%{!?with_sse:-no-sse} \
 	%{!?with_sse2:-no-sse2} \
 	%{!?with_sse3:-no-sse3} \
 	%{!?with_ssse3:-no-ssse3} \
@@ -1030,6 +1033,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n Qt5Core
 %defattr(644,root,root,755)
+%doc LGPL_EXCEPTION.txt header.*
 %attr(755,root,root) %{_libdir}/libQt5Core.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libQt5Core.so.5
 %dir /etc/qt5
@@ -1118,7 +1122,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with kms}
-# TODO; requires GLESv2 instead of GL
 %files -n Qt5Gui-platform-kms
 %defattr(644,root,root,755)
 # R: EGL GLESv2 libdrm libgbm udev-libs
@@ -1126,7 +1129,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with egl}
-# TODO; requires GLESv2 instead of GL
 %files -n Qt5Gui-platform-egl
 %defattr(644,root,root,755)
 # R: egl fontconfig freetype (for two following)
