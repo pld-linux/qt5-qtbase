@@ -9,6 +9,7 @@
 %bcond_without	gtk		# GTK+ theme integration
 %bcond_without	kms		# KMS platform support
 %bcond_without	pch		# pch (pre-compiled headers) in qmake
+%bcond_without	qch		# QCH documentation
 %bcond_without	tslib		# tslib support
 # -- databases
 %bcond_without	freetds		# TDS (Sybase/MS SQL) plugin
@@ -90,6 +91,7 @@ BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-backend-devel}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	pulseaudio-devel >= 0.9.10
+%{?with_qch:BuildRequires:	qt5-assistant >= 5.2}
 BuildRequires:	rpmbuild(macros) >= 1.654
 BuildRequires:	sed >= 4.0
 %{?with_sqlite2:BuildRequires:	sqlite-devel}
@@ -700,8 +702,8 @@ Część wspólna dokumentacji do Qt5 ("global", dla wszystkich
 elementów).
 
 %package doc
-Summary:	Documentation for Qt5 application framework base components
-Summary(pl.UTF-8):	Dokumentacja do podstawowych komponentów szkieletu aplikacji Qt5
+Summary:	HTML documentation for Qt5 application framework base components
+Summary(pl.UTF-8):	Dokumentacja HTML do podstawowych komponentów szkieletu aplikacji Qt5
 Group:		Documentation
 Requires:	qt5-doc-common = %{version}-%{release}
 %if "%{_rpmversion}" >= "5"
@@ -709,10 +711,25 @@ BuildArch:	noarch
 %endif
 
 %description doc
-Documentation for Qt5 application framework base components.
+HTML documentation for Qt5 application framework base components.
 
 %description doc -l pl.UTF-8
-Dokumentacja do podstawowych komponentów szkieletu aplikacji Qt5.
+Dokumentacja HTML do podstawowych komponentów szkieletu aplikacji Qt5.
+
+%package doc-qch
+Summary:	QCH documentation for Qt5 application framework base components
+Summary(pl.UTF-8):	Dokumentacja QCH do podstawowych komponentów szkieletu aplikacji Qt5
+Group:		Documentation
+Requires:	qt5-doc-common = %{version}-%{release}
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description doc-qch
+QCH documentation for Qt5 application framework base components.
+
+%description doc-qch -l pl.UTF-8
+Dokumentacja QCH do podstawowych komponentów szkieletu aplikacji Qt5.
 
 %package examples
 Summary:	Examples for Qt5 application framework base components
@@ -895,8 +912,8 @@ OPT=" \
 # use just built qdoc instead of requiring already installed qt5-build
 wd="$(pwd)"
 %{__sed} -i -e 's|%{qt5dir}/bin/qdoc|LD_LIBRARY_PATH='${wd}'/lib$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} '${wd}'/bin/qdoc|' src/*/Makefile qmake/Makefile.qmake-docs
-# build only HTML docs (qch docs require qhelpgenerator)
-%{__make} html_docs
+# build only HTML docs if without qch (which require qhelpgenerator)
+%{__make} %{!?with_qch:html_}docs
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -905,7 +922,7 @@ install -d $RPM_BUILD_ROOT{/etc/qt5,%{_bindir},%{_pkgconfigdir}}
 %{__make} install \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 
-%{__make} install_html_docs \
+%{__make} install_%{!?with_qch:html_}docs \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 
 # kill unnecessary -L%{_libdir} from *.la, *.prl, *.pc
@@ -1377,6 +1394,24 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/qt5-doc/qttestlib
 %{_docdir}/qt5-doc/qtwidgets
 %{_docdir}/qt5-doc/qtxml
+
+%if %{with qch}
+%files doc-qch
+%defattr(644,root,root,755)
+%{_docdir}/qt5-doc/qdoc.qch
+%{_docdir}/qt5-doc/qmake.qch
+%{_docdir}/qt5-doc/qtconcurrent.qch
+%{_docdir}/qt5-doc/qtcore.qch
+%{_docdir}/qt5-doc/qtdbus.qch
+%{_docdir}/qt5-doc/qtgui.qch
+%{_docdir}/qt5-doc/qtnetwork.qch
+%{_docdir}/qt5-doc/qtopengl.qch
+%{_docdir}/qt5-doc/qtprintsupport.qch
+%{_docdir}/qt5-doc/qtsql.qch
+%{_docdir}/qt5-doc/qttestlib.qch
+%{_docdir}/qt5-doc/qtwidgets.qch
+%{_docdir}/qt5-doc/qtxml.qch
+%endif
 
 %files examples -f examples.files
 %dir %{_examplesdir}/qt5
