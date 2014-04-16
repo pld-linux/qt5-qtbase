@@ -51,7 +51,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.2.1
-Release:	1
+Release:	2
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
@@ -322,6 +322,9 @@ Group:		Development/Libraries
 Requires:	OpenGL-devel
 Requires:	Qt5Core-devel = %{version}-%{release}
 Requires:	Qt5Gui = %{version}-%{release}
+%{?with_directfb:Requires:	Qt5Gui-platform-directfb = %{version}-%{release}}
+%{?with_egl:Requires:	Qt5Gui-platform-egl = %{version}-%{release}}
+%{?with_kms:Requires:	Qt5Gui-platform-kms = %{version}-%{release}}
 Requires:	libpng-devel
 
 %description -n Qt5Gui-devel
