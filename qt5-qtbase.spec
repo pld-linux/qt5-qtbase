@@ -10,6 +10,7 @@
 %bcond_without	kms		# KMS platform support
 %bcond_without	pch		# pch (pre-compiled headers) in qmake
 %bcond_without	qch		# QCH documentation
+%bcond_with	systemd		# logging to journald
 %bcond_without	tslib		# tslib support
 # -- databases
 %bcond_without	freetds		# TDS (Sybase/MS SQL) plugin
@@ -20,7 +21,7 @@
 %bcond_without	sqlite3		# SQLite3 plugin
 %bcond_without	ibase		# ibase (InterBase/Firebird) plugin
 %bcond_with	db2		# DB2 support
-%bcond_with	oracle		# OCI (Oracle) support
+%bcond_with	oci		# OCI (Oracle) support
 # -- SIMD CPU instructions
 %bcond_with	sse2		# use SSE2 instructions
 %bcond_with	sse3		# use SSE3 instructions (since: Intel middle Pentium4, AMD Athlon64)
@@ -57,6 +58,7 @@ License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
 # Source0-md5:	4bc43a72e1b3d804171e5b52640e8d96
+Patch0:		qtbase-oracle-instantclient.patch
 URL:		http://qt-project.org/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
@@ -67,7 +69,7 @@ BuildRequires:	OpenGL-devel
 %{?with_kms:BuildRequires:	OpenGLESv2-devel}
 BuildRequires:	alsa-lib-devel
 %{?with_gtk:BuildRequires:	atk-devel}
-%{?with_cups:BuildRequires:	cups-devel}
+%{?with_cups:BuildRequires:	cups-devel >= 1.4}
 BuildRequires:	dbus-devel >= 1.2
 BuildRequires:	fontconfig-devel
 %{?with_freetds:BuildRequires:	freetds-devel}
@@ -86,6 +88,7 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libxcb-devel >= 1.10
 %{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	openssl-devel
+%{?with_oci:BuildRequires:	oracle-instantclient-devel}
 BuildRequires:	pcre16-devel >= 8.30
 BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-backend-devel}
@@ -96,6 +99,7 @@ BuildRequires:	rpmbuild(macros) >= 1.654
 BuildRequires:	sed >= 4.0
 %{?with_sqlite2:BuildRequires:	sqlite-devel}
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
+%{?with_systemd:BuildRequires:	systemd-devel}
 BuildRequires:	tar >= 1:1.22
 %{?with_tslib:BuildRequires:	tslib-devel}
 BuildRequires:	udev-devel
@@ -443,6 +447,7 @@ Group:		Libraries
 Requires:	Qt5Core = %{version}-%{release}
 Requires:	Qt5Gui = %{version}-%{release}
 Requires:	Qt5Widgets = %{version}-%{release}
+%{?with_cups:Requires:	cups-lib >= 1.4}
 
 %description -n Qt5PrintSupport
 The Qt5 PrintSupport library provides classes to make printing easier
@@ -779,6 +784,7 @@ Generator plików makefile dla aplikacji Qt5.
 
 %prep
 %setup -q -n %{orgname}-opensource-src-%{version}
+%patch0 -p1
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
@@ -839,6 +845,7 @@ COMMONOPT=" \
 	-%{!?with_gtk:no-}gtkstyle \
 	-iconv \
 	-icu \
+	%{?with_systemd:-journald} \
 	-largefile \
 	-nis \
 	%{!?with_egl:-no-eglfs} \
@@ -881,7 +888,7 @@ OPT=" \
 	--sql-db2=%{?with_db2:qt}%{!?with_db2:no} \
 	--sql-ibase=%{?with_ibase:qt}%{!?with_ibase:no} \
 	--sql-mysql=%{?with_mysql:qt}%{!?with_mysql:no} \
-	--sql-oci=%{?with_oracle:qt}%{!?with_oracle:no} \
+	--sql-oci=%{?with_oci:qt}%{!?with_oci:no} \
 	--sql-odbc=%{?with_odbc:qt}%{!?with_odbc:no} \
 	--sql-psql=%{?with_pgsql:qt}%{!?with_pgsql:no} \
 	--sql-sqlite2=%{?with_sqlite2:qt}%{!?with_sqlite2:no} \
@@ -904,7 +911,7 @@ OPT=" \
 	--sql-db2=%{?with_db2:plugin}%{!?with_db2:no} \
 	--sql-ibase=%{?with_ibase:plugin}%{!?with_ibase:no} \
 	--sql-mysql=%{?with_mysql:plugin}%{!?with_mysql:no} \
-	--sql-oci=%{?with_oracle:plugin}%{!?with_oracle:no} \
+	--sql-oci=%{?with_oci:plugin}%{!?with_oci:no} \
 	--sql-odbc=%{?with_odbc:plugin}%{!?with_odbc:no} \
 	--sql-psql=%{?with_pgsql:plugin}%{!?with_pgsql:no} \
 	--sql-sqlite2=%{?with_sqlite2:plugin}%{!?with_sqlite2:no} \
@@ -1057,7 +1064,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n Qt5Core
 %defattr(644,root,root,755)
-%doc LGPL_EXCEPTION.txt header.*
+%doc LGPL_EXCEPTION.txt header.* dist/{README,changes-*}
 %attr(755,root,root) %{_libdir}/libQt5Core.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libQt5Core.so.5
 %dir /etc/qt5
@@ -1296,7 +1303,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlmysql.so
 %endif
 
-%if %{with oracle}
+%if %{with oci}
 %files -n Qt5Sql-sqldriver-oci
 %defattr(644,root,root,755)
 # R: (proprietary) Oracle libs
