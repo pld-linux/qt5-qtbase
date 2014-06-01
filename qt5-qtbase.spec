@@ -43,20 +43,20 @@
 %define		with_sse2	1
 %endif
 
-%define		icu_abi		52
+%define		icu_abi		53
 %define		next_icu_abi	%(echo $((%{icu_abi} + 1)))
 
 %define		orgname		qtbase
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.2.1
-Release:	2
+Version:	5.3.0
+Release:	1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
-Source0:	http://download.qt-project.org/official_releases/qt/5.2/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
-# Source0-md5:	fa005301a2000b92b61b63edc042567b
+Source0:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
+# Source0-md5:	4bc43a72e1b3d804171e5b52640e8d96
 URL:		http://qt-project.org/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
@@ -83,7 +83,7 @@ BuildRequires:	libicu-devel >= %{icu_abi}
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel >= 2:1.0.8
 BuildRequires:	libstdc++-devel
-BuildRequires:	libxcb-devel >= 1.5
+BuildRequires:	libxcb-devel >= 1.10
 %{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	openssl-devel
 BuildRequires:	pcre16-devel >= 8.30
@@ -113,7 +113,7 @@ BuildRequires:	xorg-lib-libXi-devel
 BuildRequires:	xorg-lib-libXinerama-devel
 BuildRequires:	xorg-lib-libXrandr-devel
 BuildRequires:	xorg-lib-libXrender-devel
-BuildRequires:	xorg-lib-libxkbcommon-devel >= 0.2.0
+BuildRequires:	xorg-lib-libxkbcommon-devel >= 0.4.1
 BuildRequires:	xz
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -246,6 +246,10 @@ Requires:	Qt5Core = %{version}-%{release}
 # - ibus platforminputcontext plugin
 # - qxcb platform plugin
 Requires:	Qt5DBus = %{version}-%{release}
+# for qxcb platform plugin
+Requires:	libxcb >= 1.10
+# for compose platforminputcontext plugin
+Requires:	xorg-lib-libxkbcommon >= 0.4.1
 
 %description -n Qt5Gui
 The Qt5 GUI library provides the basic enablers for graphical
@@ -950,6 +954,7 @@ ln -sf ../%{_lib}/qt5/bin/rcc rcc-qt5
 ln -sf ../%{_lib}/qt5/bin/qdbuscpp2xml qdbuscpp2xml-qt5
 ln -sf ../%{_lib}/qt5/bin/qdbusxml2cpp qdbusxml2cpp-qt5
 ln -sf ../%{_lib}/qt5/bin/qdoc qdoc-qt5
+ln -sf ../%{_lib}/qt5/bin/qlalr qlalr-qt5
 cd -
 
 # Prepare some files list
@@ -976,7 +981,6 @@ ifecho_tree() {
 
 echo "%defattr(644,root,root,755)" > examples.files
 ifecho_tree examples %{_examplesdir}/qt5/dbus
-ifecho_tree examples %{_examplesdir}/qt5/gestures
 ifecho_tree examples %{_examplesdir}/qt5/gui
 ifecho_tree examples %{_examplesdir}/qt5/ipc
 ifecho_tree examples %{_examplesdir}/qt5/json
@@ -1428,6 +1432,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/qdbuscpp2xml-qt5
 %attr(755,root,root) %{_bindir}/qdbusxml2cpp-qt5
 %attr(755,root,root) %{_bindir}/qdoc-qt5
+%attr(755,root,root) %{_bindir}/qlalr-qt5
 %attr(755,root,root) %{_bindir}/rcc-qt5
 %attr(755,root,root) %{_bindir}/uic-qt5
 %attr(755,root,root) %{qt5dir}/bin/findtr
@@ -1435,6 +1440,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/bin/qdbuscpp2xml
 %attr(755,root,root) %{qt5dir}/bin/qdbusxml2cpp
 %attr(755,root,root) %{qt5dir}/bin/qdoc
+%attr(755,root,root) %{qt5dir}/bin/qlalr
 %attr(755,root,root) %{qt5dir}/bin/rcc
 %attr(755,root,root) %{qt5dir}/bin/syncqt.pl
 %attr(755,root,root) %{qt5dir}/bin/uic
