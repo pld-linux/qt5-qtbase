@@ -1,5 +1,11 @@
 # TODO: separate more plugins? (think of qxcb when there are more commonly used platforms)
 #
+# Note on packaging .cmake files for plugins:
+# Base Qt5${component}Config.cmake file includes all existing Qt5${component}_*Plugin.cmake
+# files, which trigger check for presence of plugin module in filesystem.
+# Thus, for plugins separated into subpackages, we package plugins .cmake file
+# together with module, and the rest of .cmake files in appropriate -devel subpackage.
+#
 # Conditional build:
 %bcond_with	static_libs	# static libraries [incomplete support in .spec]
 # -- features
@@ -330,9 +336,6 @@ Group:		Development/Libraries
 Requires:	OpenGL-devel
 Requires:	Qt5Core-devel = %{version}-%{release}
 Requires:	Qt5Gui = %{version}-%{release}
-%{?with_directfb:Requires:	Qt5Gui-platform-directfb = %{version}-%{release}}
-%{?with_egl:Requires:	Qt5Gui-platform-egl = %{version}-%{release}}
-%{?with_kms:Requires:	Qt5Gui-platform-kms = %{version}-%{release}}
 Requires:	libpng-devel
 
 %description -n Qt5Gui-devel
@@ -1137,12 +1140,15 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqxcb.so
 # loaded from src/gui/kernel/qplatformthemefactory.cpp
 %dir %{qt5dir}/plugins/platformthemes
+# common for base -devel and plugin-specific files
+%dir %{_libdir}/cmake/Qt5Gui
 
 %if %{with tslib}
 %files -n Qt5Gui-generic-tslib
 %defattr(644,root,root,755)
 # R: tslib
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqtslibplugin.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QTsLibPlugin.cmake
 %endif
 
 %if %{with directfb}
@@ -1150,6 +1156,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # R: DirectFB fontconfig freetype
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqdirectfb.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QDirectFbIntegrationPlugin.cmake
 %endif
 
 %if %{with kms}
@@ -1157,6 +1164,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # R: EGL GLESv2 libdrm libgbm udev-libs
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqkms.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QKmsIntegrationPlugin.cmake
 %endif
 
 %if %{with egl}
@@ -1165,6 +1173,8 @@ rm -rf $RPM_BUILD_ROOT
 # R: egl fontconfig freetype (for two following)
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqeglfs.so
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqminimalegl.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSIntegrationPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QMinimalEglIntegrationPlugin.cmake
 %endif
 
 %if %{with gtk}
@@ -1172,6 +1182,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # R: gtk+2
 %attr(755,root,root) %{qt5dir}/plugins/platformthemes/libqgtk2.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QGtk2ThemePlugin.cmake
 %endif
 
 %files -n Qt5Gui-devel
@@ -1180,7 +1191,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libQt5Gui.prl
 %{_includedir}/qt5/QtGui
 %{_pkgconfigdir}/Qt5Gui.pc
-%{_libdir}/cmake/Qt5Gui
+%{_libdir}/cmake/Qt5Gui/Qt5GuiConfig*.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QEvdevKeyboardPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QEvdevMousePlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QEvdevTabletPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QEvdevTouchScreenPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QGifPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QICOPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QJpegPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QComposePlatformInputContextPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QIbusPlatformInputContextPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QLinuxFbIntegrationPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbIntegrationPlugin.cmake
 %{qt5dir}/mkspecs/modules/qt_lib_gui.pri
 %{qt5dir}/mkspecs/modules/qt_lib_gui_private.pri
 
@@ -1202,7 +1226,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libQt5Network.prl
 %{_includedir}/qt5/QtNetwork
 %{_pkgconfigdir}/Qt5Network.pc
-%{_libdir}/cmake/Qt5Network
+%dir %{_libdir}/cmake/Qt5Network
+%{_libdir}/cmake/Qt5Network/Qt5NetworkConfig*.cmake
+%{_libdir}/cmake/Qt5Network/Qt5Network_QConnmanEnginePlugin.cmake
+%{_libdir}/cmake/Qt5Network/Qt5Network_QGenericEnginePlugin.cmake
+%{_libdir}/cmake/Qt5Network/Qt5Network_QNetworkManagerEnginePlugin.cmake
 %{qt5dir}/mkspecs/modules/qt_lib_network.pri
 %{qt5dir}/mkspecs/modules/qt_lib_network_private.pri
 
@@ -1257,7 +1285,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libQt5PrintSupport.prl
 %{_includedir}/qt5/QtPrintSupport
 %{_pkgconfigdir}/Qt5PrintSupport.pc
-%{_libdir}/cmake/Qt5PrintSupport
+%dir %{_libdir}/cmake/Qt5PrintSupport
+%{_libdir}/cmake/Qt5PrintSupport/Qt5PrintSupportConfig*.cmake
+%if %{with cups}
+%{_libdir}/cmake/Qt5PrintSupport/Qt5PrintSupport_QCupsPrinterSupportPlugin.cmake
+%endif
 %{qt5dir}/mkspecs/modules/qt_lib_printsupport.pri
 %{qt5dir}/mkspecs/modules/qt_lib_printsupport_private.pri
 
@@ -1267,12 +1299,15 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libQt5Sql.so.5
 # loaded from src/sql/kernel/qsqldatabase.cpp
 %dir %{qt5dir}/plugins/sqldrivers
+# common for base -devel and plugin-specific files
+%dir %{_libdir}/cmake/Qt5Sql
 
 %if %{with db2}
 %files -n Qt5Sql-sqldriver-db2
 %defattr(644,root,root,755)
 # R: (proprietary) DB2 libs
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqldb2.so
+%{_libdir}/cmake/Qt5Sql/Qt5Sql_QDB2DriverPlugin.cmake
 %endif
 
 %if %{with ibase}
@@ -1280,6 +1315,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # R: Firebird-lib
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlibase.so
+%{_libdir}/cmake/Qt5Sql/Qt5Sql_QIBaseDriverPlugin.cmake
 %endif
 
 %if %{with sqlite3}
@@ -1287,6 +1323,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # R: sqlite3
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlite.so
+%{_libdir}/cmake/Qt5Sql/Qt5Sql_QSQLiteDriverPlugin.cmake
 %endif
 
 %if %{with sqlite2}
@@ -1294,6 +1331,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # R: sqlite >= 2
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlite2.so
+%{_libdir}/cmake/Qt5Sql/Qt5Sql_QSQLite2DriverPlugin.cmake
 %endif
 
 %if %{with mysql}
@@ -1301,6 +1339,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # R: mysql-libs
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlmysql.so
+%{_libdir}/cmake/Qt5Sql/Qt5Sql_QMYSQLDriverPlugin.cmake
 %endif
 
 %if %{with oci}
@@ -1308,6 +1347,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # R: (proprietary) Oracle libs
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqloci.so
+%{_libdir}/cmake/Qt5Sql/Qt5Sql_QOCIDriverPlugin.cmake
 %endif
 
 %if %{with odbc}
@@ -1315,6 +1355,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # R: unixODBC
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlodbc.so
+%{_libdir}/cmake/Qt5Sql/Qt5Sql_QODBCDriverPlugin.cmake
 %endif
 
 %if %{with pgsql}
@@ -1322,6 +1363,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # R: postgresql-libs
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqlpsql.so
+%{_libdir}/cmake/Qt5Sql/Qt5Sql_QPSQLDriverPlugin.cmake
 %endif
 
 %if %{with freetds}
@@ -1329,6 +1371,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # R: freetds
 %attr(755,root,root) %{qt5dir}/plugins/sqldrivers/libqsqltds.so
+%{_libdir}/cmake/Qt5Sql/Qt5Sql_QTDSDriverPlugin.cmake
 %endif
 
 %files -n Qt5Sql-devel
@@ -1337,7 +1380,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libQt5Sql.prl
 %{_includedir}/qt5/QtSql
 %{_pkgconfigdir}/Qt5Sql.pc
-%{_libdir}/cmake/Qt5Sql
+%{_libdir}/cmake/Qt5Sql/Qt5SqlConfig*.cmake
 %{qt5dir}/mkspecs/modules/qt_lib_sql.pri
 %{qt5dir}/mkspecs/modules/qt_lib_sql_private.pri
 
@@ -1369,7 +1412,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libQt5Widgets.prl
 %{_includedir}/qt5/QtWidgets
 %{_pkgconfigdir}/Qt5Widgets.pc
-%{_libdir}/cmake/Qt5Widgets
+%dir %{_libdir}/cmake/Qt5Widgets
+%{_libdir}/cmake/Qt5Widgets/Qt5WidgetsConfig*.cmake
+%{_libdir}/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake
+%{_libdir}/cmake/Qt5Widgets/Qt5Widgets_AccessibleFactory.cmake
 %{qt5dir}/mkspecs/modules/qt_lib_widgets.pri
 %{qt5dir}/mkspecs/modules/qt_lib_widgets_private.pri
 
