@@ -942,6 +942,9 @@ install -d $RPM_BUILD_ROOT{/etc/qt5,%{_bindir},%{_pkgconfigdir}}
 %{__make} install_%{!?with_qch:html_}docs \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 
+# external plugins loaded from qtbase libs
+install -d $RPM_BUILD_ROOT%{qt5dir}/plugins/iconengines
+
 # kill unnecessary -L%{_libdir} from *.la, *.prl, *.pc
 %{__sed} -i -e "s,-L%{_libdir} \?,,g" \
 	$RPM_BUILD_ROOT%{_libdir}/*.{la,prl} \
@@ -1117,6 +1120,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevmouseplugin.so
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevtabletplugin.so
 %attr(755,root,root) %{qt5dir}/plugins/generic/libqevdevtouchplugin.so
+# loaded from src/gui/image/qicon.cpp
+%dir %{qt5dir}/plugins/iconengines
 # loaded from src/gui/image/qimage{reader,writer}.cpp
 %dir %{qt5dir}/plugins/imageformats
 %attr(755,root,root) %{qt5dir}/plugins/imageformats/libqgif.so
