@@ -8,6 +8,9 @@
 #
 # Conditional build:
 %bcond_with	static_libs	# static libraries [incomplete support in .spec]
+# -- build targets
+%bcond_without	qch		# QCH documentation
+%bcond_without	qm		# QM translations
 # -- features
 %bcond_without	cups		# CUPS printing support
 %bcond_without	directfb	# DirectFB platform support
@@ -15,7 +18,6 @@
 %bcond_without	gtk		# GTK+ theme integration
 %bcond_without	kms		# KMS platform support
 %bcond_without	pch		# pch (pre-compiled headers) in qmake
-%bcond_without	qch		# QCH documentation
 %bcond_with	systemd		# logging to journald
 %bcond_without	tslib		# tslib support
 # -- databases
@@ -64,6 +66,8 @@ License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
 # Source0-md5:	4bc43a72e1b3d804171e5b52640e8d96
+Source1:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/submodules/qttranslations-opensource-src-%{version}.tar.xz
+# Source1-md5:	1f8d488b6ac26cdbec7f7f7364cd01d0
 Patch0:		qtbase-oracle-instantclient.patch
 URL:		http://qt-project.org/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
@@ -101,6 +105,7 @@ BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	pulseaudio-devel >= 0.9.10
 %{?with_qch:BuildRequires:	qt5-assistant >= 5.2}
+%{?with_qm:BuildRequires:	qt5-linguist >= 5.2}
 BuildRequires:	rpmbuild(macros) >= 1.654
 BuildRequires:	sed >= 4.0
 %{?with_sqlite2:BuildRequires:	sqlite-devel}
@@ -786,7 +791,7 @@ Qt5 makefile generator.
 Generator plików makefile dla aplikacji Qt5.
 
 %prep
-%setup -q -n %{orgname}-opensource-src-%{version}
+%setup -q -n %{orgname}-opensource-src-%{version} %{?with_qm:-a1}
 %patch0 -p1
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
@@ -831,7 +836,6 @@ COMMONOPT=" \
 	-libdir %{_libdir} \
 	-plugindir %{qt5dir}/plugins \
 	-datadir %{_datadir}/qt5 \
-	-translationdir %{_localedir} \
 	-sysconfdir %{_sysconfdir}/qt5 \
 	-examplesdir %{_examplesdir}/qt5 \
 %if %{with mysql}
@@ -932,6 +936,14 @@ wd="$(pwd)"
 # build only HTML docs if without qch (which require qhelpgenerator)
 %{__make} %{!?with_qch:html_}docs
 
+%if %{with qm}
+export QMAKEPATH=$(pwd)
+cd qttranslations-opensource-src-%{version}
+../bin/qmake
+%{__make}
+cd ..
+%endif
+
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/etc/qt5,%{_bindir},%{_pkgconfigdir}}
@@ -941,6 +953,15 @@ install -d $RPM_BUILD_ROOT{/etc/qt5,%{_bindir},%{_pkgconfigdir}}
 
 %{__make} install_%{!?with_qch:html_}docs \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
+
+%if %{with qm}
+%{__make} -C qttranslations-opensource-src-%{version} install \
+	INSTALL_ROOT=$RPM_BUILD_ROOT
+# keep only qt and qtbase
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/qt5/translations/{assistant,designer,linguist,qmlviewer,qt_help,qtconfig,qtconnectivity,qtdeclarative,qtlocation,qtmultimedia,qtquick1,qtscript,qtxmlpatterns}_*.qm
+%else
+install -d $RPM_BUILD_ROOT%{_datadir}/qt5/translations
+%endif
 
 # external plugins loaded from qtbase libs
 install -d $RPM_BUILD_ROOT%{qt5dir}/plugins/iconengines
@@ -1009,6 +1030,21 @@ ifecho_tree examples %{_examplesdir}/qt5/touch
 ifecho_tree examples %{_examplesdir}/qt5/widgets
 ifecho_tree examples %{_examplesdir}/qt5/xml
 
+# find_lang --with-qm supports only PLD qt3/qt4 specific %{_datadir}/locale/*/LC_MESSAGES layout
+find_qt5_qm()
+{
+	name="$1"
+	find $RPM_BUILD_ROOT%{_datadir}/qt5/translations -name "${name}_*.qm" | \
+		sed -e "s:^$RPM_BUILD_ROOT::" \
+		    -e 's:\(.*/'$name'_\)\([a-z][a-z][a-z]\?\)\(_[A-Z][A-Z]\)\?\(\.qm\)$:%lang(\2\3) \1\2\3\4:'
+}
+
+echo '%defattr(644,root,root,755)' > qtbase.lang
+%if %{with qm}
+find_qt5_qm qt >> qtbase.lang
+find_qt5_qm qtbase >> qtbase.lang
+%endif
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -1068,7 +1104,7 @@ rm -rf $RPM_BUILD_ROOT
 %{qt5dir}/mkspecs/modules/qt_lib_concurrent.pri
 %{qt5dir}/mkspecs/modules/qt_lib_concurrent_private.pri
 
-%files -n Qt5Core
+%files -n Qt5Core -f qtbase.lang
 %defattr(644,root,root,755)
 %doc LGPL_EXCEPTION.txt header.* dist/{README,changes-*}
 %attr(755,root,root) %{_libdir}/libQt5Core.so.*.*.*
@@ -1079,6 +1115,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{qt5dir}/mkspecs
 %dir %{qt5dir}/mkspecs/modules
 %dir %{qt5dir}/plugins
+%dir %{_datadir}/qt5
+%dir %{_datadir}/qt5/translations
 
 %files -n Qt5Core-devel
 %defattr(644,root,root,755)
