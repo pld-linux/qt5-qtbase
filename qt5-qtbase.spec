@@ -83,7 +83,7 @@ BuildRequires:	alsa-lib-devel
 BuildRequires:	dbus-devel >= 1.2
 BuildRequires:	fontconfig-devel
 %{?with_freetds:BuildRequires:	freetds-devel}
-BuildRequires:	freetype-devel >= 1:2.0.0
+BuildRequires:	freetype-devel >= 2.1.3
 %{?with_pch:BuildRequires:	gcc >= 5:4.0}
 BuildRequires:	gdb
 BuildRequires:	glib2-devel >= 2.0.0
@@ -435,7 +435,7 @@ Requires:	Qt5Core-devel = %{version}-%{release}
 Requires:	Qt5DBus-devel = %{version}-%{release}
 Requires:	Qt5Gui-devel = %{version}-%{release}
 Requires:	fontconfig-devel
-Requires:	freetype-devel
+Requires:	freetype-devel >= 2.1.3
 Requires:	xorg-lib-libX11-devel
 Requires:	xorg-lib-libXrender-devel
 Requires:	xorg-lib-libXext-devel
