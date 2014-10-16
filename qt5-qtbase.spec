@@ -59,15 +59,15 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.3.1
-Release:	5
+Version:	5.3.2
+Release:	1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
-# Source0-md5:	572c9953847d391f2d33b420bbcdca46
+# Source0-md5:	563e2b10274171f1184b3fd7260b4991
 Source1:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/submodules/qttranslations-opensource-src-%{version}.tar.xz
-# Source1-md5:	d43878fc7a5b9fdee03039770dbac1fa
+# Source1-md5:	f2332bedc9c1ac8e762c62cfa71aa640
 Patch0:		qtbase-oracle-instantclient.patch
 URL:		http://qt-project.org/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
