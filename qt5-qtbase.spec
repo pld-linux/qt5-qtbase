@@ -69,6 +69,7 @@ Source0:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/subm
 Source1:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/submodules/qttranslations-opensource-src-%{version}.tar.xz
 # Source1-md5:	f2332bedc9c1ac8e762c62cfa71aa640
 Patch0:		qtbase-oracle-instantclient.patch
+Patch1:		%{name}-system_cacerts.patch
 URL:		http://qt-project.org/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
@@ -793,6 +794,7 @@ Generator plików makefile dla aplikacji Qt5.
 %prep
 %setup -q -n %{orgname}-opensource-src-%{version} %{?with_qm:-a1}
 %patch0 -p1
+%patch1 -p1
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
