@@ -60,7 +60,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.3.2
-Release:	1
+Release:	2
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
@@ -950,6 +950,9 @@ cd ..
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/etc/qt5,%{_bindir},%{_pkgconfigdir}}
 
+# for QtSolutions (qtlockedfile, qtsingleapplication, etc)
+install -d $RPM_BUILD_ROOT%{_includedir}/qt4/QtSolutions
+
 %{__make} install \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 
@@ -1125,6 +1128,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libQt5Core.so
 %{_libdir}/libQt5Core.prl
 %dir %{_includedir}/qt5
+%dir %{_includedir}/qt5/QtSolutions
 %{_includedir}/qt5/QtCore
 %{_pkgconfigdir}/Qt5Core.pc
 %{_libdir}/cmake/Qt5
