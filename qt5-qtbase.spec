@@ -20,6 +20,7 @@
 %bcond_without	pch		# pch (pre-compiled headers) in qmake
 %bcond_with	systemd		# logging to journald
 %bcond_without	tslib		# tslib support
+%bcond_with	openvg		# OpenVG support
 # -- databases
 %bcond_without	freetds		# TDS (Sybase/MS SQL) plugin
 %bcond_without	mysql		# MySQL plugin
@@ -74,7 +75,7 @@ URL:		http://qt-project.org/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
 %{?with_ibase:BuildRequires:	Firebird-devel}
-BuildRequires:	Mesa-libOpenVG-devel
+%{?with_openvg:BuildRequires:	Mesa-libOpenVG-devel}
 %{?with_kms:BuildRequires:	Mesa-libgbm-devel}
 BuildRequires:	OpenGL-devel
 %{?with_kms:BuildRequires:	OpenGLESv2-devel}
@@ -882,6 +883,7 @@ COMMONOPT=" \
 	-system-xkbcommon \
 	-system-zlib \
 	%{?with_tslib:-tslib} \
+	-%{!?with_openvg:no-}openvg \
 	-xcursor \
 	-xfixes \
 	-xinerama \
