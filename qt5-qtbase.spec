@@ -769,7 +769,7 @@ Przykłady do podstawowych komponentów szkieletu aplikacji Qt5.
 
 %package -n qt5-build
 Summary:	Qt5 build tools
-Summary(pl.UTF-8):	Narzędzia do budowania dla Qt4
+Summary(pl.UTF-8):	Narzędzia do budowania dla Qt5
 Group:		Development/Tools
 
 %description -n qt5-build
@@ -953,7 +953,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/etc/qt5,%{_bindir},%{_pkgconfigdir}}
 
 # for QtSolutions (qtlockedfile, qtsingleapplication, etc)
-install -d $RPM_BUILD_ROOT%{_includedir}/qt4/QtSolutions
+install -d $RPM_BUILD_ROOT%{_includedir}/qt5/QtSolutions
 
 %{__make} install \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
