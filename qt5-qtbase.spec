@@ -8,6 +8,7 @@
 #
 # Conditional build:
 %bcond_with	static_libs	# static libraries [incomplete support in .spec]
+%bcond_with	bootstrap	# disable features to able to build without installed qt5
 # -- build targets
 %bcond_without	qch		# QCH documentation
 %bcond_without	qm		# QM translations
@@ -51,6 +52,11 @@
 %endif
 %ifarch pentium4 %{x8664}
 %define		with_sse2	1
+%endif
+
+%if %{with bootstrap}
+%undefine	with_qch
+%undefine	with_qm
 %endif
 
 %define		icu_abi		54
