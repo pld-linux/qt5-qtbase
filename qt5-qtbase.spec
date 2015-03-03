@@ -41,16 +41,16 @@
 %bcond_with	avx		# use AVX instructions (Intel since Sandy Bridge, AMD since Bulldozer)
 %bcond_with	avx2		# use AVX2 instructions (Intel since Haswell)
 
-%ifnarch %{ix86} %{x8664} sparc sparcv9 alpha ppc
+%ifnarch %{ix86} %{x8664} x32 sparc sparcv9 alpha ppc
 %undefine	with_ibase
 %endif
 %ifarch	athlon
 %define		with_3dnow	1
 %endif
-%ifarch athlon pentium3 pentium4 %{x8664}
+%ifarch athlon pentium3 pentium4 %{x8664} x32
 %define		with_mmx	1
 %endif
-%ifarch pentium4 %{x8664}
+%ifarch pentium4 %{x8664} x32
 %define		with_sse2	1
 %endif
 
@@ -66,15 +66,15 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.3.2
-Release:	2
+Version:	5.4.1
+Release:	0.1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
-Source0:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
-# Source0-md5:	563e2b10274171f1184b3fd7260b4991
-Source1:	http://download.qt-project.org/official_releases/qt/5.3/%{version}/submodules/qttranslations-opensource-src-%{version}.tar.xz
-# Source1-md5:	f2332bedc9c1ac8e762c62cfa71aa640
+Source0:	http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
+# Source0-md5:	9507825e558c980fed602de1f16ec7ae
+Source1:	http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/qttranslations-opensource-src-%{version}.tar.xz
+# Source1-md5:	0bdd1b0a83b03a04a4ebeedfa3057d21
 Patch0:		qtbase-oracle-instantclient.patch
 Patch1:		%{name}-system_cacerts.patch
 URL:		http://qt-project.org/
@@ -137,6 +137,7 @@ BuildRequires:	xorg-lib-libXinerama-devel
 BuildRequires:	xorg-lib-libXrandr-devel
 BuildRequires:	xorg-lib-libXrender-devel
 BuildRequires:	xorg-lib-libxkbcommon-devel >= 0.4.1
+BuildRequires:	xorg-lib-libxkbcommon-x11-devel >= 0.4.1
 BuildRequires:	xz
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -662,13 +663,11 @@ Requires:	Qt5Gui = %{version}-%{release}
 
 %description -n Qt5Widgets
 The Qt5 Widgets library extends Qt 5 GUI with C++ widget
-functionality. This package contains also qtaccessiblewidgets plugin
-for Qt5 Gui library.
+functionality.
 
 %description -n Qt5Widgets -l pl.UTF-8
 Biblioteka Qt5 Widgets rozszerza graficzny interfejs Qt 5 o
-funkcjonalność widgetów C++. Pakiet zawiera także wtyczkę
-qtaccessiblewidgets dla biblioteki Qt5 Gui.
+funkcjonalność widgetów C++.
 
 %package -n Qt5Widgets-devel
 Summary:	Qt5 Widgets library - development files
@@ -989,11 +988,8 @@ install -d $RPM_BUILD_ROOT%{qt5dir}/plugins/iconengines
 # actually drop *.la, follow policy of not packaging them when *.pc exist
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libQt5*.la
 
-# install tools
-install bin/findtr	$RPM_BUILD_ROOT%{qt5dir}/bin
 # symlinks in system bin dir
 cd $RPM_BUILD_ROOT%{_bindir}
-ln -sf ../%{_lib}/qt5/bin/findtr findtr-qt5
 ln -sf ../%{_lib}/qt5/bin/moc moc-qt5
 ln -sf ../%{_lib}/qt5/bin/qmake qmake-qt5
 ln -sf ../%{_lib}/qt5/bin/uic uic-qt5
@@ -1027,18 +1023,15 @@ ifecho_tree() {
 }
 
 echo "%defattr(644,root,root,755)" > examples.files
+ifecho_tree examples %{_examplesdir}/qt5/corelib
 ifecho_tree examples %{_examplesdir}/qt5/dbus
 ifecho_tree examples %{_examplesdir}/qt5/gui
-ifecho_tree examples %{_examplesdir}/qt5/ipc
-ifecho_tree examples %{_examplesdir}/qt5/json
 ifecho_tree examples %{_examplesdir}/qt5/network
 ifecho_tree examples %{_examplesdir}/qt5/opengl
 ifecho_tree examples %{_examplesdir}/qt5/qpa
 ifecho_tree examples %{_examplesdir}/qt5/qtconcurrent
 ifecho_tree examples %{_examplesdir}/qt5/qtestlib
 ifecho_tree examples %{_examplesdir}/qt5/sql
-ifecho_tree examples %{_examplesdir}/qt5/threads
-ifecho_tree examples %{_examplesdir}/qt5/tools
 ifecho_tree examples %{_examplesdir}/qt5/touch
 ifecho_tree examples %{_examplesdir}/qt5/widgets
 ifecho_tree examples %{_examplesdir}/qt5/xml
@@ -1163,8 +1156,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libQt5Gui.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libQt5Gui.so.5
-# loaded from src/gui/accessible/qaccessible.cpp
-%dir %{qt5dir}/plugins/accessible
 # loaded from src/gui/kernel/qgenericpluginfactory.cpp
 %dir %{qt5dir}/plugins/generic
 # R: udev-libs (by all qevdev* plugins)
@@ -1247,6 +1238,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libQt5Gui.so
 %{_libdir}/libQt5Gui.prl
 %{_includedir}/qt5/QtGui
+%{_includedir}/qt5/QtPlatformHeaders
 %{_pkgconfigdir}/Qt5Gui.pc
 %{_libdir}/cmake/Qt5Gui/Qt5GuiConfig*.cmake
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QEvdevKeyboardPlugin.cmake
@@ -1460,8 +1452,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libQt5Widgets.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libQt5Widgets.so.5
-# Qt5Gui plugin which requires Qt5Widgets
-%attr(755,root,root) %{qt5dir}/plugins/accessible/libqtaccessiblewidgets.so
 
 %files -n Qt5Widgets-devel
 %defattr(644,root,root,755)
@@ -1472,7 +1462,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/cmake/Qt5Widgets
 %{_libdir}/cmake/Qt5Widgets/Qt5WidgetsConfig*.cmake
 %{_libdir}/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake
-%{_libdir}/cmake/Qt5Widgets/Qt5Widgets_AccessibleFactory.cmake
 %{qt5dir}/mkspecs/modules/qt_lib_widgets.pri
 %{qt5dir}/mkspecs/modules/qt_lib_widgets_private.pri
 
@@ -1506,6 +1495,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/qt5-doc/qtgui
 %{_docdir}/qt5-doc/qtnetwork
 %{_docdir}/qt5-doc/qtopengl
+%{_docdir}/qt5-doc/qtplatformheaders
 %{_docdir}/qt5-doc/qtprintsupport
 %{_docdir}/qt5-doc/qtsql
 %{_docdir}/qt5-doc/qttestlib
@@ -1537,7 +1527,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n qt5-build
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/findtr-qt5
 %attr(755,root,root) %{_bindir}/moc-qt5
 %attr(755,root,root) %{_bindir}/qdbuscpp2xml-qt5
 %attr(755,root,root) %{_bindir}/qdbusxml2cpp-qt5
@@ -1545,7 +1534,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/qlalr-qt5
 %attr(755,root,root) %{_bindir}/rcc-qt5
 %attr(755,root,root) %{_bindir}/uic-qt5
-%attr(755,root,root) %{qt5dir}/bin/findtr
 %attr(755,root,root) %{qt5dir}/bin/moc
 %attr(755,root,root) %{qt5dir}/bin/qdbuscpp2xml
 %attr(755,root,root) %{qt5dir}/bin/qdbusxml2cpp
