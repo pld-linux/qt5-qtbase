@@ -970,7 +970,7 @@ install -d $RPM_BUILD_ROOT%{_includedir}/qt5/QtSolutions
 %{__make} -C qttranslations-opensource-src-%{version} install \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 # keep only qt and qtbase
-%{__rm} $RPM_BUILD_ROOT%{_datadir}/qt5/translations/{assistant,designer,linguist,qmlviewer,qt_help,qtconfig,qtconnectivity,qtdeclarative,qtlocation,qtmultimedia,qtquick1,qtscript,qtxmlpatterns}_*.qm
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/qt5/translations/{assistant,designer,linguist,qmlviewer,qt_help,qtconfig,qtconnectivity,qtdeclarative,qtlocation,qtmultimedia,qtquick1,qtquickcontrols,qtscript,qtxmlpatterns}_*.qm
 %else
 install -d $RPM_BUILD_ROOT%{_datadir}/qt5/translations
 %endif
@@ -1513,6 +1513,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/qt5-doc/qtgui.qch
 %{_docdir}/qt5-doc/qtnetwork.qch
 %{_docdir}/qt5-doc/qtopengl.qch
+%{_docdir}/qt5-doc/qtplatformheaders.qch
 %{_docdir}/qt5-doc/qtprintsupport.qch
 %{_docdir}/qt5-doc/qtsql.qch
 %{_docdir}/qt5-doc/qttestlib.qch
