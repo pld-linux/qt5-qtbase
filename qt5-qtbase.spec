@@ -66,15 +66,15 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.4.2
-Release:	1
+Version:	5.5.0
+Release:	0.1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
-Source0:	http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
-# Source0-md5:	67a95eec79ffc4a14f516ad6f3d24c96
-Source1:	http://download.qt-project.org/official_releases/qt/5.4/%{version}/submodules/qttranslations-opensource-src-%{version}.tar.xz
-# Source1-md5:	35151a736e3b720de4f5128386f9c834
+Source0:	http://download.qt-project.org/official_releases/qt/5.5/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
+# Source0-md5:	252613b5a180c94d7196d10467a4f08b
+Source1:	http://download.qt-project.org/official_releases/qt/5.5/%{version}/submodules/qttranslations-opensource-src-%{version}.tar.xz
+# Source1-md5:	423cccbace459623a9a173cede968cbe
 Patch0:		qtbase-oracle-instantclient.patch
 Patch1:		%{name}-system_cacerts.patch
 URL:		http://qt-project.org/
@@ -1211,8 +1211,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -n Qt5Gui-platform-kms
 %defattr(644,root,root,755)
 # R: EGL GLESv2 libdrm libgbm udev-libs
-%attr(755,root,root) %{qt5dir}/plugins/platforms/libqkms.so
-%{_libdir}/cmake/Qt5Gui/Qt5Gui_QKmsIntegrationPlugin.cmake
+#%attr(755,root,root) %{qt5dir}/plugins/platforms/libqkms.so
+#%{_libdir}/cmake/Qt5Gui/Qt5Gui_QKmsIntegrationPlugin.cmake
 %endif
 
 %if %{with egl}
@@ -1578,3 +1578,32 @@ rm -rf $RPM_BUILD_ROOT
 %{qt5dir}/mkspecs/winphone-*
 %{qt5dir}/mkspecs/winrt-*
 %{qt5dir}/mkspecs/*.pri
+
+%if 0
+# unpackaged files
+	/usr/lib64/cmake/Qt5Gui/Qt5Gui_QEglFSKmsIntegrationPlugin.cmake
+	/usr/lib64/cmake/Qt5Gui/Qt5Gui_QEglFSX11IntegrationPlugin.cmake
+	/usr/lib64/cmake/Qt5Gui/Qt5Gui_QTuioTouchPlugin.cmake
+	/usr/lib64/cmake/Qt5Gui/Qt5Gui_QXcbEglIntegrationPlugin.cmake
+	/usr/lib64/cmake/Qt5Gui/Qt5Gui_QXcbGlxIntegrationPlugin.cmake
+	/usr/lib64/libQt5EglDeviceIntegration.prl
+	/usr/lib64/libQt5EglDeviceIntegration.so
+	/usr/lib64/libQt5EglDeviceIntegration.so.5
+	/usr/lib64/libQt5EglDeviceIntegration.so.5.5.0
+	/usr/lib64/libQt5XcbQpa.prl
+	/usr/lib64/libQt5XcbQpa.so
+	/usr/lib64/libQt5XcbQpa.so.5
+	/usr/lib64/libQt5XcbQpa.so.5.5.0
+	/usr/lib64/pkgconfig/Qt5EglDeviceIntegration.pc
+	/usr/lib64/pkgconfig/Qt5XcbQpa.pc
+	/usr/lib64/qt5/mkspecs/haiku-g++/qmake.conf
+	/usr/lib64/qt5/mkspecs/haiku-g++/qplatformdefs.h
+	/usr/lib64/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri
+	/usr/lib64/qt5/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri
+	/usr/lib64/qt5/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
+	/usr/lib64/qt5/plugins/egldeviceintegrations/libqeglfs-x11-integration.so
+	/usr/lib64/qt5/plugins/generic/libqtuiotouchplugin.so
+	/usr/lib64/qt5/plugins/xcbglintegrations/libqxcb-egl-integration.so
+	/usr/lib64/qt5/plugins/xcbglintegrations/libqxcb-glx-integration.so
+	/usr/share/qt5/translations/qtwebsockets_fr.qm
+%endif
