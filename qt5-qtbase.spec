@@ -1,5 +1,3 @@
-# TODO: separate more plugins? (think of qxcb when there are more commonly used platforms)
-#
 # Note on packaging .cmake files for plugins:
 # Base Qt5${component}Config.cmake file includes all existing Qt5${component}_*Plugin.cmake
 # files, which trigger check for presence of plugin module in filesystem.
@@ -18,6 +16,7 @@
 %bcond_without	egl		# EGL (EGLFS, minimal EGL) platform support
 %bcond_without	gtk		# GTK+ theme integration
 %bcond_without	kms		# KMS platform support
+%bcond_without	libinput	# libinput support
 %bcond_without	pch		# pch (pre-compiled headers) in qmake
 %bcond_with	systemd		# logging to journald
 %bcond_without	tslib		# tslib support
@@ -59,22 +58,22 @@
 %undefine	with_qm
 %endif
 
-%define		icu_abi		55
+%define		icu_abi		56
 %define		next_icu_abi	%(echo $((%{icu_abi} + 1)))
 
 %define		orgname		qtbase
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.5.0
-Release:	0.1
+Version:	5.5.1
+Release:	1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
 Source0:	http://download.qt-project.org/official_releases/qt/5.5/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
-# Source0-md5:	252613b5a180c94d7196d10467a4f08b
+# Source0-md5:	687e2b122fa2c3390b5e20a166d38038
 Source1:	http://download.qt-project.org/official_releases/qt/5.5/%{version}/submodules/qttranslations-opensource-src-%{version}.tar.xz
-# Source1-md5:	423cccbace459623a9a173cede968cbe
+# Source1-md5:	1f89d53fe759db123b4b6d9de9d9e8c9
 Patch0:		qtbase-oracle-instantclient.patch
 Patch1:		%{name}-system_cacerts.patch
 URL:		http://qt-project.org/
@@ -100,6 +99,7 @@ BuildRequires:	glib2-devel >= 2.0.0
 # see dependency on libicu version below
 BuildRequires:	libicu-devel < %{next_icu_abi}
 BuildRequires:	libicu-devel >= %{icu_abi}
+%{?with_libinput:BuildRequires:	libinput-devel}
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel >= 2:1.0.8
 BuildRequires:	libstdc++-devel
@@ -266,12 +266,8 @@ Summary:	Qt5 Gui library
 Summary(pl.UTF-8):	Biblioteka Qt5 Gui
 Group:		Libraries
 Requires:	Qt5Core = %{version}-%{release}
-# for:
-# - ibus platforminputcontext plugin
-# - qxcb platform plugin
+# for ibus platforminputcontext plugin
 Requires:	Qt5DBus = %{version}-%{release}
-# for qxcb platform plugin
-Requires:	libxcb >= 1.10
 # for compose platforminputcontext plugin
 Requires:	xorg-lib-libxkbcommon >= 0.4.1
 
@@ -282,6 +278,20 @@ applications written with Qt 5.
 %description -n Qt5Gui -l pl
 Biblioteka Qt5 Gui udostępnia podstawową funkcjonalność dla
 graficznych aplikacji napisanych z użyciem Qt 5.
+
+%package -n Qt5Gui-generic-libinput
+Summary:	Qt5 Gui generic input plugin for libinput
+Summary(pl.UTF-8):	Ogólna wtyczka wejścia Qt5 Gui z libinput
+Group:		Libraries
+Requires:	Qt5Gui = %{version}-%{release}
+
+%description -n Qt5Gui-generic-libinput
+Qt5 Gui generic input plugin to get mouse, keyboard and touch events
+via libinput.
+
+%description -n Qt5Gui-generic-libinput -l pl.UTF-8
+Ogólna wtyczka wejścia Qt5 Gui do pobierania zdarzeń myszy, klawiatury
+i dotykowych poprzez libinput.
 
 %package -n Qt5Gui-generic-tslib
 Summary:	Qt5 Gui generic input plugin for TSlib (touchscreen panel events)
@@ -295,6 +305,19 @@ Qt5 Gui generic input plugin for TSlib (touchscreen panel events).
 %description -n Qt5Gui-generic-tslib -l pl.UTF-8
 Ogólna wtyczka wejścia Qt5 Gui z TSlib (zdarzeń z paneli dotykowych).
 
+%package -n Qt5Gui-generic-tuiotouch
+Summary:	Qt5 Gui generic input plugin for TuioTouch
+Summary(pl.UTF-8):	Ogólna wtyczka wejścia Qt5 Gui z TuioTouch
+Group:		Libraries
+Requires:	Qt5Gui = %{version}-%{release}
+Requires:	Qt5Network = %{version}-%{release}
+
+%description -n Qt5Gui-generic-tuiotouch
+Qt5 Gui generic input plugin for TuioTouch.
+
+%description -n Qt5Gui-generic-tuiotouch -l pl.UTF-8
+Ogólna wtyczka wejścia Qt5 Gui z TuioTouch.
+
 %package -n Qt5Gui-platform-directfb
 Summary:	Qt5 Gui platform plugin for DirectFB
 Summary(pl.UTF-8):	Wtyczka platformy Qt5 Gui dla DirectFB
@@ -307,29 +330,118 @@ Qt5 Gui platform plugin for DirectFB.
 %description -n Qt5Gui-platform-directfb -l pl.UTF-8
 Wtyczka platformy Qt5 Gui dla DirectFB.
 
-%package -n Qt5Gui-platform-kms
-Summary:	Qt5 Gui platform plugin for KMS
-Summary(pl.UTF-8):	Wtyczka platformy Qt5 Gui dla KMS
-Group:		Libraries
-Requires:	Qt5Gui = %{version}-%{release}
-
-%description -n Qt5Gui-platform-kms
-Qt5 Gui platform plugin for KMS.
-
-%description -n Qt5Gui-platform-kms -l pl.UTF-8
-Wtyczka platformy Qt5 Gui dla KMS.
-
 %package -n Qt5Gui-platform-egl
-Summary:	Qt5 Gui platform plugins for EGL
-Summary(pl.UTF-8):	Wtyczki platform Qt5 Gui dla EGL
+Summary:	Qt5 Gui platform plugin for minimal EGL
+Summary(pl.UTF-8):	Wtyczka platformy Qt5 Gui dla minimalnego EGL
 Group:		Libraries
 Requires:	Qt5Gui = %{version}-%{release}
 
 %description -n Qt5Gui-platform-egl
-Qt5 Gui platform plugins for EGL.
+Qt5 Gui platform plugin for minimal EGL.
 
 %description -n Qt5Gui-platform-egl -l pl.UTF-8
-Wtyczki platform Qt5 Gui dla EGL.
+Wtyczki platformy Qt5 Gui dla minimalnego EGL.
+
+%package -n Qt5Gui-platform-eglfs
+Summary:	Qt5 Gui platform plugin and library for EglFs integration layer
+Summary(pl.UTF-8):	Wtyczka platformy Qt5 Gui oraz biblioteka warstwy integracyjnej EglFs
+Group:		Libraries
+Requires:	Qt5Gui = %{version}-%{release}
+
+%description -n Qt5Gui-platform-eglfs
+Qt5 Gui platform plugin and library for EglFs integration layer.
+
+%description -n Qt5Gui-platform-eglfs -l pl.UTF-8
+Wtyczka platformy Qt5 Gui oraz biblioteka warstwy integracyjnej EglFs.
+
+%package -n Qt5Gui-platform-eglfs-devel
+Summary:	Development files for Qt5 EglFs integration layer
+Summary(pl.UTF-8):	Pliki programistyczne warstwy integracyjnej Qt5 EglFs
+Group:		Development/Libraries
+Requires:	Qt5Gui-platform-eglfs = %{version}-%{release}
+
+%description -n Qt5Gui-platform-eglfs-devel
+Development files for Qt5 EglFs integration layer.
+
+%description -n Qt5Gui-platform-eglfs-devel -l pl.UTF-8
+Pliki programistyczne warstwy integracyjnej Qt5 EglFs.
+
+%package -n Qt5Gui-platform-eglfs-kms
+Summary:	Qt5 EglFs integration plugin for KMS
+Summary(pl.UTF-8):	Wtyczka integracji Qt5 EglFs dla KMS
+Group:		Libraries
+Requires:	Qt5Gui-platform-eglfs = %{version}-%{release}
+Obsoletes:	Qt5Gui-platform-kms < 5.5
+
+%description -n Qt5Gui-platform-eglfs-kms
+Qt5 EglFs integration plugin for KMS.
+
+%description -n Qt5Gui-platform-eglfs-kms -l pl.UTF-8
+Wtyczka integracji Qt5 EglFs dla KMS.
+
+%package -n Qt5Gui-platform-eglfs-x11
+Summary:	Qt5 EglFs integration plugin for X11
+Summary(pl.UTF-8):	Wtyczka integracji Qt5 EglFs dla X11
+Group:		Libraries
+Requires:	Qt5Gui-platform-eglfs = %{version}-%{release}
+
+%description -n Qt5Gui-platform-eglfs-x11
+Qt5 EglFs integration plugin for X11.
+
+%description -n Qt5Gui-platform-eglfs-x11 -l pl.UTF-8
+Wtyczka integracji Qt5 EglFs dla X11.
+
+%package -n Qt5Gui-platform-xcb
+Summary:	Qt5 Gui platform plugin and library for XcbQpa integration layer
+Summary(pl.UTF-8):	Wtyczka platformy Qt5 Gui oraz biblioteka warstwy integracyjnej XcbQpa
+Group:		Libraries
+Requires:	Qt5DBus = %{version}-%{release}
+Requires:	Qt5Gui = %{version}-%{release}
+Requires:	libxcb >= 1.10
+Requires:	xorg-lib-libxkbcommon-x11 >= 0.4.1
+
+%description -n Qt5Gui-platform-xcb
+Qt5 Gui platform plugin and library for XcbQpa integration layer.
+
+%description -n Qt5Gui-platform-xcb -l pl.UTF-8
+Wtyczka platformy Qt5 Gui oraz biblioteka warstwy integracyjnej
+XcbQpa.
+
+%package -n Qt5Gui-platform-xcb-devel
+Summary:	Development files for Qt5 XcbQpa integration layer
+Summary(pl.UTF-8):	Pliki programistyczne warstwy integracyjnej Qt5 XcbQpa
+Group:		Development/Libraries
+Requires:	Qt5Gui-platform-eglfs = %{version}-%{release}
+
+%description -n Qt5Gui-platform-xcb-devel
+Development files for Qt5 XcbQpa integration layer.
+
+%description -n Qt5Gui-platform-xcb-devel -l pl.UTF-8
+Pliki programistyczne warstwy integracyjnej Qt5 XcbQpa.
+
+%package -n Qt5Gui-platform-xcb-egl
+Summary:	Qt5 XcbQpa integration plugin for EGL
+Summary(pl.UTF-8):	Wtyczka integracji Qt5 XcbQpa dla EGL
+Group:		Libraries
+Requires:	Qt5Gui-platform-xcb = %{version}-%{release}
+
+%description -n Qt5Gui-platform-xcb-egl
+Qt5 XcbQpa integration plugin for EGL.
+
+%description -n Qt5Gui-platform-xcb-egl -l pl.UTF-8
+Wtyczka integracji Qt5 XcbQpa dla EGL.
+
+%package -n Qt5Gui-platform-xcb-glx
+Summary:	Qt5 XcbQpa integration plugin for GLX
+Summary(pl.UTF-8):	Wtyczka integracji Qt5 XcbQpa dla GLX
+Group:		Libraries
+Requires:	Qt5Gui-platform-xcb = %{version}-%{release}
+
+%description -n Qt5Gui-platform-xcb-glx
+Qt5 XcbQpa integration plugin for GLX.
+
+%description -n Qt5Gui-platform-xcb-glx -l pl.UTF-8
+Wtyczka integracji Qt5 XcbQpa dla GLX.
 
 %package -n Qt5Gui-platformtheme-gtk2
 Summary:	Qt5 Gui platform theme plugin for GTK+ 2.x
@@ -865,6 +977,7 @@ COMMONOPT=" \
 	-nis \
 	%{!?with_egl:-no-eglfs} \
 	%{!?with_kms:-no-kms} \
+	%{!?with_libinput:-no-libinput} \
 	-no-rpath \
 	-no-separate-debug-info \
 	%{!?with_sse2:-no-sse2} \
@@ -970,7 +1083,7 @@ install -d $RPM_BUILD_ROOT%{_includedir}/qt5/QtSolutions
 %{__make} -C qttranslations-opensource-src-%{version} install \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 # keep only qt and qtbase
-%{__rm} $RPM_BUILD_ROOT%{_datadir}/qt5/translations/{assistant,designer,linguist,qmlviewer,qt_help,qtconfig,qtconnectivity,qtdeclarative,qtlocation,qtmultimedia,qtquick1,qtquickcontrols,qtscript,qtxmlpatterns}_*.qm
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/qt5/translations/{assistant,designer,linguist,qmlviewer,qt_help,qtconfig,qtconnectivity,qtdeclarative,qtlocation,qtmultimedia,qtquick1,qtquickcontrols,qtscript,qtwebsockets,qtxmlpatterns}_*.qm
 %else
 install -d $RPM_BUILD_ROOT%{_datadir}/qt5/translations
 %endif
@@ -1065,6 +1178,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %post	-n Qt5Gui -p /sbin/ldconfig
 %postun	-n Qt5Gui -p /sbin/ldconfig
+
+%post	-n Qt5Gui-platform-eglfs -p /sbin/ldconfig
+%postun	-n Qt5Gui-platform-eglfs -p /sbin/ldconfig
+
+%post	-n Qt5Gui-platform-xcb -p /sbin/ldconfig
+%postun	-n Qt5Gui-platform-xcb -p /sbin/ldconfig
 
 %post	-n Qt5Network -p /sbin/ldconfig
 %postun	-n Qt5Network -p /sbin/ldconfig
@@ -1184,12 +1303,18 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqminimal.so
 # R: freetype libX11 libXrender
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqoffscreen.so
-# R: Qt5DBus libxcb xcb-* xorg-* ...
-%attr(755,root,root) %{qt5dir}/plugins/platforms/libqxcb.so
 # loaded from src/gui/kernel/qplatformthemefactory.cpp
 %dir %{qt5dir}/plugins/platformthemes
 # common for base -devel and plugin-specific files
 %dir %{_libdir}/cmake/Qt5Gui
+
+%if %{with libinput}
+%files -n Qt5Gui-generic-libinput
+%defattr(644,root,root,755)
+# R: libinput libxkbcommon udev
+%attr(755,root,root) %{qt5dir}/plugins/generic/libqlibinputplugin.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QLibInputPlugin.cmake
+%endif
 
 %if %{with tslib}
 %files -n Qt5Gui-generic-tslib
@@ -1199,6 +1324,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QTsLibPlugin.cmake
 %endif
 
+%files -n Qt5Gui-generic-tuiotouch
+%defattr(644,root,root,755)
+# R: Qt5Network
+%attr(755,root,root) %{qt5dir}/plugins/generic/libqtuiotouchplugin.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QTuioTouchPlugin.cmake
+
 %if %{with directfb}
 %files -n Qt5Gui-platform-directfb
 %defattr(644,root,root,755)
@@ -1207,23 +1338,72 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QDirectFbIntegrationPlugin.cmake
 %endif
 
-%if %{with kms}
-%files -n Qt5Gui-platform-kms
-%defattr(644,root,root,755)
-# R: EGL GLESv2 libdrm libgbm udev-libs
-#%attr(755,root,root) %{qt5dir}/plugins/platforms/libqkms.so
-#%{_libdir}/cmake/Qt5Gui/Qt5Gui_QKmsIntegrationPlugin.cmake
-%endif
-
 %if %{with egl}
 %files -n Qt5Gui-platform-egl
 %defattr(644,root,root,755)
-# R: egl fontconfig freetype (for two following)
-%attr(755,root,root) %{qt5dir}/plugins/platforms/libqeglfs.so
+# R: egl fontconfig freetype
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqminimalegl.so
-%{_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSIntegrationPlugin.cmake
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QMinimalEglIntegrationPlugin.cmake
 %endif
+
+%files -n Qt5Gui-platform-eglfs
+%defattr(644,root,root,755)
+# R: Qt5Gui Qt5Core EGL GL ts fontconfig freetype glib2 udev mtdev
+%attr(755,root,root) %{_libdir}/libQt5EglDeviceIntegration.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5EglDeviceIntegration.so.5
+# R: egl fontconfig freetype (for two following)
+%attr(755,root,root) %{qt5dir}/plugins/platforms/libqeglfs.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSIntegrationPlugin.cmake
+# loaded from src/plugins/platforms/eglfs/qeglfsdeviceintegration.cpp
+%dir %{qt5dir}/plugins/egldeviceintegrations
+
+%files -n Qt5Gui-platform-eglfs-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5EglDeviceIntegration.so
+%{_libdir}/libQt5EglDeviceIntegration.prl
+%{_pkgconfigdir}/Qt5EglDeviceIntegration.pc
+%{qt5dir}/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri
+
+%if %{with kms}
+%files -n Qt5Gui-platform-eglfs-kms
+%defattr(644,root,root,755)
+# R: gl egl libdrm libgbm udev
+%attr(755,root,root) %{qt5dir}/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSKmsIntegrationPlugin.cmake
+%endif
+
+%files -n Qt5Gui-platform-eglfs-x11
+%defattr(644,root,root,755)
+# R: libX11 libxcb
+%attr(755,root,root) %{qt5dir}/plugins/egldeviceintegrations/libqeglfs-x11-integration.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSX11IntegrationPlugin.cmake
+
+%files -n Qt5Gui-platform-xcb
+%defattr(644,root,root,755)
+# R: Qt5DBus xorg* xcb* libxkbcommon-x11 fontconfig freetype
+%attr(755,root,root) %{_libdir}/libQt5XcbQpa.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5XcbQpa.so.5
+# R: Qt5DBus xcb-* xorg*
+%attr(755,root,root) %{qt5dir}/plugins/platforms/libqxcb.so
+# loaded from src/plugins/platforms/xcb/gl_integrations/qxcbglintegrationfactory.cpp
+%dir %{qt5dir}/plugins/xcbglintegrations
+
+%files -n Qt5Gui-platform-xcb-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libQt5XcbQpa.so
+%{_libdir}/libQt5XcbQpa.prl
+%{_pkgconfigdir}/Qt5XcbQpa.pc
+%{qt5dir}/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri
+
+%files -n Qt5Gui-platform-xcb-egl
+%defattr(644,root,root,755)
+%attr(755,root,root) %{qt5dir}/plugins/xcbglintegrations/libqxcb-egl-integration.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbEglIntegrationPlugin.cmake
+
+%files -n Qt5Gui-platform-xcb-glx
+%defattr(644,root,root,755)
+%attr(755,root,root) %{qt5dir}/plugins/xcbglintegrations/libqxcb-glx-integration.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbGlxIntegrationPlugin.cmake
 
 %if %{with gtk}
 %files -n Qt5Gui-platformtheme-gtk2
@@ -1557,6 +1737,7 @@ rm -rf $RPM_BUILD_ROOT
 %{qt5dir}/mkspecs/devices
 %{qt5dir}/mkspecs/features
 %{qt5dir}/mkspecs/freebsd-*
+%{qt5dir}/mkspecs/haiku-*
 %{qt5dir}/mkspecs/hpux-*
 %{qt5dir}/mkspecs/hpuxi-*
 %{qt5dir}/mkspecs/hurd-*
@@ -1575,35 +1756,7 @@ rm -rf $RPM_BUILD_ROOT
 %{qt5dir}/mkspecs/win32-*
 %{qt5dir}/mkspecs/wince60standard-*
 %{qt5dir}/mkspecs/wince70embedded-*
+%{qt5dir}/mkspecs/wince80colibri-*
 %{qt5dir}/mkspecs/winphone-*
 %{qt5dir}/mkspecs/winrt-*
 %{qt5dir}/mkspecs/*.pri
-
-%if 0
-# unpackaged files
-	/usr/lib64/cmake/Qt5Gui/Qt5Gui_QEglFSKmsIntegrationPlugin.cmake
-	/usr/lib64/cmake/Qt5Gui/Qt5Gui_QEglFSX11IntegrationPlugin.cmake
-	/usr/lib64/cmake/Qt5Gui/Qt5Gui_QTuioTouchPlugin.cmake
-	/usr/lib64/cmake/Qt5Gui/Qt5Gui_QXcbEglIntegrationPlugin.cmake
-	/usr/lib64/cmake/Qt5Gui/Qt5Gui_QXcbGlxIntegrationPlugin.cmake
-	/usr/lib64/libQt5EglDeviceIntegration.prl
-	/usr/lib64/libQt5EglDeviceIntegration.so
-	/usr/lib64/libQt5EglDeviceIntegration.so.5
-	/usr/lib64/libQt5EglDeviceIntegration.so.5.5.0
-	/usr/lib64/libQt5XcbQpa.prl
-	/usr/lib64/libQt5XcbQpa.so
-	/usr/lib64/libQt5XcbQpa.so.5
-	/usr/lib64/libQt5XcbQpa.so.5.5.0
-	/usr/lib64/pkgconfig/Qt5EglDeviceIntegration.pc
-	/usr/lib64/pkgconfig/Qt5XcbQpa.pc
-	/usr/lib64/qt5/mkspecs/haiku-g++/qmake.conf
-	/usr/lib64/qt5/mkspecs/haiku-g++/qplatformdefs.h
-	/usr/lib64/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri
-	/usr/lib64/qt5/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri
-	/usr/lib64/qt5/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
-	/usr/lib64/qt5/plugins/egldeviceintegrations/libqeglfs-x11-integration.so
-	/usr/lib64/qt5/plugins/generic/libqtuiotouchplugin.so
-	/usr/lib64/qt5/plugins/xcbglintegrations/libqxcb-egl-integration.so
-	/usr/lib64/qt5/plugins/xcbglintegrations/libqxcb-glx-integration.so
-	/usr/share/qt5/translations/qtwebsockets_fr.qm
-%endif
