@@ -969,6 +969,7 @@ COMMONOPT=" \
 	-dbus-linked \
 	-fontconfig \
 	-glib \
+	-gstreamer 1.0 \
 	-%{!?with_gtk:no-}gtkstyle \
 	-iconv \
 	-icu \
