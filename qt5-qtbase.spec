@@ -66,7 +66,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.5.1
-Release:	1
+Release:	2
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
@@ -1388,6 +1388,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqxcb.so
 # loaded from src/plugins/platforms/xcb/gl_integrations/qxcbglintegrationfactory.cpp
 %dir %{qt5dir}/plugins/xcbglintegrations
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbIntegrationPlugin.cmake
 
 %files -n Qt5Gui-platform-xcb-devel
 %defattr(644,root,root,755)
@@ -1434,7 +1435,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QLinuxFbIntegrationPlugin.cmake
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake
-%{_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbIntegrationPlugin.cmake
 %{qt5dir}/mkspecs/modules/qt_lib_gui.pri
 %{qt5dir}/mkspecs/modules/qt_lib_gui_private.pri
 
