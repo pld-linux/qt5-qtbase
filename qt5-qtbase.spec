@@ -5,6 +5,7 @@
 # together with module, and the rest of .cmake files in appropriate -devel subpackage.
 #
 # Conditional build:
+%bcond_without	doc
 %bcond_with	static_libs	# static libraries [incomplete support in .spec]
 %bcond_with	bootstrap	# disable features to able to build without installed qt5
 # -- build targets
@@ -20,7 +21,6 @@
 %bcond_without	pch		# pch (pre-compiled headers) in qmake
 %bcond_with	systemd		# logging to journald
 %bcond_without	tslib		# tslib support
-%bcond_with	openvg		# OpenVG support
 # -- databases
 %bcond_without	freetds		# TDS (Sybase/MS SQL) plugin
 %bcond_without	mysql		# MySQL plugin
@@ -65,22 +65,20 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.5.1
-Release:	8
+Version:	5.8.0
+Release:	0.1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
-Source0:	http://download.qt.io/official_releases/qt/5.5/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
-# Source0-md5:	687e2b122fa2c3390b5e20a166d38038
-Source1:	http://download.qt.io/official_releases/qt/5.5/%{version}/submodules/qttranslations-opensource-src-%{version}.tar.xz
-# Source1-md5:	1f89d53fe759db123b4b6d9de9d9e8c9
-Patch0:		qtbase-oracle-instantclient.patch
-Patch1:		%{name}-system_cacerts.patch
+Source0:	http://download.qt.io/official_releases/qt/5.8/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
+# Source0-md5:	6e1f7f6fb6333eb66e563b175c4e87e9
+Source1:	http://download.qt.io/official_releases/qt/5.8/%{version}/submodules/qttranslations-opensource-src-%{version}.tar.xz
+# Source1-md5:	b6c6748a923b9639c7d018cfdb04caf4
+Patch0:		%{name}-system_cacerts.patch
 URL:		http://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
 %{?with_ibase:BuildRequires:	Firebird-devel}
-%{?with_openvg:BuildRequires:	Mesa-libOpenVG-devel}
 %{?with_kms:BuildRequires:	Mesa-libgbm-devel}
 BuildRequires:	OpenGL-devel
 %{?with_kms:BuildRequires:	OpenGLESv2-devel}
@@ -443,17 +441,17 @@ Qt5 XcbQpa integration plugin for GLX.
 %description -n Qt5Gui-platform-xcb-glx -l pl.UTF-8
 Wtyczka integracji Qt5 XcbQpa dla GLX.
 
-%package -n Qt5Gui-platformtheme-gtk2
-Summary:	Qt5 Gui platform theme plugin for GTK+ 2.x
-Summary(pl.UTF-8):	Wtyczka motywów platform Qt5 Gui dla GTK+ 2.x
+%package -n Qt5Gui-platformtheme-gtk3
+Summary:	Qt5 Gui platform theme plugin for GTK+ 3.x
+Summary(pl.UTF-8):	Wtyczka motywów platform Qt5 Gui dla GTK+ 3.x
 Group:		Libraries
 Requires:	Qt5Gui = %{version}-%{release}
 
-%description -n Qt5Gui-platformtheme-gtk2
-Qt5 Gui platform theme plugin for GTK+ 2.x.
+%description -n Qt5Gui-platformtheme-gtk3
+Qt5 Gui platform theme plugin for GTK+ 3.x.
 
-%description -n Qt5Gui-platformtheme-gtk2 -l pl.UTF-8
-Wtyczka motywów platform Qt5 Gui dla GTK+ 2.x.
+%description -n Qt5Gui-platformtheme-gtk3 -l pl.UTF-8
+Wtyczka motywów platform Qt5 Gui dla GTK+ 3.x.
 
 %package -n Qt5Gui-devel
 Summary:	Qt5 Gui library - development files
@@ -546,28 +544,6 @@ Qt5 OpenGLExtensions library (development files).
 
 %description -n Qt5OpenGLExtensions-devel -l pl.UTF-8
 Biblioteka Qt5 OpenGL Extensions - obsługa rozszerzeń OpenGL (pliki
-programistyczne).
-
-%package -n Qt5PlatformSupport-devel
-Summary:	Qt5 PlatformSupport library - development files
-Summary(pl.UTF-8):	Biblioteka Qt5 PlatformSupport - pliki programistyczne
-Group:		X11/Development/Libraries
-Requires:	OpenGL-devel
-Requires:	Qt5Core-devel = %{version}-%{release}
-Requires:	Qt5DBus-devel = %{version}-%{release}
-Requires:	Qt5Gui-devel = %{version}-%{release}
-Requires:	fontconfig-devel
-Requires:	freetype-devel >= 2.1.3
-Requires:	xorg-lib-libX11-devel
-Requires:	xorg-lib-libXrender-devel
-Requires:	xorg-lib-libXext-devel
-Requires:	udev-devel
-
-%description -n Qt5PlatformSupport-devel
-Qt5 PlatformSupport library (development files).
-
-%description -n Qt5OpenGLExtensions-devel -l pl.UTF-8
-Biblioteka Qt5 PlatformSupport - obsługa platformy (pliki
 programistyczne).
 
 %package -n Qt5PrintSupport
@@ -913,7 +889,6 @@ Generator plików makefile dla aplikacji Qt5.
 %prep
 %setup -q -n %{orgname}-opensource-src-%{version} %{?with_qm:-a1}
 %patch0 -p1
-%patch1 -p1
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
@@ -970,13 +945,9 @@ COMMONOPT=" \
 	-dbus-linked \
 	-fontconfig \
 	-glib \
-	-gstreamer 1.0 \
-	-%{!?with_gtk:no-}gtkstyle \
-	-iconv \
+	-%{!?with_gtk:no-}gtk \
 	-icu \
 	%{?with_systemd:-journald} \
-	-largefile \
-	-nis \
 	%{!?with_egl:-no-eglfs} \
 	%{!?with_kms:-no-kms} \
 	%{!?with_libinput:-no-libinput} \
@@ -1003,31 +974,21 @@ COMMONOPT=" \
 	-system-xkbcommon \
 	-system-zlib \
 	%{?with_tslib:-tslib} \
-	-%{!?with_openvg:no-}openvg \
-	-xcursor \
-	-xfixes \
-	-xinerama \
 	-xinput2 \
-	-xkb \
-	-xrandr \
-	-xrender \
-	-xshape"
+	%{!?with_db2:-no}-sql-db2 \
+	%{!?with_ibase:-no}-sql-ibase \
+	%{!?with_mysql:-no}-sql-mysql \
+	%{!?with_oci:-no}-sql-oci \
+	%{!?with_odbc:-no}-sql-odbc \
+	%{!?with_pgsql:-no}-sql-psql \
+	%{!?with_sqlite2:-no}-sql-sqlite2 \
+	%{!?with_sqlite3:-no}-sql-sqlite \
+	%{!?with_freetds:-no}-sql-tds \
+"
 
 # STATIC
 %if %{with static_libs}
-OPT=" \
-	--sql-db2=%{?with_db2:qt}%{!?with_db2:no} \
-	--sql-ibase=%{?with_ibase:qt}%{!?with_ibase:no} \
-	--sql-mysql=%{?with_mysql:qt}%{!?with_mysql:no} \
-	--sql-oci=%{?with_oci:qt}%{!?with_oci:no} \
-	--sql-odbc=%{?with_odbc:qt}%{!?with_odbc:no} \
-	--sql-psql=%{?with_pgsql:qt}%{!?with_pgsql:no} \
-	--sql-sqlite2=%{?with_sqlite2:qt}%{!?with_sqlite2:no} \
-	--sql-sqlite=%{?with_sqlite3:qt}%{!?with_sqlite3:no} \
-	--sql-tds=%{?with_freetds:qt}%{!?with_freetds:no} \
-	-static"
-
-./configure $COMMONOPT $OPT
+./configure $COMMONOPT -static
 
 %{__make} -C src
 if [ ! -d staticlib ]; then
@@ -1038,27 +999,17 @@ fi
 %endif
 
 # SHARED
-OPT=" \
-	--sql-db2=%{?with_db2:plugin}%{!?with_db2:no} \
-	--sql-ibase=%{?with_ibase:plugin}%{!?with_ibase:no} \
-	--sql-mysql=%{?with_mysql:plugin}%{!?with_mysql:no} \
-	--sql-oci=%{?with_oci:plugin}%{!?with_oci:no} \
-	--sql-odbc=%{?with_odbc:plugin}%{!?with_odbc:no} \
-	--sql-psql=%{?with_pgsql:plugin}%{!?with_pgsql:no} \
-	--sql-sqlite2=%{?with_sqlite2:plugin}%{!?with_sqlite2:no} \
-	--sql-sqlite=%{?with_sqlite3:plugin}%{!?with_sqlite3:no} \
-	--sql-tds=%{?with_freetds:plugin}%{!?with_freetds:no} \
-	-shared"
-
-./configure $COMMONOPT $OPT
+./configure $COMMONOPT -shared
 
 %{__make}
 
+%if %{with doc}
 # use just built qdoc instead of requiring already installed qt5-build
 wd="$(pwd)"
-%{__sed} -i -e 's|%{qt5dir}/bin/qdoc|LD_LIBRARY_PATH='${wd}'/lib$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} '${wd}'/bin/qdoc|' src/*/Makefile qmake/Makefile.qmake-docs
+%{__sed} -i -e 's|%{qt5dir}/bin/qdoc|LD_LIBRARY_PATH='${wd}'/lib$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} '${wd}'/bin/qdoc|' src/*/Makefile
 # build only HTML docs if without qch (which require qhelpgenerator)
 %{__make} %{!?with_qch:html_}docs
+%endif
 
 %if %{with qm}
 export QMAKEPATH=$(pwd)
@@ -1078,8 +1029,10 @@ install -d $RPM_BUILD_ROOT%{_includedir}/qt5/QtSolutions
 %{__make} install \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 
+%if %{with doc}
 %{__make} install_%{!?with_qch:html_}docs \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
+%endif
 
 %if %{with qm}
 %{__make} -C qttranslations-opensource-src-%{version} install \
@@ -1213,7 +1166,6 @@ rm -rf $RPM_BUILD_ROOT
 # static-only
 %{_libdir}/libQt5Bootstrap.a
 %{_libdir}/libQt5Bootstrap.prl
-%{_pkgconfigdir}/Qt5Bootstrap.pc
 %{qt5dir}/mkspecs/modules/qt_lib_bootstrap_private.pri
 
 %files -n Qt5Concurrent
@@ -1351,8 +1303,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -n Qt5Gui-platform-eglfs
 %defattr(644,root,root,755)
 # R: Qt5Gui Qt5Core EGL GL ts fontconfig freetype glib2 udev mtdev
-%attr(755,root,root) %{_libdir}/libQt5EglDeviceIntegration.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libQt5EglDeviceIntegration.so.5
+%attr(755,root,root) %{_libdir}/libQt5EglFSDeviceIntegration.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libQt5EglFSDeviceIntegration.so.5
 # R: egl fontconfig freetype (for two following)
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqeglfs.so
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSIntegrationPlugin.cmake
@@ -1361,17 +1313,16 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n Qt5Gui-platform-eglfs-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libQt5EglDeviceIntegration.so
-%{_libdir}/libQt5EglDeviceIntegration.prl
-%{_pkgconfigdir}/Qt5EglDeviceIntegration.pc
-%{qt5dir}/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri
+%attr(755,root,root) %{_libdir}/libQt5EglFSDeviceIntegration.so
+%{_libdir}/libQt5EglFSDeviceIntegration.prl
+%{qt5dir}/mkspecs/modules/qt_lib_eglfsdeviceintegration_private.pri
 
 %if %{with kms}
 %files -n Qt5Gui-platform-eglfs-kms
 %defattr(644,root,root,755)
 # R: gl egl libdrm libgbm udev
 %attr(755,root,root) %{qt5dir}/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
-%{_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSKmsIntegrationPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSKmsEglDeviceIntegrationPlugin.cmake
 %endif
 
 %files -n Qt5Gui-platform-eglfs-x11
@@ -1395,7 +1346,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libQt5XcbQpa.so
 %{_libdir}/libQt5XcbQpa.prl
-%{_pkgconfigdir}/Qt5XcbQpa.pc
 %{qt5dir}/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri
 
 %files -n Qt5Gui-platform-xcb-egl
@@ -1409,11 +1359,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbGlxIntegrationPlugin.cmake
 
 %if %{with gtk}
-%files -n Qt5Gui-platformtheme-gtk2
+%files -n Qt5Gui-platformtheme-gtk3
 %defattr(644,root,root,755)
 # R: gtk+2
-%attr(755,root,root) %{qt5dir}/plugins/platformthemes/libqgtk2.so
-%{_libdir}/cmake/Qt5Gui/Qt5Gui_QGtk2ThemePlugin.cmake
+%attr(755,root,root) %{qt5dir}/plugins/platformthemes/libqgtk3.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QGtk3ThemePlugin.cmake
 %endif
 
 %files -n Qt5Gui-devel
@@ -1490,15 +1440,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/Qt5OpenGLExtensions
 %{qt5dir}/mkspecs/modules/qt_lib_openglextensions.pri
 %{qt5dir}/mkspecs/modules/qt_lib_openglextensions_private.pri
-
-%files -n Qt5PlatformSupport-devel
-%defattr(644,root,root,755)
-# static-only
-%{_libdir}/libQt5PlatformSupport.a
-%{_libdir}/libQt5PlatformSupport.prl
-%{_includedir}/qt5/QtPlatformSupport
-%{_pkgconfigdir}/Qt5PlatformSupport.pc
-%{qt5dir}/mkspecs/modules/qt_lib_platformsupport_private.pri
 
 %files -n Qt5PrintSupport
 %defattr(644,root,root,755)
@@ -1667,6 +1608,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/qt5-doc
 %{_docdir}/qt5-doc/global
 
+%if %{with doc}
 %files doc
 %defattr(644,root,root,755)
 %{_docdir}/qt5-doc/qdoc
@@ -1702,6 +1644,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/qt5-doc/qtwidgets.qch
 %{_docdir}/qt5-doc/qtxml.qch
 %endif
+%endif
 
 %files examples -f examples.files
 %dir %{_examplesdir}/qt5
@@ -1720,7 +1663,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/bin/moc
 %attr(755,root,root) %{qt5dir}/bin/qdbuscpp2xml
 %attr(755,root,root) %{qt5dir}/bin/qdbusxml2cpp
-%attr(755,root,root) %{qt5dir}/bin/qdoc
+%{?with_doc:%attr(755,root,root) %{qt5dir}/bin/qdoc}
 %attr(755,root,root) %{qt5dir}/bin/qlalr
 %attr(755,root,root) %{qt5dir}/bin/rcc
 %attr(755,root,root) %{qt5dir}/bin/syncqt.pl
@@ -1732,7 +1675,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/bin/qmake
 %{qt5dir}/mkspecs/aix-*
 %{qt5dir}/mkspecs/android-*
-%{qt5dir}/mkspecs/blackberry-*
 %{qt5dir}/mkspecs/common
 %{qt5dir}/mkspecs/cygwin-*
 %{qt5dir}/mkspecs/darwin-*
@@ -1756,9 +1698,6 @@ rm -rf $RPM_BUILD_ROOT
 %{qt5dir}/mkspecs/unixware-*
 %{qt5dir}/mkspecs/unsupported
 %{qt5dir}/mkspecs/win32-*
-%{qt5dir}/mkspecs/wince60standard-*
-%{qt5dir}/mkspecs/wince70embedded-*
-%{qt5dir}/mkspecs/wince80colibri-*
 %{qt5dir}/mkspecs/winphone-*
 %{qt5dir}/mkspecs/winrt-*
 %{qt5dir}/mkspecs/*.pri
