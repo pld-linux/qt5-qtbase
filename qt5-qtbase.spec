@@ -58,7 +58,7 @@
 %undefine	with_qm
 %endif
 
-%define		icu_abi		58
+%define		icu_abi		59
 %define		next_icu_abi	%(echo $((%{icu_abi} + 1)))
 
 %define		orgname		qtbase
