@@ -67,7 +67,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.8.0
-Release:	1
+Release:	2
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
@@ -716,6 +716,7 @@ Requires:	xorg-lib-libX11-devel
 Requires:	xorg-lib-libXrender-devel
 Requires:	xorg-lib-libXext-devel
 Requires:	udev-devel
+Obsoletes:	Qt5PlatformSupport-devel < 5.8.0
 
 %description -n Qt5PlatformCompositorSupport-devel
 Qt5 PlatformCompositorSupport library (development files).
