@@ -67,7 +67,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.8.0
-Release:	0.3
+Release:	1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
@@ -1919,7 +1919,6 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with doc}
 %files doc
 %defattr(644,root,root,755)
-%{_docdir}/qt5-doc/qdoc
 %{_docdir}/qt5-doc/qmake
 %{_docdir}/qt5-doc/qtconcurrent
 %{_docdir}/qt5-doc/qtcore
@@ -1937,7 +1936,6 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with qch}
 %files doc-qch
 %defattr(644,root,root,755)
-%{_docdir}/qt5-doc/qdoc.qch
 %{_docdir}/qt5-doc/qmake.qch
 %{_docdir}/qt5-doc/qtconcurrent.qch
 %{_docdir}/qt5-doc/qtcore.qch
@@ -1973,7 +1971,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/bin/moc
 %attr(755,root,root) %{qt5dir}/bin/qdbuscpp2xml
 %attr(755,root,root) %{qt5dir}/bin/qdbusxml2cpp
-%{?with_doc:%attr(755,root,root) %{qt5dir}/bin/qdoc}
 %attr(755,root,root) %{qt5dir}/bin/qlalr
 %attr(755,root,root) %{qt5dir}/bin/rcc
 %attr(755,root,root) %{qt5dir}/bin/syncqt.pl
