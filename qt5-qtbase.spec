@@ -5,11 +5,10 @@
 # together with module, and the rest of .cmake files in appropriate -devel subpackage.
 #
 # Conditional build:
-%bcond_without	doc
 %bcond_with	static_libs	# static libraries [incomplete support in .spec]
 %bcond_with	bootstrap	# disable features to able to build without installed qt5
 # -- build targets
-%bcond_without	qch		# QCH documentation
+%bcond_without	doc		# Documentation
 %bcond_without	qm		# QM translations
 # -- features
 %bcond_without	cups		# CUPS printing support
@@ -55,7 +54,6 @@
 
 %if %{with bootstrap}
 %undefine	with_doc
-%undefine	with_qch
 %undefine	with_qm
 %endif
 
@@ -111,7 +109,7 @@ BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-backend-devel}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	pulseaudio-devel >= 0.9.10
-%{?with_qch:BuildRequires:	qt5-assistant >= 5.2}
+%{?with_doc:BuildRequires:	qt5-assistant >= 5.2}
 %{?with_qm:BuildRequires:	qt5-linguist >= 5.2}
 BuildRequires:	rpmbuild(macros) >= 1.654
 BuildRequires:	sed >= 4.0
@@ -1213,8 +1211,7 @@ fi
 # use just built qdoc instead of requiring already installed qt5-build
 wd="$(pwd)"
 %{__sed} -i -e 's|%{qt5dir}/bin/qdoc|LD_LIBRARY_PATH='${wd}'/lib$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} '${wd}'/bin/qdoc|' src/*/Makefile
-# build only HTML docs if without qch (which require qhelpgenerator)
-%{__make} %{!?with_qch:html_}docs
+%{__make} docs
 %endif
 
 %if %{with qm}
@@ -1236,7 +1233,7 @@ install -d $RPM_BUILD_ROOT%{_includedir}/qt5/QtSolutions
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 
 %if %{with doc}
-%{__make} install_%{!?with_qch:html_}docs \
+%{__make} install_docs \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 %endif
 
@@ -1934,7 +1931,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/qt5-doc/qtwidgets
 %{_docdir}/qt5-doc/qtxml
 
-%if %{with qch}
 %files doc-qch
 %defattr(644,root,root,755)
 %{_docdir}/qt5-doc/qmake.qch
@@ -1950,7 +1946,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/qt5-doc/qttestlib.qch
 %{_docdir}/qt5-doc/qtwidgets.qch
 %{_docdir}/qt5-doc/qtxml.qch
-%endif
 %endif
 
 %files examples -f examples.files
