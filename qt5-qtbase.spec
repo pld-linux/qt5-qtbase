@@ -65,7 +65,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.8.0
-Release:	3
+Release:	3.1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
@@ -493,6 +493,42 @@ Qt5 EglFs integration plugin for X11.
 %description -n Qt5Gui-platform-eglfs-x11 -l pl.UTF-8
 Wtyczka integracji Qt5 EglFs dla X11.
 
+%package -n Qt5Gui-platform-linuxfb
+Summary:	Qt5 Gui platform plugin for Linux FrameBuffer
+Summary(pl.UTF-8):	Wtyczka platformy Qt5 Gui dla linuksowego framebuffera
+Group:		Libraries
+Requires:	Qt5Gui = %{version}-%{release}
+
+%description -n Qt5Gui-platform-linuxfb
+Qt5 Gui platform plugin for Linux FrameBuffer.
+
+%description -n Qt5Gui-platform-linuxfb -l pl.UTF-8
+Wtyczki platformy Qt5 Gui dla linuxksowego framebuffera.
+
+%package -n Qt5Gui-platform-vnc
+Summary:	Qt5 Gui platform plugin and library for VNC integration layer
+Summary(pl.UTF-8):	Wtyczka platformy Qt5 Gui oraz biblioteka warstwy integracyjnej VNC
+Group:		Libraries
+Requires:	Qt5DBus = %{version}-%{release}
+Requires:	Qt5Gui = %{version}-%{release}
+
+%description -n Qt5Gui-platform-vnc
+Qt5 Gui platform plugin and library for VNC integration layer.
+
+%description -n Qt5Gui-platform-vnc -l pl.UTF-8
+Wtyczka platformy Qt5 Gui oraz biblioteka warstwy integracyjnej VNC.
+
+%package -n Qt5Gui-platform-vnc-devel
+Summary:	Development files for Qt5 VNC integration layer
+Summary(pl.UTF-8):	Pliki programistyczne warstwy integracyjnej Qt5 VNC
+Group:		Development/Libraries
+
+%description -n Qt5Gui-platform-vnc-devel
+Development files for Qt5 VNC integration layer.
+
+%description -n Qt5Gui-platform-vnc-devel -l pl.UTF-8
+Pliki programistyczne warstwy integracyjnej Qt5 VNC.
+
 %package -n Qt5Gui-platform-xcb
 Summary:	Qt5 Gui platform plugin and library for XcbQpa integration layer
 Summary(pl.UTF-8):	Wtyczka platformy Qt5 Gui oraz biblioteka warstwy integracyjnej XcbQpa
@@ -544,30 +580,6 @@ Qt5 XcbQpa integration plugin for GLX.
 
 %description -n Qt5Gui-platform-xcb-glx -l pl.UTF-8
 Wtyczka integracji Qt5 XcbQpa dla GLX.
-
-%package -n Qt5Gui-platform-vnc
-Summary:	Qt5 Gui platform plugin and library for VNC integration layer
-Summary(pl.UTF-8):	Wtyczka platformy Qt5 Gui oraz biblioteka warstwy integracyjnej VNC
-Group:		Libraries
-Requires:	Qt5DBus = %{version}-%{release}
-Requires:	Qt5Gui = %{version}-%{release}
-
-%description -n Qt5Gui-platform-vnc
-Qt5 Gui platform plugin and library for VNC integration layer.
-
-%description -n Qt5Gui-platform-vnc -l pl.UTF-8
-Wtyczka platformy Qt5 Gui oraz biblioteka warstwy integracyjnej VNC.
-
-%package -n Qt5Gui-platform-vnc-devel
-Summary:	Development files for Qt5 VNC integration layer
-Summary(pl.UTF-8):	Pliki programistyczne warstwy integracyjnej Qt5 VNC
-Group:		Development/Libraries
-
-%description -n Qt5Gui-platform-vnc-devel
-Development files for Qt5 VNC integration layer.
-
-%description -n Qt5Gui-platform-vnc-devel -l pl.UTF-8
-Pliki programistyczne warstwy integracyjnej Qt5 VNC.
 
 %package -n Qt5Gui-platformtheme-gtk3
 Summary:	Qt5 Gui platform theme plugin for GTK+ 3.x
@@ -1511,10 +1523,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so
 # loaded from src/gui/kernel/qplatformintegrationfactory.cpp
 %dir %{qt5dir}/plugins/platforms
-# R: fontconfig freetype udev-libs
-%attr(755,root,root) %{qt5dir}/plugins/platforms/libqlinuxfb.so
+# R: fontconfig freetype
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqminimal.so
-# R: freetype libX11 libXrender
+# R: OpenGL freetype libX11 libXrender
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqoffscreen.so
 # loaded from src/gui/kernel/qplatformthemefactory.cpp
 %dir %{qt5dir}/plugins/platformthemes
@@ -1601,6 +1612,20 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/plugins/egldeviceintegrations/libqeglfs-x11-integration.so
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSX11IntegrationPlugin.cmake
 
+%files -n Qt5Gui-platform-linuxfb
+%defattr(644,root,root,755)
+# R: fontconfig freetype libinput tslib udev-libs
+%attr(755,root,root) %{qt5dir}/plugins/platforms/libqlinuxfb.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QLinuxFbIntegrationPlugin.cmake
+
+%files -n Qt5Gui-platform-vnc
+%defattr(644,root,root,755)
+%attr(755,root,root) %{qt5dir}/plugins/platforms/libqvnc.so
+
+%files -n Qt5Gui-platform-vnc-devel
+%defattr(644,root,root,755)
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QVncIntegrationPlugin.cmake
+
 %files -n Qt5Gui-platform-xcb
 %defattr(644,root,root,755)
 # R: Qt5DBus xorg* xcb* libxkbcommon-x11 fontconfig freetype
@@ -1628,14 +1653,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/plugins/xcbglintegrations/libqxcb-glx-integration.so
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QXcbGlxIntegrationPlugin.cmake
 
-%files -n Qt5Gui-platform-vnc
-%defattr(644,root,root,755)
-%attr(755,root,root) %{qt5dir}/plugins/platforms/libqvnc.so
-
-%files -n Qt5Gui-platform-vnc-devel
-%defattr(644,root,root,755)
-%{_libdir}/cmake/Qt5Gui/Qt5Gui_QVncIntegrationPlugin.cmake
-
 %if %{with gtk}
 %files -n Qt5Gui-platformtheme-gtk3
 %defattr(644,root,root,755)
@@ -1661,7 +1678,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QJpegPlugin.cmake
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QComposePlatformInputContextPlugin.cmake
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QIbusPlatformInputContextPlugin.cmake
-%{_libdir}/cmake/Qt5Gui/Qt5Gui_QLinuxFbIntegrationPlugin.cmake
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake
 %{qt5dir}/mkspecs/modules/qt_lib_gui.pri
