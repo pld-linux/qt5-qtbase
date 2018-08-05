@@ -63,7 +63,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.11.1
-Release:	1
+Release:	2
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
@@ -1111,7 +1111,9 @@ Generator plików makefile dla aplikacji Qt5.
 %prep
 %setup -q -n %{orgname}-everywhere-src-%{version} %{?with_qm:-a1}
 %patch0 -p1
+%if "%(rpm -q glibc-devel --qf '%{VERSION}')" >= 2.28
 %patch1 -p1
+%endif
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
