@@ -8,7 +8,6 @@
 %bcond_with	static_libs	# static libraries [incomplete support in .spec]
 %bcond_with	bootstrap	# disable features to able to build without installed qt5
 # -- build targets
-%bcond_without	doc		# Documentation
 %bcond_without	qm		# QM translations
 # -- features
 %bcond_without	cups		# CUPS printing support
@@ -53,7 +52,6 @@
 %endif
 
 %if %{with bootstrap}
-%undefine	with_doc
 %undefine	with_qm
 %endif
 
@@ -64,16 +62,17 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.8.0
-Release:	5
+Version:	5.11.1
+Release:	1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
-Source0:	http://download.qt.io/official_releases/qt/5.8/%{version}/submodules/%{orgname}-opensource-src-%{version}.tar.xz
-# Source0-md5:	6e1f7f6fb6333eb66e563b175c4e87e9
-Source1:	http://download.qt.io/official_releases/qt/5.8/%{version}/submodules/qttranslations-opensource-src-%{version}.tar.xz
-# Source1-md5:	b6c6748a923b9639c7d018cfdb04caf4
+Source0:	http://download.qt.io/official_releases/qt/5.11/%{version}/submodules/%{orgname}-everywhere-src-%{version}.tar.xz
+# Source0-md5:	c656471f138d3810187a523293e2cc28
+Source1:	http://download.qt.io/official_releases/qt/5.11/%{version}/submodules/qttranslations-everywhere-src-%{version}.tar.xz
+# Source1-md5:	67c0dbd61c2b92552b5339d82a94b1a8
 Patch0:		%{name}-system_cacerts.patch
+Patch1:		qt5-qtbase-glibc.patch
 URL:		http://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
@@ -104,12 +103,11 @@ BuildRequires:	libxcb-devel >= 1.10
 %{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	openssl-devel
 %{?with_oci:BuildRequires:	oracle-instantclient-devel}
-BuildRequires:	pcre16-devel >= 8.30
+BuildRequires:	pcre2-16-devel
 BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-backend-devel}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	pulseaudio-devel >= 0.9.10
-%{?with_doc:BuildRequires:	qt5-assistant >= 5.2}
 %{?with_qm:BuildRequires:	qt5-linguist >= 5.2}
 BuildRequires:	rpmbuild(macros) >= 1.654
 BuildRequires:	sed >= 4.0
@@ -284,6 +282,19 @@ Qt5 DeviceDiscoverySupport library - development files.
 
 %description -n Qt5DeviceDiscoverySupport-devel -l pl.UTF-8
 Biblioteka Qt5 DeviceDiscoverySupport - pliki programistyczne.
+
+%package -n Qt5EdidSupport-devel
+Summary:	Qt5 EdidSupport library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 EdidSupport - pliki programistyczne
+Group:		Development/Libraries
+# for (subset of) Qt5Core headers
+Requires:	Qt5Core-devel = %{version}-%{release}
+
+%description -n Qt5EdidSupport-devel
+Qt5 EglSupport library - development files.
+
+%description -n Qt5EdidSupport-devel -l pl.UTF-8
+Biblioteka Qt5 EglSupport - pliki programistyczne.
 
 %package -n Qt5EglSupport-devel
 Summary:	Qt5 EglSupport library - development files
@@ -593,6 +604,18 @@ Qt5 Gui platform theme plugin for GTK+ 3.x.
 %description -n Qt5Gui-platformtheme-gtk3 -l pl.UTF-8
 Wtyczka motywów platform Qt5 Gui dla GTK+ 3.x.
 
+%package -n Qt5Gui-platformtheme-flatpak
+Summary:	Qt5 Gui platform theme plugin for flatpak
+Summary(pl.UTF-8):	Wtyczka motywów platform Qt5 Gui dla flatpak
+Group:		Libraries
+Requires:	Qt5Gui = %{version}-%{release}
+
+%description -n Qt5Gui-platformtheme-flatpak
+Qt5 Gui platform theme plugin for flatpak.
+
+%description -n Qt5Gui-platformtheme-flatpak -l pl.UTF-8
+Wtyczka motywów platform Qt5 Gui dla flatpak.
+
 %package -n Qt5Gui-devel
 Summary:	Qt5 Gui library - development files
 Summary(pl.UTF-8):	Biblioteka Qt5 Gui - pliki programistyczne
@@ -620,6 +643,19 @@ Qt5 InputSupport library - development files.
 
 %description -n Qt5InputSupport-devel -l pl.UTF-8
 Biblioteka Qt5 InputSupport - pliki programistyczne.
+
+%package -n Qt5KmsSupport-devel
+Summary:	Qt5 KmsSupport library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 KmsSupport - pliki programistyczne
+Group:		Development/Libraries
+# for (subset of) Qt5Core headers
+Requires:	Qt5Core-devel = %{version}-%{release}
+
+%description -n Qt5KmsSupport-devel
+Qt5 EglSupport library - development files.
+
+%description -n Qt5KmsSupport-devel -l pl.UTF-8
+Biblioteka Qt5 EglSupport - pliki programistyczne.
 
 %package -n Qt5Network
 Summary:	Qt5 Network library
@@ -722,10 +758,10 @@ Requires:	Qt5DBus-devel = %{version}-%{release}
 Requires:	Qt5Gui-devel = %{version}-%{release}
 Requires:	fontconfig-devel
 Requires:	freetype-devel >= 2.1.3
-Requires:	xorg-lib-libX11-devel
-Requires:	xorg-lib-libXrender-devel
-Requires:	xorg-lib-libXext-devel
 Requires:	udev-devel
+Requires:	xorg-lib-libX11-devel
+Requires:	xorg-lib-libXext-devel
+Requires:	xorg-lib-libXrender-devel
 Obsoletes:	Qt5PlatformSupport-devel < 5.8.0
 
 %description -n Qt5PlatformCompositorSupport-devel
@@ -946,7 +982,7 @@ Header files for Qt5 Test library.
 Pliki nagłówkowe biblioteki Qt5 Test.
 
 %package -n -devel
-Summary:	 library - development files
+Summary:	library - development files
 Summary(pl.UTF-8):	Biblioteka  - pliki programistyczne
 Group:		Development/Libraries
 # for (subset of) Qt5Core headers
@@ -954,10 +990,10 @@ Requires:	Qt5Core-devel = %{version}-%{release}
 Requires:	zlib-devel
 
 %description -n -devel
- library - development files.
+library - development files.
 
 %description -n -devel -l pl.UTF-8
-Biblioteka  - pliki programistyczne.
+Biblioteka - pliki programistyczne.
 
 %package -n Qt5Widgets
 Summary:	Qt5 Widgets library
@@ -1033,36 +1069,6 @@ Common part of Qt5 documentation, global for all components.
 Część wspólna dokumentacji do Qt5 ("global", dla wszystkich
 elementów).
 
-%package doc
-Summary:	HTML documentation for Qt5 application framework base components
-Summary(pl.UTF-8):	Dokumentacja HTML do podstawowych komponentów szkieletu aplikacji Qt5
-Group:		Documentation
-Requires:	qt5-doc-common = %{version}-%{release}
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
-
-%description doc
-HTML documentation for Qt5 application framework base components.
-
-%description doc -l pl.UTF-8
-Dokumentacja HTML do podstawowych komponentów szkieletu aplikacji Qt5.
-
-%package doc-qch
-Summary:	QCH documentation for Qt5 application framework base components
-Summary(pl.UTF-8):	Dokumentacja QCH do podstawowych komponentów szkieletu aplikacji Qt5
-Group:		Documentation
-Requires:	qt5-doc-common = %{version}-%{release}
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
-
-%description doc-qch
-QCH documentation for Qt5 application framework base components.
-
-%description doc-qch -l pl.UTF-8
-Dokumentacja QCH do podstawowych komponentów szkieletu aplikacji Qt5.
-
 %package examples
 Summary:	Examples for Qt5 application framework base components
 Summary(pl.UTF-8):	Przykłady do podstawowych komponentów szkieletu aplikacji Qt5
@@ -1103,8 +1109,9 @@ Qt5 makefile generator.
 Generator plików makefile dla aplikacji Qt5.
 
 %prep
-%setup -q -n %{orgname}-opensource-src-%{version} %{?with_qm:-a1}
+%setup -q -n %{orgname}-everywhere-src-%{version} %{?with_qm:-a1}
 %patch0 -p1
+%patch1 -p1
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
@@ -1219,16 +1226,9 @@ fi
 
 %{__make}
 
-%if %{with doc}
-# use just built qdoc instead of requiring already installed qt5-build
-wd="$(pwd)"
-%{__sed} -i -e 's|%{qt5dir}/bin/qdoc|LD_LIBRARY_PATH='${wd}'/lib$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} '${wd}'/bin/qdoc|' src/*/Makefile
-%{__make} docs
-%endif
-
 %if %{with qm}
 export QMAKEPATH=$(pwd)
-cd qttranslations-opensource-src-%{version}
+cd qttranslations-everywhere-src-%{version}
 ../bin/qmake
 %{__make}
 cd ..
@@ -1244,16 +1244,11 @@ install -d $RPM_BUILD_ROOT%{_includedir}/qt5/QtSolutions
 %{__make} install \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 
-%if %{with doc}
-%{__make} install_docs \
-	INSTALL_ROOT=$RPM_BUILD_ROOT
-%endif
-
 %if %{with qm}
-%{__make} -C qttranslations-opensource-src-%{version} install \
+%{__make} -C qttranslations-everywhere-src-%{version} install \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 # keep only qt and qtbase
-%{__rm} $RPM_BUILD_ROOT%{_datadir}/qt5/translations/{assistant,designer,linguist,qmlviewer,qt_help,qtconfig,qtconnectivity,qtdeclarative,qtlocation,qtmultimedia,qtquick1,qtquickcontrols,qtquickcontrols2,qtscript,qtserialport,qtwebengine,qtwebsockets,qtxmlpatterns}_*.qm
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/qt5/translations/{assistant,designer,linguist,qmlviewer,qt_help,qtconnectivity,qtdeclarative,qtlocation,qtmultimedia,qtquick1,qtquickcontrols,qtquickcontrols2,qtscript,qtserialport,qtwebengine,qtwebsockets,qtxmlpatterns}_*.qm
 %else
 install -d $RPM_BUILD_ROOT%{_datadir}/qt5/translations
 %endif
@@ -1267,7 +1262,7 @@ install -d $RPM_BUILD_ROOT%{qt5dir}/plugins/iconengines
 	$RPM_BUILD_ROOT%{_pkgconfigdir}/*.pc
 
 # useless symlinks
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libQt5*.so.5.?
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libQt5*.so.5.??
 # actually drop *.la, follow policy of not packaging them when *.pc exist
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libQt5*.la
 
@@ -1461,6 +1456,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libQt5DeviceDiscoverySupport.prl
 %{qt5dir}/mkspecs/modules/qt_lib_devicediscovery_support_private.pri
 
+%files -n Qt5EdidSupport-devel
+%defattr(644,root,root,755)
+%{_includedir}/qt5/QtEdidSupport
+%{_libdir}/libQt5EdidSupport.a
+%{_libdir}/libQt5EdidSupport.prl
+%{qt5dir}/mkspecs/modules/qt_lib_edid_support_private.pri
+
 %files -n Qt5EglSupport-devel
 %defattr(644,root,root,755)
 %{_includedir}/qt5/QtEglSupport
@@ -1578,8 +1580,10 @@ rm -rf $RPM_BUILD_ROOT
 # R: egl fontconfig freetype (for two following)
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqeglfs.so
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSIntegrationPlugin.cmake
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSEmulatorIntegrationPlugin.cmake
 # loaded from src/plugins/platforms/eglfs/qeglfsdeviceintegration.cpp
 %dir %{qt5dir}/plugins/egldeviceintegrations
+%attr(755,root,root) %{qt5dir}/plugins/egldeviceintegrations/libqeglfs-emu-integration.so
 
 %files -n Qt5Gui-platform-eglfs-devel
 %defattr(644,root,root,755)
@@ -1656,13 +1660,19 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with gtk}
 %files -n Qt5Gui-platformtheme-gtk3
 %defattr(644,root,root,755)
-# R: gtk+2
+# R: gtk+3
 %attr(755,root,root) %{qt5dir}/plugins/platformthemes/libqgtk3.so
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QGtk3ThemePlugin.cmake
 %endif
 
+%files -n Qt5Gui-platformtheme-flatpak
+%defattr(644,root,root,755)
+%attr(755,root,root) %{qt5dir}/plugins/platformthemes/libqflatpak.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QFlatpakThemePlugin.cmake
+
 %files -n Qt5Gui-devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{qt5dir}/bin/qvkgen
 %attr(755,root,root) %{_libdir}/libQt5Gui.so
 %{_libdir}/libQt5Gui.prl
 %{_includedir}/qt5/QtGui
@@ -1689,6 +1699,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libQt5InputSupport.a
 %{_libdir}/libQt5InputSupport.prl
 %{qt5dir}/mkspecs/modules/qt_lib_input_support_private.pri
+
+%files -n Qt5KmsSupport-devel
+%defattr(644,root,root,755)
+%{_includedir}/qt5/QtKmsSupport
+%{_libdir}/libQt5KmsSupport.a
+%{_libdir}/libQt5KmsSupport.prl
+%{qt5dir}/mkspecs/modules/qt_lib_kms_support_private.pri
 
 %files -n Qt5Network
 %defattr(644,root,root,755)
@@ -1930,40 +1947,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_docdir}/qt5-doc
 %{_docdir}/qt5-doc/global
 
-%if %{with doc}
-%files doc
-%defattr(644,root,root,755)
-%{_docdir}/qt5-doc/qmake
-%{_docdir}/qt5-doc/qtconcurrent
-%{_docdir}/qt5-doc/qtcore
-%{_docdir}/qt5-doc/qtdbus
-%{_docdir}/qt5-doc/qtgui
-%{_docdir}/qt5-doc/qtnetwork
-%{_docdir}/qt5-doc/qtopengl
-%{_docdir}/qt5-doc/qtplatformheaders
-%{_docdir}/qt5-doc/qtprintsupport
-%{_docdir}/qt5-doc/qtsql
-%{_docdir}/qt5-doc/qttestlib
-%{_docdir}/qt5-doc/qtwidgets
-%{_docdir}/qt5-doc/qtxml
-
-%files doc-qch
-%defattr(644,root,root,755)
-%{_docdir}/qt5-doc/qmake.qch
-%{_docdir}/qt5-doc/qtconcurrent.qch
-%{_docdir}/qt5-doc/qtcore.qch
-%{_docdir}/qt5-doc/qtdbus.qch
-%{_docdir}/qt5-doc/qtgui.qch
-%{_docdir}/qt5-doc/qtnetwork.qch
-%{_docdir}/qt5-doc/qtopengl.qch
-%{_docdir}/qt5-doc/qtplatformheaders.qch
-%{_docdir}/qt5-doc/qtprintsupport.qch
-%{_docdir}/qt5-doc/qtsql.qch
-%{_docdir}/qt5-doc/qttestlib.qch
-%{_docdir}/qt5-doc/qtwidgets.qch
-%{_docdir}/qt5-doc/qtxml.qch
-%endif
-
 %files examples -f examples.files
 %defattr(644,root,root,755)
 %dir %{_examplesdir}/qt5
@@ -1995,30 +1978,26 @@ rm -rf $RPM_BUILD_ROOT
 %{qt5dir}/mkspecs/aix-*
 %{qt5dir}/mkspecs/android-*
 %{qt5dir}/mkspecs/common
+%{qt5dir}/mkspecs/dummy
 %{qt5dir}/mkspecs/cygwin-*
 %{qt5dir}/mkspecs/darwin-*
 %{qt5dir}/mkspecs/devices
 %{qt5dir}/mkspecs/features
 %{qt5dir}/mkspecs/freebsd-*
 %{qt5dir}/mkspecs/haiku-*
-%{qt5dir}/mkspecs/hpux-*
 %{qt5dir}/mkspecs/hpuxi-*
 %{qt5dir}/mkspecs/hurd-*
 %{qt5dir}/mkspecs/integrity-armv7*
+%{qt5dir}/mkspecs/integrity-armv8*
 %{qt5dir}/mkspecs/integrity-x86
-%{qt5dir}/mkspecs/irix-*
 %{qt5dir}/mkspecs/linux-*
 %{qt5dir}/mkspecs/lynxos-*
 %{qt5dir}/mkspecs/macx-*
 %{qt5dir}/mkspecs/netbsd-*
 %{qt5dir}/mkspecs/openbsd-*
 %{qt5dir}/mkspecs/qnx-*
-%{qt5dir}/mkspecs/sco-*
 %{qt5dir}/mkspecs/solaris-*
-%{qt5dir}/mkspecs/tru64-*
-%{qt5dir}/mkspecs/unixware-*
 %{qt5dir}/mkspecs/unsupported
 %{qt5dir}/mkspecs/win32-*
-%{qt5dir}/mkspecs/winphone-*
 %{qt5dir}/mkspecs/winrt-*
 %{qt5dir}/mkspecs/*.pri
