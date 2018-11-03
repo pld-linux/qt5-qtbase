@@ -8,6 +8,7 @@
 %bcond_with	static_libs	# static libraries [incomplete support in .spec]
 %bcond_with	bootstrap	# disable features to able to build without installed qt5
 # -- build targets
+%bcond_without	doc		# Documentation
 %bcond_without	qm		# QM translations
 # -- features
 %bcond_without	cups		# CUPS printing support
@@ -52,6 +53,7 @@
 %endif
 
 %if %{with bootstrap}
+%undefine	with_doc
 %undefine	with_qm
 %endif
 
@@ -63,7 +65,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.11.1
-Release:	5
+Release:	6
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
@@ -138,6 +140,7 @@ BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags	-fno-strict-aliasing
+%define		filterout	-flto
 
 %define		qt5dir		%{_libdir}/qt5
 
@@ -1069,6 +1072,36 @@ Common part of Qt5 documentation, global for all components.
 Część wspólna dokumentacji do Qt5 ("global", dla wszystkich
 elementów).
 
+%package doc
+Summary:	Qt5 application framework base components documentation in HTML format
+Summary(pl.UTF-8):	Dokumentacja podstawowych komponentów szkieletu aplikacji Qt5 w formacie HTML
+Group:		Documentation
+Requires:	qt5-doc-common = %{version}-%{release}
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description doc
+Qt5 application framework base components documentation in HTML format.
+
+%description doc -l pl.UTF-8
+Dokumentacja podstawowych komponentów szkieletu aplikacji Qt5 w formacie HTML.
+
+%package doc-qch
+Summary:	Qt5 application framework base components documentation in QCH format
+Summary(pl.UTF-8):	Dokumentacja podstawowych komponentów szkieletu aplikacji Qt5 w formacie QCH
+Group:		Documentation
+Requires:	qt5-doc-common = %{version}-%{release}
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description doc-qch
+Qt5 application framework base components documentation in QCH format.
+
+%description doc-qch -l pl.UTF-8
+Dokumentacja podstawowych komponentów szkieletu aplikacji Qt5 w formacie QCH.
+
 %package examples
 Summary:	Examples for Qt5 application framework base components
 Summary(pl.UTF-8):	Przykłady do podstawowych komponentów szkieletu aplikacji Qt5
@@ -1227,6 +1260,12 @@ fi
 ./configure $COMMONOPT -shared
 
 %{__make}
+%if %{with doc}
+# use just built qdoc instead of requiring already installed qt5-build
+wd="$(pwd)"
+%{__sed} -i -e 's|%{qt5dir}/bin/qdoc|LD_LIBRARY_PATH='${wd}'/lib$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} '${wd}'/bin/qdoc|' src/*/Makefile
+%{__make} docs
+%endif
 
 %if %{with qm}
 export QMAKEPATH=$(pwd)
@@ -1245,6 +1284,11 @@ install -d $RPM_BUILD_ROOT%{_includedir}/qt5/QtSolutions
 
 %{__make} install \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
+
+%if %{with doc}
+%{__make} install_docs \
+	INSTALL_ROOT=$RPM_BUILD_ROOT
+%endif
 
 %if %{with qm}
 %{__make} -C qttranslations-everywhere-src-%{version} install \
@@ -1948,6 +1992,40 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %dir %{_docdir}/qt5-doc
 %{_docdir}/qt5-doc/global
+
+%if %{with doc}
+%files doc
+%defattr(644,root,root,755)
+%{_docdir}/qt5-doc/qmake
+%{_docdir}/qt5-doc/qtconcurrent
+%{_docdir}/qt5-doc/qtcore
+%{_docdir}/qt5-doc/qtdbus
+%{_docdir}/qt5-doc/qtgui
+%{_docdir}/qt5-doc/qtnetwork
+%{_docdir}/qt5-doc/qtopengl
+%{_docdir}/qt5-doc/qtplatformheaders
+%{_docdir}/qt5-doc/qtprintsupport
+%{_docdir}/qt5-doc/qtsql
+%{_docdir}/qt5-doc/qttestlib
+%{_docdir}/qt5-doc/qtwidgets
+%{_docdir}/qt5-doc/qtxml
+
+%files doc-qch
+%defattr(644,root,root,755)
+%{_docdir}/qt5-doc/qmake.qch
+%{_docdir}/qt5-doc/qtconcurrent.qch
+%{_docdir}/qt5-doc/qtcore.qch
+%{_docdir}/qt5-doc/qtdbus.qch
+%{_docdir}/qt5-doc/qtgui.qch
+%{_docdir}/qt5-doc/qtnetwork.qch
+%{_docdir}/qt5-doc/qtopengl.qch
+%{_docdir}/qt5-doc/qtplatformheaders.qch
+%{_docdir}/qt5-doc/qtprintsupport.qch
+%{_docdir}/qt5-doc/qtsql.qch
+%{_docdir}/qt5-doc/qttestlib.qch
+%{_docdir}/qt5-doc/qtwidgets.qch
+%{_docdir}/qt5-doc/qtxml.qch
+%endif
 
 %files examples -f examples.files
 %defattr(644,root,root,755)
