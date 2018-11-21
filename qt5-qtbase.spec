@@ -111,6 +111,7 @@ BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	pulseaudio-devel >= 0.9.10
 %{?with_qm:BuildRequires:	qt5-linguist >= 5.2}
+%{?with_doc:BuildRequires:	qt5-assistant}
 BuildRequires:	rpmbuild(macros) >= 1.654
 BuildRequires:	sed >= 4.0
 %{?with_sqlite2:BuildRequires:	sqlite-devel}
