@@ -121,6 +121,7 @@ BuildRequires:	tar >= 1:1.22
 %{?with_tslib:BuildRequires:	tslib-devel}
 BuildRequires:	udev-devel
 %{?with_odbc:BuildRequires:	unixODBC-devel >= 2.3.0}
+BuildRequires:	vulkan-devel
 BuildRequires:	xcb-util-image-devel
 BuildRequires:	xcb-util-keysyms-devel
 BuildRequires:	xcb-util-renderutil-devel
@@ -628,6 +629,7 @@ Requires:	OpenGL-devel
 Requires:	Qt5Core-devel = %{version}-%{release}
 Requires:	Qt5Gui = %{version}-%{release}
 Requires:	libpng-devel
+Requires:	vulkan-devel
 
 %description -n Qt5Gui-devel
 Header files for Qt5 Gui library.
