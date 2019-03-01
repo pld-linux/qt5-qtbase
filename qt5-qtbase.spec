@@ -296,10 +296,10 @@ Group:		Development/Libraries
 Requires:	Qt5Core-devel = %{version}-%{release}
 
 %description -n Qt5EdidSupport-devel
-Qt5 EglSupport library - development files.
+Qt5 EdidSupport library - development files.
 
 %description -n Qt5EdidSupport-devel -l pl.UTF-8
-Biblioteka Qt5 EglSupport - pliki programistyczne.
+Biblioteka Qt5 EdidSupport - pliki programistyczne.
 
 %package -n Qt5EglSupport-devel
 Summary:	Qt5 EglSupport library - development files
@@ -658,10 +658,10 @@ Group:		Development/Libraries
 Requires:	Qt5Core-devel = %{version}-%{release}
 
 %description -n Qt5KmsSupport-devel
-Qt5 EglSupport library - development files.
+Qt5 KmsSupport library - development files.
 
 %description -n Qt5KmsSupport-devel -l pl.UTF-8
-Biblioteka Qt5 EglSupport - pliki programistyczne.
+Biblioteka Qt5 KmsSupport - pliki programistyczne.
 
 %package -n Qt5Network
 Summary:	Qt5 Network library
