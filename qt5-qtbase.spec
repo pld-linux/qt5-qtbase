@@ -64,17 +64,16 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.11.1
-Release:	6
+Version:	5.12.1
+Release:	1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
-Source0:	http://download.qt.io/official_releases/qt/5.11/%{version}/submodules/%{orgname}-everywhere-src-%{version}.tar.xz
-# Source0-md5:	c656471f138d3810187a523293e2cc28
-Source1:	http://download.qt.io/official_releases/qt/5.11/%{version}/submodules/qttranslations-everywhere-src-%{version}.tar.xz
-# Source1-md5:	67c0dbd61c2b92552b5339d82a94b1a8
+Source0:	http://download.qt.io/official_releases/qt/5.12/%{version}/submodules/%{orgname}-everywhere-src-%{version}.tar.xz
+# Source0-md5:	540e4d774f89615c413dd0cb7aeda555
+Source1:	http://download.qt.io/official_releases/qt/5.12/%{version}/submodules/qttranslations-everywhere-src-%{version}.tar.xz
+# Source1-md5:	045ad1eda4d3a272b24b6c60a06b313f
 Patch0:		%{name}-system_cacerts.patch
-Patch1:		qt5-qtbase-glibc.patch
 URL:		http://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
@@ -609,17 +608,18 @@ Qt5 Gui platform theme plugin for GTK+ 3.x.
 %description -n Qt5Gui-platformtheme-gtk3 -l pl.UTF-8
 Wtyczka motywów platform Qt5 Gui dla GTK+ 3.x.
 
-%package -n Qt5Gui-platformtheme-flatpak
-Summary:	Qt5 Gui platform theme plugin for flatpak
-Summary(pl.UTF-8):	Wtyczka motywów platform Qt5 Gui dla flatpak
+%package -n Qt5Gui-platformtheme-xdgdesktopportal
+Summary:	Qt5 Gui platform theme plugin for xdg-desktop-portal
+Summary(pl.UTF-8):	Wtyczka motywów platform Qt5 Gui dla xdg-desktop-portal
 Group:		Libraries
 Requires:	Qt5Gui = %{version}-%{release}
+Obsoletes:	Qt5Gui-platformtheme-flatpak < 5.12.1
 
-%description -n Qt5Gui-platformtheme-flatpak
-Qt5 Gui platform theme plugin for flatpak.
+%description -n Qt5Gui-platformtheme-xdgdesktopportal
+Qt5 Gui platform theme plugin for xdg-desktop-portal.
 
-%description -n Qt5Gui-platformtheme-flatpak -l pl.UTF-8
-Wtyczka motywów platform Qt5 Gui dla flatpak.
+%description -n Qt5Gui-platformtheme-xdgdesktopportal -l pl.UTF-8
+Wtyczka motywów platform Qt5 Gui dla xdg-desktop-portal.
 
 %package -n Qt5Gui-devel
 Summary:	Qt5 Gui library - development files
@@ -1001,6 +1001,19 @@ library - development files.
 %description -n -devel -l pl.UTF-8
 Biblioteka - pliki programistyczne.
 
+%package -n Qt5VulkanSupport-devel
+Summary:	Qt5 VulkanSupport library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 VulkanSupport - pliki programistyczne
+Group:		Development/Libraries
+# for (subset of) Qt5Core headers
+Requires:	Qt5Core-devel = %{version}-%{release}
+
+%description -n Qt5VulkanSupport-devel
+Qt5 VulkanSupport library - development files.
+
+%description -n Qt5VulkanSupport-devel -l pl.UTF-8
+Biblioteka Qt5 VulkanSupport - pliki programistyczne.
+
 %package -n Qt5Widgets
 Summary:	Qt5 Widgets library
 Summary(pl.UTF-8):	Biblioteka Qt5 Widgets
@@ -1147,15 +1160,11 @@ Generator plików makefile dla aplikacji Qt5.
 %prep
 %setup -q -n %{orgname}-everywhere-src-%{version} %{?with_qm:-a1}
 %patch0 -p1
-%if "%(rpm -q glibc-devel --qf '%{VERSION}')" >= "2.28"
-%patch1 -p1
-%endif
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
 # change QMAKE FLAGS to build
 %{__sed} -i -e '
-	s|^\(QMAKE_COMPILER *\)=.*gcc|\1= %{__cc}|;
 	s|^\(QMAKE_CC *\)=.*gcc|\1= %{__cc}|;
 	s|^\(QMAKE_CXX *\)=.*g++|\1= %{__cxx}|;
 	s|^QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO .*|QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO += -g %{rpmcppflags} %{rpmcflags}|;
@@ -1232,10 +1241,10 @@ COMMONOPT=" \
 	-system-pcre \
 	-system-sqlite \
 	-system-xcb \
-	-system-xkbcommon \
 	-system-zlib \
 	%{?with_tslib:-tslib} \
-	-xinput2 \
+	-xcb-xinput \
+	-xkbcommon \
 	%{!?with_db2:-no}-sql-db2 \
 	%{!?with_ibase:-no}-sql-ibase \
 	%{!?with_mysql:-no}-sql-mysql \
@@ -1297,7 +1306,7 @@ install -d $RPM_BUILD_ROOT%{_includedir}/qt5/QtSolutions
 %{__make} -C qttranslations-everywhere-src-%{version} install \
 	INSTALL_ROOT=$RPM_BUILD_ROOT
 # keep only qt and qtbase
-%{__rm} $RPM_BUILD_ROOT%{_datadir}/qt5/translations/{assistant,designer,linguist,qmlviewer,qt_help,qtconnectivity,qtdeclarative,qtlocation,qtmultimedia,qtquick1,qtquickcontrols,qtquickcontrols2,qtscript,qtserialport,qtwebengine,qtwebsockets,qtxmlpatterns}_*.qm
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/qt5/translations/{assistant,designer,linguist,qt_help,qtconnectivity,qtdeclarative,qtlocation,qtmultimedia,qtquickcontrols,qtquickcontrols2,qtscript,qtserialport,qtwebengine,qtwebsockets,qtxmlpatterns}_*.qm
 %else
 install -d $RPM_BUILD_ROOT%{_datadir}/qt5/translations
 %endif
@@ -1359,7 +1368,7 @@ ifecho_tree examples %{_examplesdir}/qt5/qpa
 ifecho_tree examples %{_examplesdir}/qt5/qtconcurrent
 ifecho_tree examples %{_examplesdir}/qt5/qtestlib
 ifecho_tree examples %{_examplesdir}/qt5/sql
-ifecho_tree examples %{_examplesdir}/qt5/touch
+ifecho_tree examples %{_examplesdir}/qt5/vulkan
 ifecho_tree examples %{_examplesdir}/qt5/widgets
 ifecho_tree examples %{_examplesdir}/qt5/xml
 
@@ -1458,7 +1467,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n Qt5Core -f qtbase.lang
 %defattr(644,root,root,755)
-%doc LGPL_EXCEPTION.txt header.* dist/{README,changes-*}
+%doc header.* dist/{README,changes-*}
 %attr(755,root,root) %{_libdir}/libQt5Core.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libQt5Core.so.5
 %dir %{_sysconfdir}/qt5
@@ -1714,10 +1723,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QGtk3ThemePlugin.cmake
 %endif
 
-%files -n Qt5Gui-platformtheme-flatpak
+%files -n Qt5Gui-platformtheme-xdgdesktopportal
 %defattr(644,root,root,755)
-%attr(755,root,root) %{qt5dir}/plugins/platformthemes/libqflatpak.so
-%{_libdir}/cmake/Qt5Gui/Qt5Gui_QFlatpakThemePlugin.cmake
+%attr(755,root,root) %{qt5dir}/plugins/platformthemes/libqxdgdesktopportal.so
+%{_libdir}/cmake/Qt5Gui/Qt5Gui_QXdgDesktopPortalThemePlugin.cmake
 
 %files -n Qt5Gui-devel
 %defattr(644,root,root,755)
@@ -1958,6 +1967,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libQt5ThemeSupport.a
 %{_libdir}/libQt5ThemeSupport.prl
 %{qt5dir}/mkspecs/modules/qt_lib_theme_support_private.pri
+
+%files -n Qt5VulkanSupport-devel
+%defattr(644,root,root,755)
+%{_includedir}/qt5/QtVulkanSupport
+%{_libdir}/libQt5VulkanSupport.a
+%{_libdir}/libQt5VulkanSupport.prl
+%{qt5dir}/mkspecs/modules/qt_lib_vulkan_support_private.pri
 
 %files -n Qt5Widgets
 %defattr(644,root,root,755)
