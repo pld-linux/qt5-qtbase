@@ -81,8 +81,6 @@ BuildRequires:	EGL-devel
 %{?with_kms:BuildRequires:	Mesa-libgbm-devel}
 BuildRequires:	OpenGL-devel
 %{?with_kms:BuildRequires:	OpenGLESv2-devel}
-BuildRequires:	alsa-lib-devel
-%{?with_gtk:BuildRequires:	atk-devel}
 %{?with_cups:BuildRequires:	cups-devel >= 1.4}
 BuildRequires:	dbus-devel >= 1.2
 BuildRequires:	fontconfig-devel
@@ -91,7 +89,8 @@ BuildRequires:	freetype-devel >= 2.1.3
 %{?with_pch:BuildRequires:	gcc >= 5:4.0}
 BuildRequires:	gdb
 BuildRequires:	glib2-devel >= 2.0.0
-%{?with_gtk:BuildRequires:	gtk+2-devel >= 2:2.18}
+%{?with_gtk:BuildRequires:	gtk+3-devel >= 3.6}
+BuildRequires:	harfbuzz-devel >= 1.6.0
 %{?with_kms:BuildRequires:	libdrm-devel}
 # see dependency on libicu version below
 BuildRequires:	libicu-devel < %{next_icu_abi}
@@ -100,15 +99,15 @@ BuildRequires:	libicu-devel >= %{icu_abi}
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel >= 2:1.0.8
 BuildRequires:	libstdc++-devel
-BuildRequires:	libxcb-devel >= 1.10
+BuildRequires:	libxcb-devel >= 1.12
+BuildRequires:	mtdev-devel
 %{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	openssl-devel
 %{?with_oci:BuildRequires:	oracle-instantclient-devel}
-BuildRequires:	pcre2-16-devel
+BuildRequires:	pcre2-16-devel >= 8.20
 BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-backend-devel}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
-BuildRequires:	pulseaudio-devel >= 0.9.10
 %{?with_qm:BuildRequires:	qt5-linguist >= 5.2}
 %{?with_doc:BuildRequires:	qt5-assistant}
 BuildRequires:	rpmbuild(macros) >= 1.654
@@ -121,10 +120,12 @@ BuildRequires:	tar >= 1:1.22
 BuildRequires:	udev-devel
 %{?with_odbc:BuildRequires:	unixODBC-devel >= 2.3.0}
 BuildRequires:	vulkan-devel
-BuildRequires:	xcb-util-image-devel
-BuildRequires:	xcb-util-keysyms-devel
-BuildRequires:	xcb-util-renderutil-devel
-BuildRequires:	xcb-util-wm-devel
+BuildRequires:	wayland-devel
+BuildRequires:	xcb-util-image-devel >= 0.3.9
+BuildRequires:	xcb-util-keysyms-devel >= 0.3.9
+BuildRequires:	xcb-util-renderutil-devel >= 0.3.9
+BuildRequires:	xcb-util-wm-devel >= 0.3.9
+BuildRequires:	xorg-lib-libICE-devel
 BuildRequires:	xorg-lib-libSM-devel
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXcursor-devel
@@ -133,9 +134,9 @@ BuildRequires:	xorg-lib-libXfixes-devel
 BuildRequires:	xorg-lib-libXi-devel
 BuildRequires:	xorg-lib-libXinerama-devel
 BuildRequires:	xorg-lib-libXrandr-devel
-BuildRequires:	xorg-lib-libXrender-devel
-BuildRequires:	xorg-lib-libxkbcommon-devel >= 0.4.1
-BuildRequires:	xorg-lib-libxkbcommon-x11-devel >= 0.4.1
+BuildRequires:	xorg-lib-libXrender-devel >= 0.6
+BuildRequires:	xorg-lib-libxkbcommon-devel >= 0.5.0
+BuildRequires:	xorg-lib-libxkbcommon-x11-devel >= 0.5.0
 BuildRequires:	xz
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
