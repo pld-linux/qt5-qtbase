@@ -1161,6 +1161,7 @@ Generator plików makefile dla aplikacji Qt5.
 %prep
 %setup -q -n %{orgname}-everywhere-src-%{version} %{?with_qm:-a1}
 %patch0 -p1
+sed -i -e 's,/bin/sh,/bin/sh -x,' mkspecs/features/qt_functions.prf
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
