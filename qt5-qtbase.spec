@@ -1231,6 +1231,7 @@ COMMONOPT=" \
 	%{!?with_sse42:-no-sse4.2} \
 	%{!?with_avx:-no-avx} \
 	%{!?with_avx2:-no-avx2} \
+	-no-use-gold-linker \
 	-openssl-linked \
 	-optimized-qmake \
 	-%{!?with_pch:no-}pch \
