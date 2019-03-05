@@ -1,0 +1,15 @@
+--- qtbase-everywhere-src-5.12.1/mkspecs/features/qt_functions.prf.orig	2019-03-05 23:07:33.009111700 +0100
++++ qtbase-everywhere-src-5.12.1/mkspecs/features/qt_functions.prf	2019-03-05 23:06:37.942822346 +0100
+@@ -230,7 +230,11 @@
+         pluginpath.name = QT_PLUGIN_PATH
+         pluginpath.CONFIG = prepend
+ 
+-        QT_TOOL_ENV += deppath pluginpath
++        lddebug.value = all
++        lddebug.name = LD_DEBUG
++        lddebug.CONFIG = prepend
++
++        QT_TOOL_ENV += deppath pluginpath lddebug
+     }
+     qtAddToolEnv($$1, $$QT_TOOL_ENV, $$3)
+ }
