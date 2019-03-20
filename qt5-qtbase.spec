@@ -18,6 +18,7 @@
 %bcond_without	kms		# KMS platform support
 %bcond_without	libinput	# libinput support
 %bcond_without	pch		# pch (pre-compiled headers) in qmake
+%bcond_with	statx		# build with statx() (requires kernel >= 4.11)
 %bcond_with	systemd		# logging to journald
 %bcond_without	tslib		# tslib support
 # -- databases
@@ -1220,6 +1221,7 @@ COMMONOPT=" \
 	-icu \
 	%{?with_systemd:-journald} \
 	%{!?with_egl:-no-eglfs} \
+	%{!?with_statx:-no-feature-statx} \
 	%{!?with_kms:-no-kms} \
 	%{!?with_libinput:-no-libinput} \
 	-no-rpath \
