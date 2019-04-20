@@ -18,7 +18,7 @@
 %bcond_without	kms		# KMS platform support
 %bcond_without	libinput	# libinput support
 %bcond_without	pch		# pch (pre-compiled headers) in qmake
-%bcond_with	statx		# build with statx() (requires kernel >= 4.11)
+%bcond_without	statx		# build without statx()
 %bcond_with	systemd		# logging to journald
 %bcond_without	tslib		# tslib support
 # -- databases
@@ -65,15 +65,15 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.12.2
-Release:	4
+Version:	5.12.3
+Release:	1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
 Source0:	http://download.qt.io/official_releases/qt/5.12/%{version}/submodules/%{orgname}-everywhere-src-%{version}.tar.xz
-# Source0-md5:	a8f4329015a25e3488078d905379bedd
+# Source0-md5:	fe47852113fc27581dbc0cf71644d6f1
 Source1:	http://download.qt.io/official_releases/qt/5.12/%{version}/submodules/qttranslations-everywhere-src-%{version}.tar.xz
-# Source1-md5:	298e993499be31ab95162b61456a4b25
+# Source1-md5:	7f35815b8231f60c467f51c21998b2a9
 Patch0:		%{name}-system_cacerts.patch
 URL:		http://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
