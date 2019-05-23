@@ -66,7 +66,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.12.3
-Release:	1
+Release:	2
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
@@ -120,7 +120,7 @@ BuildRequires:	tar >= 1:1.22
 %{?with_tslib:BuildRequires:	tslib-devel}
 BuildRequires:	udev-devel
 %{?with_odbc:BuildRequires:	unixODBC-devel >= 2.3.0}
-BuildRequires:	vulkan-devel
+BuildRequires:	Vulkan-Loader-devel
 BuildRequires:	wayland-devel
 BuildRequires:	xcb-util-image-devel >= 0.3.9
 BuildRequires:	xcb-util-keysyms-devel >= 0.3.9
@@ -631,7 +631,7 @@ Requires:	OpenGL-devel
 Requires:	Qt5Core-devel = %{version}-%{release}
 Requires:	Qt5Gui = %{version}-%{release}
 Requires:	libpng-devel
-Requires:	vulkan-devel
+Requires:	Vulkan-Loader-devel
 
 %description -n Qt5Gui-devel
 Header files for Qt5 Gui library.
