@@ -65,15 +65,15 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.12.3
-Release:	2
+Version:	5.13.0
+Release:	1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
-Source0:	http://download.qt.io/official_releases/qt/5.12/%{version}/submodules/%{orgname}-everywhere-src-%{version}.tar.xz
-# Source0-md5:	fe47852113fc27581dbc0cf71644d6f1
-Source1:	http://download.qt.io/official_releases/qt/5.12/%{version}/submodules/qttranslations-everywhere-src-%{version}.tar.xz
-# Source1-md5:	7f35815b8231f60c467f51c21998b2a9
+Source0:	http://download.qt.io/official_releases/qt/5.13/%{version}/submodules/%{orgname}-everywhere-src-%{version}.tar.xz
+# Source0-md5:	188576903d7837ddd41ba285e841eb9b
+Source1:	http://download.qt.io/official_releases/qt/5.13/%{version}/submodules/qttranslations-everywhere-src-%{version}.tar.xz
+# Source1-md5:	071888e332858a1dfd733e2d264cb284
 Patch0:		%{name}-system_cacerts.patch
 URL:		http://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
@@ -1048,6 +1048,19 @@ Header files for Qt5 Widgets library.
 %description -n Qt5Widgets-devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki Qt5 Widgets.
 
+%package -n Qt5XkbCommonSupport-devel
+Summary:	Qt5 XkbCommonSupport library - development files
+Summary(pl.UTF-8):	Biblioteka Qt5 XkbCommonSupport - pliki programistyczne
+Group:		Development/Libraries
+# for (subset of) Qt5Core headers
+Requires:	Qt5Core-devel = %{version}-%{release}
+
+%description -n Qt5XkbCommonSupport-devel
+Qt5 XkbCommonSupport library - development files.
+
+%description -n Qt5XkbCommonSupport-devel -l pl.UTF-8
+Biblioteka Qt5 XkbCommonSupport - pliki programistyczne.
+
 %package -n Qt5Xml
 Summary:	Qt5 Xml library
 Summary(pl.UTF-8):	Biblioteka Qt5 Xml
@@ -1995,6 +2008,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake
 %{qt5dir}/mkspecs/modules/qt_lib_widgets.pri
 %{qt5dir}/mkspecs/modules/qt_lib_widgets_private.pri
+
+%files -n Qt5XkbCommonSupport-devel
+%defattr(644,root,root,755)
+%{_includedir}/qt5/QtXkbCommonSupport
+%{_libdir}/libQt5XkbCommonSupport.a
+%{_libdir}/libQt5XkbCommonSupport.prl
+%{qt5dir}/mkspecs/modules/qt_lib_xkbcommon_support_private.pri
 
 %files -n Qt5Xml
 %defattr(644,root,root,755)
