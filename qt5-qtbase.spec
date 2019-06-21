@@ -75,6 +75,7 @@ Source0:	http://download.qt.io/official_releases/qt/5.13/%{version}/submodules/%
 Source1:	http://download.qt.io/official_releases/qt/5.13/%{version}/submodules/qttranslations-everywhere-src-%{version}.tar.xz
 # Source1-md5:	071888e332858a1dfd733e2d264cb284
 Patch0:		%{name}-system_cacerts.patch
+Patch1:		qdoc_default_incdirs.diff
 URL:		http://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
@@ -1175,6 +1176,7 @@ Generator plików makefile dla aplikacji Qt5.
 %prep
 %setup -q -n %{orgname}-everywhere-src-%{version} %{?with_qm:-a1}
 %patch0 -p1
+%patch1 -p1
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
