@@ -65,15 +65,15 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.13.0
-Release:	2
+Version:	5.13.1
+Release:	1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
 Source0:	http://download.qt.io/official_releases/qt/5.13/%{version}/submodules/%{orgname}-everywhere-src-%{version}.tar.xz
-# Source0-md5:	188576903d7837ddd41ba285e841eb9b
+# Source0-md5:	0a1761145531b74fff5b4d9a80c7b1c2
 Source1:	http://download.qt.io/official_releases/qt/5.13/%{version}/submodules/qttranslations-everywhere-src-%{version}.tar.xz
-# Source1-md5:	071888e332858a1dfd733e2d264cb284
+# Source1-md5:	8f2e2ce52c296a1bfd814610770663ae
 Patch0:		%{name}-system_cacerts.patch
 Patch1:		qdoc_default_incdirs.diff
 URL:		http://www.qt.io/
@@ -1459,6 +1459,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libQt5AccessibilitySupport.prl
 %{_libdir}/libQt5LinuxAccessibilitySupport.a
 %{_libdir}/libQt5LinuxAccessibilitySupport.prl
+%{_libdir}/cmake/Qt5AccessibilitySupport
+%{_libdir}/cmake/Qt5LinuxAccessibilitySupport
 %{qt5dir}/mkspecs/modules/qt_lib_accessibility_support_private.pri
 %{qt5dir}/mkspecs/modules/qt_lib_linuxaccessibility_support_private.pri
 
@@ -1467,6 +1469,7 @@ rm -rf $RPM_BUILD_ROOT
 # static-only
 %{_libdir}/libQt5Bootstrap.a
 %{_libdir}/libQt5Bootstrap.prl
+%{_libdir}/cmake/Qt5Bootstrap
 %{qt5dir}/mkspecs/modules/qt_lib_bootstrap_private.pri
 
 %files -n Qt5Concurrent
@@ -1531,6 +1534,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtDeviceDiscoverySupport
 %{_libdir}/libQt5DeviceDiscoverySupport.a
 %{_libdir}/libQt5DeviceDiscoverySupport.prl
+%{_libdir}/cmake/Qt5DeviceDiscoverySupport
 %{qt5dir}/mkspecs/modules/qt_lib_devicediscovery_support_private.pri
 
 %files -n Qt5EdidSupport-devel
@@ -1538,6 +1542,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtEdidSupport
 %{_libdir}/libQt5EdidSupport.a
 %{_libdir}/libQt5EdidSupport.prl
+%{_libdir}/cmake/Qt5EdidSupport
 %{qt5dir}/mkspecs/modules/qt_lib_edid_support_private.pri
 
 %files -n Qt5EglSupport-devel
@@ -1545,6 +1550,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtEglSupport
 %{_libdir}/libQt5EglSupport.a
 %{_libdir}/libQt5EglSupport.prl
+%{_libdir}/cmake/Qt5EglSupport
 %{qt5dir}/mkspecs/modules/qt_lib_egl_support_private.pri
 
 %files -n Qt5EventDispatcherSupport-devel
@@ -1552,6 +1558,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtEventDispatcherSupport
 %{_libdir}/libQt5EventDispatcherSupport.a
 %{_libdir}/libQt5EventDispatcherSupport.prl
+%{_libdir}/cmake/Qt5EventDispatcherSupport
 %{qt5dir}/mkspecs/modules/qt_lib_eventdispatcher_support_private.pri
 
 %files -n Qt5FbSupport-devel
@@ -1559,6 +1566,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtFbSupport
 %{_libdir}/libQt5FbSupport.a
 %{_libdir}/libQt5FbSupport.prl
+%{_libdir}/cmake/Qt5FbSupport
 %{qt5dir}/mkspecs/modules/qt_lib_fb_support_private.pri
 
 %files -n Qt5FontDatabaseSupport-devel
@@ -1566,6 +1574,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtFontDatabaseSupport
 %{_libdir}/libQt5FontDatabaseSupport.a
 %{_libdir}/libQt5FontDatabaseSupport.prl
+%{_libdir}/cmake/Qt5FontDatabaseSupport
 %{qt5dir}/mkspecs/modules/qt_lib_fontdatabase_support_private.pri
 
 %files -n Qt5GlxSupport-devel
@@ -1573,6 +1582,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtGlxSupport
 %{_libdir}/libQt5GlxSupport.a
 %{_libdir}/libQt5GlxSupport.prl
+%{_libdir}/cmake/Qt5GlxSupport
 %{qt5dir}/mkspecs/modules/qt_lib_glx_support_private.pri
 
 %files -n Qt5Gui
@@ -1666,6 +1676,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_includedir}/qt5/QtEglFSDeviceIntegration
 %attr(755,root,root) %{_libdir}/libQt5EglFSDeviceIntegration.so
+%{_libdir}/cmake/Qt5EglFSDeviceIntegration
 %{_libdir}/libQt5EglFSDeviceIntegration.prl
 %{qt5dir}/mkspecs/modules/qt_lib_eglfsdeviceintegration_private.pri
 
@@ -1682,6 +1693,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libQt5EglFsKmsSupport.so
 %{_libdir}/libQt5EglFsKmsSupport.prl
+%{_libdir}/cmake/Qt5EglFsKmsSupport
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSKmsEglDeviceIntegrationPlugin.cmake
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QEglFSKmsGbmIntegrationPlugin.cmake
 %{qt5dir}/mkspecs/modules/qt_lib_eglfs_kms_support_private.pri
@@ -1722,6 +1734,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libQt5XcbQpa.so
 %{_libdir}/libQt5XcbQpa.prl
+%{_libdir}/cmake/Qt5XcbQpa
 %{qt5dir}/mkspecs/modules/qt_lib_xcb_qpa_lib_private.pri
 
 %files -n Qt5Gui-platform-xcb-egl
@@ -1775,6 +1788,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtInputSupport
 %{_libdir}/libQt5InputSupport.a
 %{_libdir}/libQt5InputSupport.prl
+%{_libdir}/cmake/Qt5InputSupport
 %{qt5dir}/mkspecs/modules/qt_lib_input_support_private.pri
 
 %files -n Qt5KmsSupport-devel
@@ -1782,6 +1796,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtKmsSupport
 %{_libdir}/libQt5KmsSupport.a
 %{_libdir}/libQt5KmsSupport.prl
+%{_libdir}/cmake/Qt5KmsSupport
 %{qt5dir}/mkspecs/modules/qt_lib_kms_support_private.pri
 
 %files -n Qt5Network
@@ -1841,6 +1856,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtPlatformCompositorSupport
 %{_libdir}/libQt5PlatformCompositorSupport.a
 %{_libdir}/libQt5PlatformCompositorSupport.prl
+%{_libdir}/cmake/Qt5PlatformCompositorSupport
 %{qt5dir}/mkspecs/modules/qt_lib_platformcompositor_support_private.pri
 
 %files -n Qt5PrintSupport
@@ -1872,6 +1888,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtServiceSupport
 %{_libdir}/libQt5ServiceSupport.a
 %{_libdir}/libQt5ServiceSupport.prl
+%{_libdir}/cmake/Qt5ServiceSupport
 %{qt5dir}/mkspecs/modules/qt_lib_service_support_private.pri
 
 %files -n Qt5Sql
@@ -1985,6 +2002,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtThemeSupport
 %{_libdir}/libQt5ThemeSupport.a
 %{_libdir}/libQt5ThemeSupport.prl
+%{_libdir}/cmake/Qt5ThemeSupport
 %{qt5dir}/mkspecs/modules/qt_lib_theme_support_private.pri
 
 %files -n Qt5VulkanSupport-devel
@@ -1992,6 +2010,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtVulkanSupport
 %{_libdir}/libQt5VulkanSupport.a
 %{_libdir}/libQt5VulkanSupport.prl
+%{_libdir}/cmake/Qt5VulkanSupport
 %{qt5dir}/mkspecs/modules/qt_lib_vulkan_support_private.pri
 
 %files -n Qt5Widgets
@@ -2016,6 +2035,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/qt5/QtXkbCommonSupport
 %{_libdir}/libQt5XkbCommonSupport.a
 %{_libdir}/libQt5XkbCommonSupport.prl
+%{_libdir}/cmake/Qt5XkbCommonSupport
 %{qt5dir}/mkspecs/modules/qt_lib_xkbcommon_support_private.pri
 
 %files -n Qt5Xml
@@ -2036,6 +2056,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n qt5-doc-common
 %defattr(644,root,root,755)
 %dir %{_docdir}/qt5-doc
+%{_docdir}/qt5-doc/config
 %{_docdir}/qt5-doc/global
 
 %if %{with doc}
