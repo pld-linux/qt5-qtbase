@@ -76,6 +76,7 @@ Source1:	http://download.qt.io/official_releases/qt/5.13/%{version}/submodules/q
 # Source1-md5:	8f2e2ce52c296a1bfd814610770663ae
 Patch0:		%{name}-system_cacerts.patch
 Patch1:		qdoc_default_incdirs.diff
+Patch2:		qtbug-77364.patch
 URL:		http://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
@@ -1177,6 +1178,7 @@ Generator plików makefile dla aplikacji Qt5.
 %setup -q -n %{orgname}-everywhere-src-%{version} %{?with_qm:-a1}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
