@@ -82,8 +82,10 @@ BuildRequires:	EGL-devel
 %{?with_kms:BuildRequires:	Mesa-libgbm-devel}
 BuildRequires:	OpenGL-devel
 %{?with_kms:BuildRequires:	OpenGLESv2-devel}
+BuildRequires:	at-spi2-core-devel
 %{?with_cups:BuildRequires:	cups-devel >= 1.4}
 BuildRequires:	dbus-devel >= 1.2
+BuildRequires:	double-conversion-devel
 BuildRequires:	fontconfig-devel
 %{?with_freetds:BuildRequires:	freetds-devel}
 BuildRequires:	freetype-devel >= 2.1.3
@@ -103,7 +105,7 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libxcb-devel >= 1.12
 BuildRequires:	mtdev-devel
 %{?with_mysql:BuildRequires:	mysql-devel}
-BuildRequires:	openssl-devel
+BuildRequires:	openssl-devel >= 1.0.0
 %{?with_oci:BuildRequires:	oracle-instantclient-devel}
 BuildRequires:	pcre2-16-devel >= 8.20
 BuildRequires:	pkgconfig
@@ -140,6 +142,7 @@ BuildRequires:	xorg-lib-libxkbcommon-devel >= 0.5.0
 BuildRequires:	xorg-lib-libxkbcommon-x11-devel >= 0.5.0
 BuildRequires:	xz
 BuildRequires:	zlib-devel
+BuildRequires:	zstd-devel >= 1.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags	-fno-strict-aliasing
@@ -221,6 +224,7 @@ Summary:	Qt5 Core library
 Summary(pl.UTF-8):	Biblioteka Qt5 Core
 Group:		Libraries
 Requires:	pcre16 >= 8.30
+Requires:	zstd >= 1.3
 Obsoletes:	qt5-qtbase
 
 %description -n Qt5Core
