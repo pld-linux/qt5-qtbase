@@ -52,6 +52,10 @@
 %ifarch pentium4 %{x8664} x32
 %define		with_sse2	1
 %endif
+# QTBUG-36129
+%ifnarch %{arm} aarch64
+%define		with_red_reloc	1
+%endif
 
 %if %{with bootstrap}
 %undefine	with_doc
@@ -1262,7 +1266,7 @@ COMMONOPT=" \
 	-openssl-linked \
 	-optimized-qmake \
 	-%{!?with_pch:no-}pch \
-	-reduce-relocations \
+	%{?with_red_reloc:-reduce-relocations} \
 	-sm \
 	-system-freetype \
 	-system-libjpeg \
