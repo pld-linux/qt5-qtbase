@@ -1322,7 +1322,7 @@ cd ..
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/qt5,%{_bindir},%{_pkgconfigdir}}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/qt5,%{_bindir},%{_pkgconfigdir},%{qt5dir}/libexec}
 
 # for QtSolutions (qtlockedfile, qtsingleapplication, etc)
 install -d $RPM_BUILD_ROOT%{_includedir}/qt5/QtSolutions
@@ -1509,6 +1509,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/qt5
 %dir %{qt5dir}
 %dir %{qt5dir}/bin
+%dir %{qt5dir}/libexec
 %dir %{qt5dir}/mkspecs
 %dir %{qt5dir}/mkspecs/modules
 %dir %{qt5dir}/plugins
