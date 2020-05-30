@@ -15,6 +15,7 @@
 %bcond_without	directfb	# DirectFB platform support
 %bcond_without	egl		# EGL (EGLFS, minimal EGL) platform support
 %bcond_without	gtk		# GTK+ theme integration
+%bcond_without	kerberos5	# KRB5 GSSAPI Support
 %bcond_without	kms		# KMS platform support
 %bcond_without	libinput	# libinput support
 %bcond_without	pch		# pch (pre-compiled headers) in qmake
@@ -69,15 +70,15 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.14.2
-Release:	3
+Version:	5.15.0
+Release:	1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
-Source0:	http://download.qt.io/official_releases/qt/5.14/%{version}/submodules/%{orgname}-everywhere-src-%{version}.tar.xz
-# Source0-md5:	b6c14e01ff20925305be109785ed4aa4
-Source1:	http://download.qt.io/official_releases/qt/5.14/%{version}/submodules/qttranslations-everywhere-src-%{version}.tar.xz
-# Source1-md5:	bcf8b00e49f4fe4271ff4651bf32aca8
+Source0:	http://download.qt.io/official_releases/qt/5.15/%{version}/submodules/%{orgname}-everywhere-src-%{version}.tar.xz
+# Source0-md5:	6be4d7ae4cd0d75c50b452cc05117009
+Source1:	http://download.qt.io/official_releases/qt/5.15/%{version}/submodules/qttranslations-everywhere-src-%{version}.tar.xz
+# Source1-md5:	7cbff3badaf760badbcdb5fcba109c1b
 Patch0:		%{name}-system_cacerts.patch
 URL:		http://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
@@ -98,6 +99,7 @@ BuildRequires:	gdb
 BuildRequires:	glib2-devel >= 2.0.0
 %{?with_gtk:BuildRequires:	gtk+3-devel >= 3.6}
 BuildRequires:	harfbuzz-devel >= 1.6.0
+%{?with_kerberos5:BuildRequires:	heimdal-devel}
 %{?with_kms:BuildRequires:	libdrm-devel}
 # see dependency on libicu version below
 BuildRequires:	libicu-devel < %{next_icu_abi}
@@ -109,9 +111,9 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libxcb-devel >= 1.12
 BuildRequires:	mtdev-devel
 %{?with_mysql:BuildRequires:	mysql-devel}
-BuildRequires:	openssl-devel >= 1.0.0
+BuildRequires:	openssl-devel >= 1.1.1
 %{?with_oci:BuildRequires:	oracle-instantclient-devel}
-BuildRequires:	pcre2-16-devel >= 8.20
+BuildRequires:	pcre2-16-devel >= 10.20
 BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-backend-devel}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
@@ -227,7 +229,7 @@ Pliki nagłówkowe biblioteki Qt5 Concurrent.
 Summary:	Qt5 Core library
 Summary(pl.UTF-8):	Biblioteka Qt5 Core
 Group:		Libraries
-Requires:	pcre16 >= 8.30
+Requires:	pcre2-16 >= 10.20
 Requires:	zstd >= 1.3
 Obsoletes:	qt5-qtbase
 
@@ -245,7 +247,8 @@ Group:		Development/Libraries
 Requires:	Qt5Core = %{version}-%{release}
 Requires:	glib2-devel >= 2.0
 Requires:	libicu-devel
-Requires:	pcre16-devel >= 8.30
+Requires:	pcre2-16-devel >= 10.20
+# -std=c++17
 Requires:	zlib-devel
 Obsoletes:	qt5-qtbase-devel
 
@@ -623,6 +626,7 @@ Summary:	Qt5 Gui platform theme plugin for xdg-desktop-portal
 Summary(pl.UTF-8):	Wtyczka motywów platform Qt5 Gui dla xdg-desktop-portal
 Group:		Libraries
 Requires:	Qt5Gui = %{version}-%{release}
+Requires:	harfbuzz >= 1.6.0
 Obsoletes:	Qt5Gui-platformtheme-flatpak < 5.12.1
 
 %description -n Qt5Gui-platformtheme-xdgdesktopportal
@@ -696,7 +700,7 @@ Summary(pl.UTF-8):	Biblioteka Qt5 Network - pliki programistyczne
 Group:		Development/Libraries
 Requires:	Qt5Core-devel = %{version}-%{release}
 Requires:	Qt5Network = %{version}-%{release}
-Requires:	openssl-devel
+%requires_ge	openssl-devel
 
 %description -n Qt5Network-devel
 Header files for Qt5 Network library.
@@ -1268,15 +1272,16 @@ COMMONOPT=" \
 	-%{!?with_pch:no-}pch \
 	%{?with_red_reloc:-reduce-relocations} \
 	-sm \
+	-system-doubleconversion \
 	-system-freetype \
+	-system-harfbuzz \
 	-system-libjpeg \
 	-system-libpng \
 	-system-pcre \
 	-system-sqlite \
-	-system-xcb \
 	-system-zlib \
 	%{?with_tslib:-tslib} \
-	-xcb-xinput \
+	-xcb \
 	-xkbcommon \
 	%{!?with_db2:-no}-sql-db2 \
 	%{!?with_ibase:-no}-sql-ibase \
@@ -1520,6 +1525,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libQt5Core.so
 %{_libdir}/libQt5Core.prl
+%dir %{_libdir}/metatypes
+%{_libdir}/metatypes/qt5core_metatypes.json
 %dir %{_includedir}/qt5
 %dir %{_includedir}/qt5/QtSolutions
 %{_includedir}/qt5/QtCore
@@ -1781,6 +1788,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{qt5dir}/bin/qvkgen
 %attr(755,root,root) %{_libdir}/libQt5Gui.so
 %{_libdir}/libQt5Gui.prl
+%{_libdir}/metatypes/qt5gui_metatypes.json
 %{_includedir}/qt5/QtGui
 %{_includedir}/qt5/QtPlatformHeaders
 %{_pkgconfigdir}/Qt5Gui.pc
@@ -2038,6 +2046,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libQt5Widgets.so
 %{_libdir}/libQt5Widgets.prl
+%{_libdir}/metatypes/qt5widgets_metatypes.json
 %{_includedir}/qt5/QtWidgets
 %{_pkgconfigdir}/Qt5Widgets.pc
 %dir %{_libdir}/cmake/Qt5Widgets
