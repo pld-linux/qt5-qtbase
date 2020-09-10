@@ -70,15 +70,15 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.15.0
-Release:	5
+Version:	5.15.1
+Release:	1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
 Source0:	http://download.qt.io/official_releases/qt/5.15/%{version}/submodules/%{orgname}-everywhere-src-%{version}.tar.xz
-# Source0-md5:	6be4d7ae4cd0d75c50b452cc05117009
+# Source0-md5:	b47df719209d657fcd9edc6a7bdcf33e
 Source1:	http://download.qt.io/official_releases/qt/5.15/%{version}/submodules/qttranslations-everywhere-src-%{version}.tar.xz
-# Source1-md5:	7cbff3badaf760badbcdb5fcba109c1b
+# Source1-md5:	4742dfcb8fa21a899341daabab241716
 Patch0:		%{name}-system_cacerts.patch
 URL:		http://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
@@ -93,7 +93,7 @@ BuildRequires:	dbus-devel >= 1.2
 BuildRequires:	double-conversion-devel
 BuildRequires:	fontconfig-devel
 %{?with_freetds:BuildRequires:	freetds-devel}
-BuildRequires:	freetype-devel >= 2.1.3
+BuildRequires:	freetype-devel >= 2.2.0
 %{?with_pch:BuildRequires:	gcc >= 5:4.0}
 BuildRequires:	gdb
 BuildRequires:	glib2-devel >= 2.0.0
@@ -147,7 +147,7 @@ BuildRequires:	xorg-lib-libXrender-devel >= 0.6
 BuildRequires:	xorg-lib-libxkbcommon-devel >= 0.5.0
 BuildRequires:	xorg-lib-libxkbcommon-x11-devel >= 0.5.0
 BuildRequires:	xz
-BuildRequires:	zlib-devel
+BuildRequires:	zlib-devel >= 1.0.8
 BuildRequires:	zstd-devel >= 1.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -173,7 +173,7 @@ Summary(pl.UTF-8):	Biblioteka Qt5 AccessibilitySupport - pliki programistyczne
 Group:		Development/Libraries
 # for (subset of) Qt5Core headers
 Requires:	Qt5Core-devel = %{version}-%{release}
-Requires:	zlib-devel
+Requires:	zlib-devel >= 1.0.8
 
 %description -n Qt5AccessibilitySupport-devel
 Qt5 AccessibilitySupport library - development files.
@@ -187,7 +187,7 @@ Summary(pl.UTF-8):	Biblioteka Qt5 Bootstrap - pliki programistyczne
 Group:		Development/Libraries
 # for (subset of) Qt5Core headers
 Requires:	Qt5Core-devel = %{version}-%{release}
-Requires:	zlib-devel
+Requires:	zlib-devel >= 1.0.8
 
 %description -n Qt5Bootstrap-devel
 Qt5 Bootstrap library (minimal part of Qt5 Core) - development files.
@@ -230,6 +230,7 @@ Summary:	Qt5 Core library
 Summary(pl.UTF-8):	Biblioteka Qt5 Core
 Group:		Libraries
 Requires:	pcre2-16 >= 10.20
+Requires:	zlib >= 1.0.8
 Requires:	zstd >= 1.3
 Obsoletes:	qt5-qtbase
 
@@ -249,7 +250,7 @@ Requires:	glib2-devel >= 2.0
 Requires:	libicu-devel
 Requires:	pcre2-16-devel >= 10.20
 # -std=c++17
-Requires:	zlib-devel
+Requires:	zlib-devel >= 1.0.8
 Obsoletes:	qt5-qtbase-devel
 
 %description -n Qt5Core-devel
@@ -778,7 +779,7 @@ Requires:	Qt5Core-devel = %{version}-%{release}
 Requires:	Qt5DBus-devel = %{version}-%{release}
 Requires:	Qt5Gui-devel = %{version}-%{release}
 Requires:	fontconfig-devel
-Requires:	freetype-devel >= 2.1.3
+Requires:	freetype-devel >= 2.2.0
 Requires:	udev-devel
 Requires:	xorg-lib-libX11-devel
 Requires:	xorg-lib-libXext-devel
@@ -1008,7 +1009,7 @@ Summary(pl.UTF-8):	Biblioteka  - pliki programistyczne
 Group:		Development/Libraries
 # for (subset of) Qt5Core headers
 Requires:	Qt5Core-devel = %{version}-%{release}
-Requires:	zlib-devel
+Requires:	zlib-devel >= 1.0.8
 
 %description -n -devel
 library - development files.
