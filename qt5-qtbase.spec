@@ -70,15 +70,15 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.15.1
+Version:	5.15.2
 Release:	1
 # See LGPL_EXCEPTION.txt for exception details
 License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
 Group:		X11/Libraries
 Source0:	http://download.qt.io/official_releases/qt/5.15/%{version}/submodules/%{orgname}-everywhere-src-%{version}.tar.xz
-# Source0-md5:	b47df719209d657fcd9edc6a7bdcf33e
+# Source0-md5:	0eb522ff6c2194f9690cbdcd5b33e803
 Source1:	http://download.qt.io/official_releases/qt/5.15/%{version}/submodules/qttranslations-everywhere-src-%{version}.tar.xz
-# Source1-md5:	4742dfcb8fa21a899341daabab241716
+# Source1-md5:	9b66cdb64402e8fd9e843f8a7120abb1
 Patch0:		%{name}-system_cacerts.patch
 URL:		http://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
@@ -1490,7 +1490,6 @@ rm -rf $RPM_BUILD_ROOT
 # static-only
 %{_libdir}/libQt5Bootstrap.a
 %{_libdir}/libQt5Bootstrap.prl
-%{_libdir}/cmake/Qt5Bootstrap
 %{qt5dir}/mkspecs/modules/qt_lib_bootstrap_private.pri
 
 %files -n Qt5Concurrent
@@ -1510,7 +1509,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n Qt5Core -f qtbase.lang
 %defattr(644,root,root,755)
-%doc header.* dist/{README,changes-*}
+%doc dist/{README,changes-*}
 %attr(755,root,root) %{_libdir}/libQt5Core.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libQt5Core.so.5
 %dir %{_sysconfdir}/qt5
