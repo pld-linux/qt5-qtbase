@@ -87,6 +87,7 @@ BuildRequires:	EGL-devel
 %{?with_kms:BuildRequires:	Mesa-libgbm-devel}
 BuildRequires:	OpenGL-devel
 %{?with_kms:BuildRequires:	OpenGLESv2-devel}
+BuildRequires:	Vulkan-Loader-devel
 BuildRequires:	at-spi2-core-devel
 %{?with_cups:BuildRequires:	cups-devel >= 1.4}
 BuildRequires:	dbus-devel >= 1.2
@@ -107,7 +108,7 @@ BuildRequires:	libicu-devel >= %{icu_abi}
 %{?with_libinput:BuildRequires:	libinput-devel}
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel >= 2:1.0.8
-BuildRequires:	libstdc++-devel
+BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libxcb-devel >= 1.12
 BuildRequires:	mtdev-devel
 %{?with_mysql:BuildRequires:	mysql-devel}
@@ -118,7 +119,7 @@ BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-backend-devel}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 %{?with_qm:BuildRequires:	qt5-linguist >= 5.2}
-%{?with_doc:BuildRequires:	qt5-assistant}
+%{?with_doc:BuildRequires:	qt5-assistant >= 5.9}
 BuildRequires:	rpmbuild(macros) >= 1.654
 BuildRequires:	sed >= 4.0
 %{?with_sqlite2:BuildRequires:	sqlite-devel}
@@ -128,7 +129,6 @@ BuildRequires:	tar >= 1:1.22
 %{?with_tslib:BuildRequires:	tslib-devel}
 BuildRequires:	udev-devel
 %{?with_odbc:BuildRequires:	unixODBC-devel >= 2.3.0}
-BuildRequires:	Vulkan-Loader-devel
 BuildRequires:	wayland-devel
 BuildRequires:	xcb-util-image-devel >= 0.3.9
 BuildRequires:	xcb-util-keysyms-devel >= 0.3.9
@@ -248,8 +248,8 @@ Group:		Development/Libraries
 Requires:	Qt5Core = %{version}-%{release}
 Requires:	glib2-devel >= 2.0
 Requires:	libicu-devel
+Requires:	libstdc++-devel >= 6:4.7
 Requires:	pcre2-16-devel >= 10.20
-# -std=c++17
 Requires:	zlib-devel >= 1.0.8
 Obsoletes:	qt5-qtbase-devel
 
@@ -2170,6 +2170,7 @@ rm -rf $RPM_BUILD_ROOT
 %{qt5dir}/mkspecs/qnx-*
 %{qt5dir}/mkspecs/solaris-*
 %{qt5dir}/mkspecs/unsupported
+%{qt5dir}/mkspecs/wasm-emscripten
 %{qt5dir}/mkspecs/win32-*
 %{qt5dir}/mkspecs/winrt-*
 %{qt5dir}/mkspecs/*.pri
