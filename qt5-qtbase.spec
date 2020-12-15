@@ -120,7 +120,7 @@ BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 %{?with_qm:BuildRequires:	qt5-linguist >= 5.2}
 %{?with_doc:BuildRequires:	qt5-assistant >= 5.9}
-BuildRequires:	rpmbuild(macros) >= 1.654
+BuildRequires:	rpmbuild(macros) >= 1.752
 BuildRequires:	sed >= 4.0
 %{?with_sqlite2:BuildRequires:	sqlite-devel}
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
@@ -1106,9 +1106,7 @@ Pliki nagłówkowe biblioteki Qt5 Xml.
 Summary:	Common part of Qt5 documentation
 Summary(pl.UTF-8):	Część wspólna dokumentacji do Qt5
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description -n qt5-doc-common
 Common part of Qt5 documentation, global for all components.
@@ -1122,38 +1120,35 @@ Summary:	Qt5 application framework base components documentation in HTML format
 Summary(pl.UTF-8):	Dokumentacja podstawowych komponentów szkieletu aplikacji Qt5 w formacie HTML
 Group:		Documentation
 Requires:	qt5-doc-common = %{version}-%{release}
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description doc
-Qt5 application framework base components documentation in HTML format.
+Qt5 application framework base components documentation in HTML
+format.
 
 %description doc -l pl.UTF-8
-Dokumentacja podstawowych komponentów szkieletu aplikacji Qt5 w formacie HTML.
+Dokumentacja podstawowych komponentów szkieletu aplikacji Qt5 w
+formacie HTML.
 
 %package doc-qch
 Summary:	Qt5 application framework base components documentation in QCH format
 Summary(pl.UTF-8):	Dokumentacja podstawowych komponentów szkieletu aplikacji Qt5 w formacie QCH
 Group:		Documentation
 Requires:	qt5-doc-common = %{version}-%{release}
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description doc-qch
 Qt5 application framework base components documentation in QCH format.
 
 %description doc-qch -l pl.UTF-8
-Dokumentacja podstawowych komponentów szkieletu aplikacji Qt5 w formacie QCH.
+Dokumentacja podstawowych komponentów szkieletu aplikacji Qt5 w
+formacie QCH.
 
 %package examples
 Summary:	Examples for Qt5 application framework base components
 Summary(pl.UTF-8):	Przykłady do podstawowych komponentów szkieletu aplikacji Qt5
 Group:		X11/Development/Libraries
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description examples
 Examples for Qt5 application framework base components.
