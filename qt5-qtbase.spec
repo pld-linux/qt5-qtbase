@@ -616,6 +616,7 @@ Summary:	Qt5 Gui platform theme plugin for GTK+ 3.x
 Summary(pl.UTF-8):	Wtyczka motywów platform Qt5 Gui dla GTK+ 3.x
 Group:		Libraries
 Requires:	Qt5Gui = %{version}-%{release}
+Obsoletes:	Qt5Gui-platformtheme-gtk2 < 5.8
 
 %description -n Qt5Gui-platformtheme-gtk3
 Qt5 Gui platform theme plugin for GTK+ 3.x.
@@ -1002,20 +1003,6 @@ Header files for Qt5 Test library.
 
 %description -n Qt5Test-devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki Qt5 Test.
-
-%package -n -devel
-Summary:	library - development files
-Summary(pl.UTF-8):	Biblioteka  - pliki programistyczne
-Group:		Development/Libraries
-# for (subset of) Qt5Core headers
-Requires:	Qt5Core-devel = %{version}-%{release}
-Requires:	zlib-devel >= 1.0.8
-
-%description -n -devel
-library - development files.
-
-%description -n -devel -l pl.UTF-8
-Biblioteka - pliki programistyczne.
 
 %package -n Qt5VulkanSupport-devel
 Summary:	Qt5 VulkanSupport library - development files
