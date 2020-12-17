@@ -72,15 +72,14 @@ Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.15.2
 Release:	2
-# See LGPL_EXCEPTION.txt for exception details
-License:	LGPL v2 with Digia Qt LGPL Exception v1.1 or GPL v3
+License:	LGPL v3 or GPL v2 or GPL v3 or commercial
 Group:		X11/Libraries
 Source0:	http://download.qt.io/official_releases/qt/5.15/%{version}/submodules/%{orgname}-everywhere-src-%{version}.tar.xz
 # Source0-md5:	0eb522ff6c2194f9690cbdcd5b33e803
 Source1:	http://download.qt.io/official_releases/qt/5.15/%{version}/submodules/qttranslations-everywhere-src-%{version}.tar.xz
 # Source1-md5:	9b66cdb64402e8fd9e843f8a7120abb1
 Patch0:		%{name}-system_cacerts.patch
-URL:		http://www.qt.io/
+URL:		https://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
 %{?with_ibase:BuildRequires:	Firebird-devel}
