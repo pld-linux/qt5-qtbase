@@ -231,7 +231,7 @@ Group:		Libraries
 Requires:	pcre2-16 >= 10.20
 Requires:	zlib >= 1.0.8
 Requires:	zstd >= 1.3
-Obsoletes:	qt5-qtbase
+Obsoletes:	qt5-qtbase < 5.2.0-1
 
 %description -n Qt5Core
 Qt5 Core library provides core non-GUI functionality.
@@ -250,7 +250,7 @@ Requires:	libicu-devel
 Requires:	libstdc++-devel >= 6:4.7
 Requires:	pcre2-16-devel >= 10.20
 Requires:	zlib-devel >= 1.0.8
-Obsoletes:	qt5-qtbase-devel
+Obsoletes:	qt5-qtbase-devel < 5.2.0-1
 
 %description -n Qt5Core-devel
 Header files for Qt5 Core library.
