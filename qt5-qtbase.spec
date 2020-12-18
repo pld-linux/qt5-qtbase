@@ -245,7 +245,6 @@ Summary:	Qt5 Core library - development files
 Summary(pl.UTF-8):	Biblioteka Qt5 Core - pliki programistyczne
 Group:		Development/Libraries
 Requires:	Qt5Core = %{version}-%{release}
-Requires:	glib2-devel >= 2.0
 Requires:	libicu-devel
 Requires:	libstdc++-devel >= 6:4.7
 Requires:	pcre2-16-devel >= 10.20
@@ -332,6 +331,7 @@ Summary(pl.UTF-8):	Biblioteka Qt5 EventDispatcherSupport - pliki programistyczne
 Group:		Development/Libraries
 # for (subset of) Qt5Core headers
 Requires:	Qt5Core-devel = %{version}-%{release}
+Requires:	glib2-devel >= 2.0
 
 %description -n Qt5EventDispatcherSupport-devel
 Qt5 EventDispatcherSupport library - development files.
