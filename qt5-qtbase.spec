@@ -1408,6 +1408,8 @@ find_qt5_qm qt >> qtbase.lang
 find_qt5_qm qtbase >> qtbase.lang
 %endif
 
+install -d $RPM_BUILD_ROOT%{qt5dir}/plugins/styles
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -2023,6 +2025,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libQt5Widgets.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libQt5Widgets.so.5
+%dir %{qt5dir}/plugins/styles
 
 %files -n Qt5Widgets-devel
 %defattr(644,root,root,755)
