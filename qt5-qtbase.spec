@@ -249,6 +249,7 @@ Requires:	Qt5Core = %{version}-%{release}
 Requires:	libicu-devel
 Requires:	libstdc++-devel >= 6:4.7
 Requires:	pcre2-16-devel >= 10.20
+Requires:	qt5-build = %{version}-%{release}
 Requires:	qt5-qmake = %{version}-%{release}
 Requires:	zlib-devel >= 1.0.8
 Obsoletes:	qt5-qtbase-devel < 5.2.0-1
