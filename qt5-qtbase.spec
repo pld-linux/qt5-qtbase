@@ -80,6 +80,7 @@ Source1:	https://download.qt.io/official_releases/qt/5.15/%{version}/submodules/
 # Source1-md5:	9b66cdb64402e8fd9e843f8a7120abb1
 Patch0:		%{name}-system_cacerts.patch
 Patch1:		gcc11.patch
+Patch2:		egl-x11.patch
 URL:		https://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
@@ -1174,6 +1175,7 @@ Generator plików makefile dla aplikacji Qt5.
 %setup -q -n %{orgname}-everywhere-src-%{version} %{?with_qm:-a1}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
