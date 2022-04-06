@@ -117,7 +117,6 @@ BuildRequires:	openssl-devel >= 1.1.1
 %{?with_oci:BuildRequires:	oracle-instantclient-devel}
 BuildRequires:	pcre2-16-devel >= 10.20
 BuildRequires:	pkgconfig
-%{?with_pgsql:BuildRequires:	postgresql-backend-devel}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 %{?with_qm:BuildRequires:	qt5-linguist >= 5.2}
 %{?with_doc:BuildRequires:	qt5-assistant >= 5.9}
