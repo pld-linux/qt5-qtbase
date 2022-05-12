@@ -120,6 +120,7 @@ BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 %{?with_qm:BuildRequires:	qt5-linguist >= 5.2}
 %{?with_doc:BuildRequires:	qt5-assistant >= 5.9}
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.752
 BuildRequires:	sed >= 4.0
 %{?with_sqlite2:BuildRequires:	sqlite-devel}
