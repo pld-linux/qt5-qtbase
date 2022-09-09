@@ -1,0 +1,11 @@
+--- qtbase-everywhere-src-5.15.6/examples/dbus/pingpong/pong.pro.orig	2022-06-24 12:42:02.000000000 +0200
++++ qtbase-everywhere-src-5.15.6/examples/dbus/pingpong/pong.pro	2022-09-09 15:59:37.502927447 +0200
+@@ -1,7 +1,7 @@
+ QT -= gui
+ QT += dbus
+ 
+-HEADERS += ping-common.h pong.h
++HEADERS += pong.h
+ SOURCES += pong.cpp
+ 
+ target.path = $$[QT_INSTALL_EXAMPLES]/dbus/pingpong
