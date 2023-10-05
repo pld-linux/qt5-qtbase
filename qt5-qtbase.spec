@@ -85,6 +85,8 @@ Patch3:		CVE-2023-32763-qtbase-5.15.diff
 Patch4:		CVE-2023-32762-qtbase-5.15.diff
 Patch5:		CVE-2023-33285-qtbase-5.15.diff
 Patch6:		CVE-2023-34410-qtbase-5.15.diff
+Patch7:		CVE-2023-37369-qtbase-5.15.diff
+Patch8:		CVE-2023-38197-qtbase-5.15.diff
 URL:		https://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
@@ -1184,6 +1186,8 @@ Generator plików makefile dla aplikacji Qt5.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
+%patch8 -p1
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
