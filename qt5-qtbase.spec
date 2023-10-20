@@ -12,7 +12,7 @@
 %bcond_without	qm		# QM translations
 # -- features
 %bcond_without	cups		# CUPS printing support
-%bcond_without	directfb	# DirectFB platform support
+%bcond_with	directfb	# DirectFB platform support
 %bcond_without	egl		# EGL (EGLFS, minimal EGL) platform support
 %bcond_without	gtk		# GTK+ theme integration
 %bcond_without	kerberos5	# KRB5 GSSAPI Support
@@ -71,7 +71,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.15.11
-Release:	1
+Release:	2
 License:	LGPL v3 or GPL v2 or GPL v3 or commercial
 Group:		X11/Libraries
 Source0:	https://download.qt.io/official_releases/qt/5.15/%{version}/submodules/%{orgname}-everywhere-opensource-src-%{version}.tar.xz
