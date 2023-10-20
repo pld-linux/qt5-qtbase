@@ -71,7 +71,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.15.11
-Release:	2
+Release:	3
 License:	LGPL v3 or GPL v2 or GPL v3 or commercial
 Group:		X11/Libraries
 Source0:	https://download.qt.io/official_releases/qt/5.15/%{version}/submodules/%{orgname}-everywhere-opensource-src-%{version}.tar.xz
@@ -87,6 +87,7 @@ Patch5:		CVE-2023-33285-qtbase-5.15.diff
 Patch6:		CVE-2023-34410-qtbase-5.15.diff
 Patch7:		CVE-2023-37369-qtbase-5.15.diff
 Patch8:		CVE-2023-38197-qtbase-5.15.diff
+Patch9:		libxkbcommon1.6.patch
 URL:		https://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
@@ -1188,6 +1189,7 @@ Generator plików makefile dla aplikacji Qt5.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
