@@ -70,14 +70,14 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.15.11
-Release:	3
+Version:	5.15.12
+Release:	1
 License:	LGPL v3 or GPL v2 or GPL v3 or commercial
 Group:		X11/Libraries
 Source0:	https://download.qt.io/official_releases/qt/5.15/%{version}/submodules/%{orgname}-everywhere-opensource-src-%{version}.tar.xz
-# Source0-md5:	5b73f982178386f0b5b73c588832bfa1
+# Source0-md5:	ad57ee306725e420e374cac41371d80f
 Source1:	https://download.qt.io/official_releases/qt/5.15/%{version}/submodules/qttranslations-everywhere-opensource-src-%{version}.tar.xz
-# Source1-md5:	541be36768847f531abb3859806dbc89
+# Source1-md5:	6b5974f2733ed0fe3cec06c851005e07
 Patch0:		%{name}-system_cacerts.patch
 Patch1:		parallel-install.patch
 Patch2:		egl-x11.patch
