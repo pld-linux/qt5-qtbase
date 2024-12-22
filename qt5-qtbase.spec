@@ -395,6 +395,7 @@ Requires:	Qt5DBus = %{version}-%{release}
 # for compose platforminputcontext plugin
 Requires:	xorg-lib-libxkbcommon >= 0.4.1
 Suggests:	Qt5Gui-platform-xcb
+Suggests:	Qt5WaylandClient
 
 %description -n Qt5Gui
 The Qt5 GUI library provides the basic enablers for graphical
