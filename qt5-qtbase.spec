@@ -71,7 +71,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.15.16
-Release:	1
+Release:	2
 License:	LGPL v3 or GPL v2 or GPL v3 or commercial
 Group:		X11/Libraries
 Source0:	https://download.qt.io/official_releases/qt/5.15/%{version}/submodules/%{orgname}-everywhere-opensource-src-%{version}.tar.xz
@@ -81,8 +81,9 @@ Source1:	https://download.qt.io/official_releases/qt/5.15/%{version}/submodules/
 Patch0:		%{name}-system_cacerts.patch
 Patch1:		parallel-install.patch
 Patch2:		egl-x11.patch
-Patch4:		CVE-2024-39936-qtbase-5.15.patch
-Patch10:	CVE-2023-51714.patch
+Patch3:		CVE-2024-39936-qtbase-5.15.patch
+Patch4:		CVE-2023-51714.patch
+Patch5:		no-stdc-pollution.patch
 URL:		https://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
@@ -121,8 +122,8 @@ BuildRequires:	pcre2-16-devel >= 10.20
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
 %{?with_pgsql:BuildRequires:	postgresql-devel}
-%{?with_qm:BuildRequires:	qt5-linguist >= 5.2}
 %{?with_doc:BuildRequires:	qt5-assistant >= 5.9}
+%{?with_qm:BuildRequires:	qt5-linguist >= 5.2}
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.752
 BuildRequires:	sed >= 4.0
@@ -652,8 +653,8 @@ Group:		Development/Libraries
 Requires:	OpenGL-devel
 Requires:	Qt5Core-devel = %{version}-%{release}
 Requires:	Qt5Gui = %{version}-%{release}
-Requires:	libpng-devel
 Requires:	Vulkan-Loader-devel
+Requires:	libpng-devel
 
 %description -n Qt5Gui-devel
 Header files for Qt5 Gui library.
@@ -710,7 +711,7 @@ Summary(pl.UTF-8):	Biblioteka Qt5 Network - pliki programistyczne
 Group:		Development/Libraries
 Requires:	Qt5Core-devel = %{version}-%{release}
 Requires:	Qt5Network = %{version}-%{release}
-%requires_ge	openssl-devel
+%requires_ge openssl-devel
 
 %description -n Qt5Network-devel
 Header files for Qt5 Network library.
@@ -1177,11 +1178,12 @@ Generator plików makefile dla aplikacji Qt5.
 
 %prep
 %setup -q -n %{orgname}-everywhere-src-%{version} %{?with_qm:-a1}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch4 -p1
-%patch10 -p1
+%patch -P 0 -p1
+%patch -P 1 -p1
+%patch -P 2 -p1
+%patch -P 3 -p1
+%patch -P 4 -p1
+%patch -P 5 -p1
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 

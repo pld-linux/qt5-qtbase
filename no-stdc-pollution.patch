@@ -1,0 +1,116 @@
+--- qtbase-everywhere-src-5.15.16/mkspecs/common/g++-base.conf~	2024-12-22 17:22:10.000000000 +0100
++++ qtbase-everywhere-src-5.15.16/mkspecs/common/g++-base.conf	2024-12-22 17:24:01.979999818 +0100
+@@ -26,19 +26,3 @@
+ QMAKE_CFLAGS_USE_PRECOMPILE   = -include ${QMAKE_PCH_OUTPUT_BASE}
+ QMAKE_CXXFLAGS_PRECOMPILE     = -x c++-header -c ${QMAKE_PCH_INPUT} -o ${QMAKE_PCH_OUTPUT}
+ QMAKE_CXXFLAGS_USE_PRECOMPILE = $$QMAKE_CFLAGS_USE_PRECOMPILE
+-
+-QMAKE_CFLAGS_GNUC99     = -std=gnu99
+-QMAKE_CFLAGS_GNUC11     = -std=gnu11
+-QMAKE_CXXFLAGS_CXX11    = -std=c++11
+-QMAKE_CXXFLAGS_CXX14    = -std=c++1y
+-QMAKE_CXXFLAGS_CXX1Z    = -std=c++1z
+-QMAKE_CXXFLAGS_CXX2A    = -std=c++2a
+-QMAKE_CXXFLAGS_CXX2B    = -std=c++2b
+-QMAKE_CXXFLAGS_GNUCXX11 = -std=gnu++11
+-QMAKE_CXXFLAGS_GNUCXX14 = -std=gnu++1y
+-QMAKE_CXXFLAGS_GNUCXX1Z = -std=gnu++1z
+-QMAKE_CXXFLAGS_GNUCXX2A = -std=gnu++2a
+-QMAKE_CXXFLAGS_GNUCXX2B = -std=gnu++2b
+-QMAKE_LFLAGS_CXX11      =
+-QMAKE_LFLAGS_CXX14      =
+-QMAKE_LFLAGS_CXX1Z      =
+--- qtbase-everywhere-src-5.15.16/mkspecs/common/clang.conf~	2024-11-08 14:36:08.000000000 +0100
++++ qtbase-everywhere-src-5.15.16/mkspecs/common/clang.conf	2024-12-22 17:51:18.819999729 +0100
+@@ -23,28 +23,13 @@
+ QMAKE_CFLAGS_LTCG                = -flto=thin
+ QMAKE_CFLAGS_LTCG_FATOBJECTS     = -flto
+ QMAKE_CFLAGS_DISABLE_LTCG        = -fno-lto
+-QMAKE_CFLAGS_GNUC99              = -std=gnu99
+-QMAKE_CFLAGS_GNUC11              = -std=gnu11
+ 
+ QMAKE_CXXFLAGS_PRECOMPILE        = -x c++-header -c ${QMAKE_PCH_INPUT} -o ${QMAKE_PCH_OUTPUT}
+ QMAKE_CXXFLAGS_USE_PRECOMPILE    = $$QMAKE_CFLAGS_USE_PRECOMPILE
+ QMAKE_CXXFLAGS_LTCG              = $$QMAKE_CFLAGS_LTCG
+ QMAKE_CXXFLAGS_LTCG_FATOBJECTS   = $$QMAKE_CFLAGS_LTCG_FATOBJECTS
+ QMAKE_CXXFLAGS_DISABLE_LTCG      = $$QMAKE_CFLAGS_DISABLE_LTCG
+-QMAKE_CXXFLAGS_CXX11             = -std=c++11
+-QMAKE_CXXFLAGS_CXX14             = -std=c++1y
+-QMAKE_CXXFLAGS_CXX1Z             = -std=c++1z
+-QMAKE_CXXFLAGS_CXX2A             = -std=c++2a
+-QMAKE_CXXFLAGS_CXX2B             = -std=c++2b
+-QMAKE_CXXFLAGS_GNUCXX11          = -std=gnu++11
+-QMAKE_CXXFLAGS_GNUCXX14          = -std=gnu++1y
+-QMAKE_CXXFLAGS_GNUCXX1Z          = -std=gnu++1z
+-QMAKE_CXXFLAGS_GNUCXX2A          = -std=gnu++2a
+-QMAKE_CXXFLAGS_GNUCXX2B          = -std=gnu++2b
+ 
+-QMAKE_LFLAGS_CXX11      =
+-QMAKE_LFLAGS_CXX14      =
+-QMAKE_LFLAGS_CXX1Z      =
+ QMAKE_LFLAGS_LTCG       = $$QMAKE_CFLAGS_LTCG
+ 
+ # Wrapper tools that understand .o/.a files with LLVM bytecode instead of machine code
+--- qtbase-everywhere-src-5.15.16/mkspecs/common/gcc-base.conf~	2024-12-22 17:26:19.000000000 +0100
++++ qtbase-everywhere-src-5.15.16/mkspecs/common/gcc-base.conf	2024-12-22 17:51:45.133333053 +0100
+@@ -84,10 +84,6 @@
+ QMAKE_LFLAGS_EXCEPTIONS_OFF +=
+ QMAKE_LFLAGS_LTCG       = $$QMAKE_CFLAGS_LTCG -fuse-linker-plugin
+ 
+-QMAKE_CFLAGS_C99       = -std=c99
+-QMAKE_CFLAGS_C11       = -std=c11
+-QMAKE_CFLAGS_C17       = -std=c17
+-
+ QMAKE_CFLAGS_SSE2      += -msse2
+ QMAKE_CFLAGS_SSE3      += -msse3
+ QMAKE_CFLAGS_SSSE3     += -mssse3
+--- qtbase-everywhere-src-5.15.16/mkspecs/common/icc-base-unix.conf~	2024-11-08 14:36:08.000000000 +0100
++++ qtbase-everywhere-src-5.15.16/mkspecs/common/icc-base-unix.conf	2024-12-22 17:52:27.813333040 +0100
+@@ -73,12 +73,6 @@
+ QMAKE_CXXFLAGS_STATIC_LIB = $$QMAKE_CFLAGS_STATIC_LIB
+ QMAKE_CXXFLAGS_SPLIT_SECTIONS = $$QMAKE_CFLAGS_SPLIT_SECTIONS
+ QMAKE_CXXFLAGS_EXCEPTIONS_OFF = -fno-exceptions
+-QMAKE_CXXFLAGS_CXX11    = -std=c++11
+-QMAKE_CXXFLAGS_CXX14    = -std=c++1y
+-QMAKE_CXXFLAGS_CXX1Z    = -std=c++1z
+-QMAKE_CXXFLAGS_GNUCXX11 = -std=gnu++11
+-QMAKE_CXXFLAGS_GNUCXX14 = -std=gnu++1y
+-QMAKE_CXXFLAGS_GNUCXX1Z = -std=gnu++1z
+ QMAKE_CXXFLAGS_LTCG     = $$QMAKE_CFLAGS_LTCG
+ QMAKE_CXXFLAGS_DISABLE_LTCG = $$QMAKE_CFLAGS_DISABLE_LTCG
+ 
+@@ -99,9 +93,6 @@
+ QMAKE_LFLAGS_DEBUG      =
+ QMAKE_LFLAGS_THREAD     =
+ QMAKE_LFLAGS_RPATH      = -Wl,-rpath,
+-QMAKE_LFLAGS_CXX11      =
+-QMAKE_LFLAGS_CXX14      =
+-QMAKE_LFLAGS_CXX1Z      =
+ QMAKE_LFLAGS_LTCG       = $$QMAKE_CFLAGS_LTCG
+ 
+ QMAKE_INCDIR            =
+--- qtbase-everywhere-src-5.15.16/mkspecs/features/qt_module_headers.prf~	2024-11-08 14:36:08.000000000 +0100
++++ qtbase-everywhere-src-5.15.16/mkspecs/features/qt_module_headers.prf	2024-12-22 17:54:31.896666353 +0100
+@@ -256,22 +256,6 @@
+             }
+         }
+ 
+-        # Use strict mode C++11 or C++98, with no GNU extensions (see -pedantic-errors above).
+-        # The module might set CONFIG += c++11, but it might also change QMAKE_CXXFLAGS_CXX11
+-        # or the module (or the mkspec) can set the C++11 flag on QMAKE_CXXFLAGS
+-        # (or QMAKE_CXXFLAGS_{RELEASE,DEBUG} but that's unlikely).
+-        c++11:contains(QMAKE_CXXFLAGS_CXX11, -std=gnu++11) {
+-            hcleanFLAGS += -std=c++11
+-        } else: contains(QMAKE_CXXFLAGS, -std=gnu++11) {
+-            hcleanFLAGS += -std=c++11
+-        } else: c++11:contains(QMAKE_CXXFLAGS_CXX11, -std=gnu++0x) {
+-            hcleanFLAGS += -std=c++0x
+-        } else: contains(QMAKE_CXXFLAGS, -std=gnu++0x) {
+-            hcleanFLAGS += -std=c++0x
+-        } else: !c++11:!contains(QMAKE_CXXFLAGS, -std=c++0x):!contains(QMAKE_CXXFLAGS, -std=c++11) {
+-            hcleanFLAGS += -std=c++98
+-        }
+-
+         hcleanCOMMAND = $(CXX) -c $(CXXFLAGS) $$hcleanFLAGS $(INCPATH) $$hcleanDEFS -xc++ ${QMAKE_FILE_IN} -o ${QMAKE_FILE_OUT}
+     } else: msvc:!intel_icl {
+         # 4180: qualifier applied to function type has no meaning; ignored
