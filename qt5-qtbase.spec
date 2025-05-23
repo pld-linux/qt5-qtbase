@@ -70,20 +70,19 @@
 Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
-Version:	5.15.16
-Release:	3
+Version:	5.15.17
+Release:	1
 License:	LGPL v3 or GPL v2 or GPL v3 or commercial
 Group:		X11/Libraries
 Source0:	https://download.qt.io/official_releases/qt/5.15/%{version}/submodules/%{orgname}-everywhere-opensource-src-%{version}.tar.xz
-# Source0-md5:	5eb20e6fec405125777496a2e1e53038
+# Source0-md5:	20f841fb541ed2f1fe66ed9a938305eb
 Source1:	https://download.qt.io/official_releases/qt/5.15/%{version}/submodules/qttranslations-everywhere-opensource-src-%{version}.tar.xz
-# Source1-md5:	2f9320ff53b3cb51482cd45eec25a470
+# Source1-md5:	e20cfdef4f3088ca568f7e43ab5bba8c
 Patch0:		%{name}-system_cacerts.patch
 Patch1:		parallel-install.patch
 Patch2:		egl-x11.patch
 Patch3:		CVE-2024-39936-qtbase-5.15.patch
-Patch4:		CVE-2023-51714.patch
-Patch5:		no-stdc-pollution.patch
+Patch4:		no-stdc-pollution.patch
 URL:		https://www.qt.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	EGL-devel
@@ -1183,7 +1182,6 @@ Generator plików makefile dla aplikacji Qt5.
 %patch -P 2 -p1
 %patch -P 3 -p1
 %patch -P 4 -p1
-%patch -P 5 -p1
 
 %{__sed} -i -e 's,usr/X11R6/,usr/,g' mkspecs/linux-g++-64/qmake.conf
 
