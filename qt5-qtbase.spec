@@ -71,7 +71,7 @@ Summary:	Qt5 - base components
 Summary(pl.UTF-8):	Biblioteka Qt5 - podstawowe komponenty
 Name:		qt5-%{orgname}
 Version:	5.15.17
-Release:	1
+Release:	2
 License:	LGPL v3 or GPL v2 or GPL v3 or commercial
 Group:		X11/Libraries
 Source0:	https://download.qt.io/official_releases/qt/5.15/%{version}/submodules/%{orgname}-everywhere-opensource-src-%{version}.tar.xz
@@ -548,23 +548,13 @@ Summary(pl.UTF-8):	Wtyczka platformy Qt5 Gui oraz biblioteka warstwy integracyjn
 Group:		Libraries
 Requires:	Qt5DBus = %{version}-%{release}
 Requires:	Qt5Gui = %{version}-%{release}
+Obsoletes:	Qt5Gui-platform-vnc-devel < 5.15.17-2
 
 %description -n Qt5Gui-platform-vnc
 Qt5 Gui platform plugin and library for VNC integration layer.
 
 %description -n Qt5Gui-platform-vnc -l pl.UTF-8
 Wtyczka platformy Qt5 Gui oraz biblioteka warstwy integracyjnej VNC.
-
-%package -n Qt5Gui-platform-vnc-devel
-Summary:	Development files for Qt5 VNC integration layer
-Summary(pl.UTF-8):	Pliki programistyczne warstwy integracyjnej Qt5 VNC
-Group:		Development/Libraries
-
-%description -n Qt5Gui-platform-vnc-devel
-Development files for Qt5 VNC integration layer.
-
-%description -n Qt5Gui-platform-vnc-devel -l pl.UTF-8
-Pliki programistyczne warstwy integracyjnej Qt5 VNC.
 
 %package -n Qt5Gui-platform-xcb
 Summary:	Qt5 Gui platform plugin and library for XcbQpa integration layer
@@ -1734,9 +1724,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n Qt5Gui-platform-vnc
 %defattr(644,root,root,755)
 %attr(755,root,root) %{qt5dir}/plugins/platforms/libqvnc.so
-
-%files -n Qt5Gui-platform-vnc-devel
-%defattr(644,root,root,755)
 %{_libdir}/cmake/Qt5Gui/Qt5Gui_QVncIntegrationPlugin.cmake
 
 %files -n Qt5Gui-platform-xcb
